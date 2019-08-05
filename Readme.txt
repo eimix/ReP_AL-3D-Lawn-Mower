@@ -1,5 +1,13 @@
 ---------------------------------------------------
 NOTE: This fork was never tested on field yet, and it is in development since 2019.08.01
+
+TARGETS: 
+1. Relay controlled mow motor
+2. Bumper sensors 
+3. Safety sensors: lift, tilt etc.
+4. Load current sensor - for locked rotor detection
+5. Code review an bug fixes
+
 eimix
 ---------------------------------------------------
 
