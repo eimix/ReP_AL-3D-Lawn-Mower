@@ -1,3 +1,8 @@
+---------------------------------------------------
+NOTE: This fork was never tested on field yet, and it is in development since 2019.08.01
+eimix
+---------------------------------------------------
+
 ReP_AL-3D-Lawn-Mower
 Code and Files for the ReP_AL 3D Printed Lawn Mower
 ---------------------------------------------------
