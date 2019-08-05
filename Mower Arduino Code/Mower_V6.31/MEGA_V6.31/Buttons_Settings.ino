@@ -13,18 +13,23 @@
 // Test to displyed on the LCD screen when using the membrane key menus
 void Print_LCD_Menu_Settings(byte LCD_Menu_Settings)
 {
-  if (LCD_Menu_Settings == 1) lcd.print("Alarm 1");
-  if (LCD_Menu_Settings == 2) lcd.print("Alarm 2");
-  if (LCD_Menu_Settings == 3) lcd.print("Alarm 3");
-  if (LCD_Menu_Settings == 4) lcd.print("Wheel Speed LH");
-  if (LCD_Menu_Settings == 5) lcd.print("Wheel Speed RH");
-  if (LCD_Menu_Settings == 6) lcd.print("Blade Speed");
-  if (LCD_Menu_Settings == 7) lcd.print("Compass ON/OFF");
-  if (LCD_Menu_Settings == 8) lcd.print("Tracking PID");
-  if (LCD_Menu_Settings == 9) lcd.print("Set Clock");
-  if (LCD_Menu_Settings == 10) lcd.print("-----");
-  if (LCD_Menu_Settings == 11) lcd.print("CLEAR EEPROM");
-  if (LCD_Menu_Settings == 12) lcd.print("");   // Leave Blank
+  // switch/case has default action and it uses 12bytes less memory
+  switch (LCD_Menu_Settings) 
+  {
+    case  1 : lcd.print(F("Alarm 1")); break;
+    case  2 : lcd.print(F("Alarm 2")); break;
+    case  3 : lcd.print(F("Alarm 3")); break;
+    case  4 : lcd.print(F("Wheel Speed LH")); break;
+    case  5 : lcd.print(F("Wheel Speed RH")); break;
+    case  6 : lcd.print(F("Blade Speed")); break;
+    case  7 : lcd.print(F("Compass ON/OFF")); break;
+    case  8 : lcd.print(F("Tracking PID")); break;
+    case  9 : lcd.print(F("Set Clock")); break;
+    case 10 : lcd.print(F("-----")); break;
+    case 11 : lcd.print(F("CLEAR EEPROM")); break;
+//    case 12 : lcd.print(F("")); break;
+    default : lcd.print(F("")); break;
+  }            
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
@@ -79,7 +84,7 @@ void Print_Membrane_Switch_Input_Settings()
       Menu_Complete = true;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Menu Cancelled");
+      lcd.print(F("Menu Cancelled"));
       delay(1000);
       lcd.clear();
       Menu_Mode_Selection = 0;
@@ -297,12 +302,12 @@ void Activate_Menu_Option_Settings()
     Menu_Mode_Selection = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Alarm_1 : ");
+    lcd.print(F("Alarm_1 : "));
     lcd.print(Alarm_1_Hour);
     lcd.print(F(":"));
     if (Alarm_1_Minute < 10) lcd.print ("0");
     lcd.print(Alarm_1_Minute);
-    Serial.print("Alarm 1 Status : ");
+    Serial.print(F("Alarm 1 Status : "));
     Serial.println(Alarm_1_ON);
     lcd.setCursor(0, 1);
     if (Alarm_1_ON == 1) lcd.print("Active");
@@ -321,13 +326,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_1 :");
+        lcd.print(F("Alarm_1 :"));
         lcd.print(Alarm_1_Hour);
         lcd.print(F(":"));
         if (Alarm_1_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_1_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("ON  SAVED");
+        lcd.print(F("ON  SAVED"));
         Alarm_1_ON = 1;
         delay(2000);
         lcd.clear();
@@ -351,7 +356,7 @@ void Activate_Menu_Option_Settings()
         if (Alarm_1_Hour > 23) Alarm_1_Hour = 0;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_1 : ");
+        lcd.print(F("Alarm_1 : "));
         lcd.print(Alarm_1_Hour);
         lcd.print(F(":"));
         if (Alarm_1_Minute < 10) lcd.print ("0");
@@ -370,7 +375,7 @@ void Activate_Menu_Option_Settings()
 
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_1 : ");
+        lcd.print(F("Alarm_1 : "));
         lcd.print(Alarm_1_Hour);
         lcd.print(F(":"));
         if (Alarm_1_Minute < 10) lcd.print ("0");
@@ -383,13 +388,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_1 :");
+        lcd.print(F("Alarm_1 :"));
         lcd.print(Alarm_1_Hour);
         lcd.print(F(":"));
         if (Alarm_1_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_1_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("Alarm OFF");
+        lcd.print(F("Alarm OFF"));
         Alarm_1_ON = 0;
         delay(2000);
         lcd.clear();
@@ -400,7 +405,7 @@ void Activate_Menu_Option_Settings()
         //        EEPROM.write(5, Alarm_1_ON);                       // Saves that the alarm has been cancelled.
       }
     }
-    Serial.print("Alarm 1 Status : ");
+    Serial.print(F("Alarm 1 Status : "));
     Serial.println(Alarm_1_ON);
     delay(1000);
   } //Menu_Mode_Selection
@@ -411,12 +416,12 @@ void Activate_Menu_Option_Settings()
     Menu_Mode_Selection = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Alarm_2 : ");
+    lcd.print(F("Alarm_2 : "));
     lcd.print(Alarm_2_Hour);
     lcd.print(F(":"));
     if (Alarm_2_Minute < 10) lcd.print ("0");
     lcd.print(Alarm_2_Minute);
-    Serial.print("Alarm 2 Status : ");
+    Serial.print(F("Alarm 2 Status : "));
     Serial.println(Alarm_2_ON);
     lcd.setCursor(0, 1);
     if (Alarm_2_ON == 1) lcd.print("Active");
@@ -434,13 +439,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_2 :");
+        lcd.print(F("Alarm_2 :"));
         lcd.print(Alarm_2_Hour);
         lcd.print(F(":"));
         if (Alarm_2_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_2_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("ON  SAVED");
+        lcd.print(F("ON  SAVED"));
         Alarm_2_ON = 1;
         delay(2000);
         lcd.clear();
@@ -463,7 +468,7 @@ void Activate_Menu_Option_Settings()
         if (Alarm_2_Hour > 23) Alarm_2_Hour = 0;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_2 : ");
+        lcd.print(F("Alarm_2 : "));
         lcd.print(Alarm_2_Hour);
         lcd.print(F(":"));
         if (Alarm_2_Minute < 10) lcd.print ("0");
@@ -494,13 +499,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_2 :");
+        lcd.print(F("Alarm_2 :"));
         lcd.print(Alarm_2_Hour);
         lcd.print(F(":"));
         if (Alarm_2_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_2_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("Alarm OFF");
+        lcd.print(F("Alarm OFF"));
         Alarm_2_ON = 0;
         delay(2000);
         lcd.clear();
@@ -510,7 +515,7 @@ void Activate_Menu_Option_Settings()
         //        EEPROM.write(9, Alarm_2_ON);
       }
     }
-    Serial.print("Alarm 2 Status : ");
+    Serial.print(F("Alarm 2 Status : "));
     Serial.println(Alarm_2_ON);
     delay(1000);
   }
@@ -521,12 +526,12 @@ void Activate_Menu_Option_Settings()
     Menu_Mode_Selection = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Alarm_3 : ");
+    lcd.print(F("Alarm_3 : "));
     lcd.print(Alarm_3_Hour);
     lcd.print(F(":"));
     if (Alarm_3_Minute < 10) lcd.print ("0");
     lcd.print(Alarm_3_Minute);
-    Serial.print("Alarm 3 Status : ");
+    Serial.print(F("Alarm 3 Status : "));
     Serial.println(Alarm_3_ON);
     lcd.setCursor(0, 1);
     if (Alarm_3_ON == 1) lcd.print("Active");
@@ -545,13 +550,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_3 :");
+        lcd.print(F("Alarm_3 :"));
         lcd.print(Alarm_3_Hour);
         lcd.print(F(":"));
         if (Alarm_3_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_3_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("ON  SAVED");
+        lcd.print(F("ON  SAVED"));
         Alarm_3_ON = 1;
         delay(2000);
         lcd.clear();
@@ -573,7 +578,7 @@ void Activate_Menu_Option_Settings()
         if (Alarm_3_Hour > 23) Alarm_3_Hour = 0;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_3 : ");
+        lcd.print(F("Alarm_3 : "));
         lcd.print(Alarm_3_Hour);
         lcd.print(F(":"));
         if (Alarm_3_Minute < 10) lcd.print ("0");
@@ -592,7 +597,7 @@ void Activate_Menu_Option_Settings()
 
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_3 : ");
+        lcd.print(F("Alarm_3 : "));
         lcd.print(Alarm_3_Hour);
         lcd.print(F(":"));
         if (Alarm_3_Minute < 10) lcd.print ("0");
@@ -605,13 +610,13 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Alarm_3 :");
+        lcd.print(F("Alarm_3 :"));
         lcd.print(Alarm_3_Hour);
         lcd.print(F(":"));
         if (Alarm_3_Minute < 10) lcd.print ("0");
         lcd.print(Alarm_3_Minute);
         lcd.setCursor(0, 1);
-        lcd.print("Alarm OFF");
+        lcd.print(F("Alarm OFF"));
         Alarm_3_ON = 0;
         delay(2000);
         lcd.clear();
@@ -633,7 +638,7 @@ void Activate_Menu_Option_Settings()
     lcd.clear();
     delay(100);
     lcd.setCursor(0, 0);
-    lcd.print("Wheel Speed LH:");
+    lcd.print(F("Wheel Speed LH:"));
     lcd.setCursor(0, 1);
     lcd.print(PWM_MaxSpeed_LH);
     Serial.print(F("PWM_L:"));
@@ -696,7 +701,7 @@ void Activate_Menu_Option_Settings()
     lcd.clear();
     delay(100);
     lcd.setCursor(0, 0);
-    lcd.print("Wheel Speed RH:");
+    lcd.print(F("Wheel Speed RH:"));
     lcd.setCursor(0, 1);
     lcd.print(PWM_MaxSpeed_RH);
     Serial.print(F("PWM_R:"));
@@ -757,7 +762,7 @@ void Activate_Menu_Option_Settings()
     lcd.clear();
     delay(500);
     lcd.setCursor(0, 0);
-    lcd.print("Blade Speed:");
+    lcd.print(F("Blade Speed:"));
     lcd.setCursor(0, 1);
     lcd.print(PWM_Blade_Speed);
     Serial.print(F("Blade PWM:"));
@@ -774,7 +779,7 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Blade PWM:");
+        lcd.print(F("Blade PWM:"));
         lcd.print(PWM_Blade_Speed);
         lcd.setCursor(0, 1);
         lcd.print("SAVED");
@@ -815,13 +820,13 @@ void Activate_Menu_Option_Settings()
   {
     // Compass setup
     lcd.clear();
-    lcd.print("Compass Setup");
+    lcd.print(F("Compass Setup"));
     delay(1000);
     lcd.clear();
     Menu_Mode_Selection = 0;
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Compass ON/OFF");
+    lcd.print(F("Compass ON/OFF"));
     lcd.setCursor(0, 1);
     lcd.print("Status : ");
     if (Compass_Activate == 1) lcd.print("ON ");
@@ -839,7 +844,7 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Compass Saved");
+        lcd.print(F("Compass Saved"));
         Serial.print(F("Compass:"));
         Serial.println(Compass_Activate);
         delay(2000);
@@ -882,7 +887,7 @@ void Activate_Menu_Option_Settings()
     lcd.clear();
     delay(500);
     lcd.setCursor(0, 0);
-    lcd.print("Tracking PID:");
+    lcd.print(F("Tracking PID:"));
     lcd.setCursor(0, 1);
     lcd.print("P = ");
     lcd.print(PID_P);
@@ -949,12 +954,12 @@ void Activate_Menu_Option_Settings()
     Time t = rtc.time();
     int set_hour = t.hr;
     int set_min = t.min;
-    lcd.print("Time : ");
+    lcd.print(F("Time : "));
     lcd.print(set_hour);
     lcd.print(":");
     if (set_min < 10) lcd.print ("0");
     lcd.print(set_min);
-    Serial.print("Time : ");
+    Serial.print(F("Time : "));
     Serial.print(set_hour);
     Serial.print(":");
     if (set_min < 10) Serial.print ("0");
@@ -972,7 +977,7 @@ void Activate_Menu_Option_Settings()
         Serial.println(F("Settings Saved"));
         Menu_Complete = true;
         lcd.clear();
-        lcd.print("Time : ");
+        lcd.print(F("Time : "));
         lcd.print(set_hour);
         lcd.print(":");
         if (set_min < 10) lcd.print ("0");
@@ -980,7 +985,7 @@ void Activate_Menu_Option_Settings()
         lcd.setCursor(0, 1);
         rtc.writeProtect(false);
         rtc.halt(false);
-        Serial.print("Clock : ");
+        Serial.print(F("Clock : "));
         Serial.print(set_hour);
         Serial.print(":");
         if (set_min < 10) Serial.print("0");
@@ -991,7 +996,7 @@ void Activate_Menu_Option_Settings()
         rtc.writeProtect(true);
         rtc.halt(true);
         rtc.time(t);
-        lcd.print("TIME SAVED");
+        lcd.print(F("TIME SAVED"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -1006,7 +1011,7 @@ void Activate_Menu_Option_Settings()
         }
         if (set_hour > 23) set_hour = 0;
         lcd.clear();
-        lcd.print("Time : ");
+        lcd.print(F("Time : "));
         lcd.print(t.hr);
         lcd.print(":");
         if (set_min < 10) lcd.print ("0");
@@ -1034,15 +1039,15 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Time Set");
+        lcd.print(F("Time Set"));
         lcd.setCursor(0, 1);
-        lcd.print("Cancelled");
+        lcd.print(F("Cancelled"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
       }
     }
-    Serial.print("Time : ");
+    Serial.print(F("Time : "));
     delay(1000);
   }
 
@@ -1050,9 +1055,9 @@ void Activate_Menu_Option_Settings()
   {
     // Enter Settings Here
     lcd.clear();
-    lcd.print("..........");
+    lcd.print(F(".........."));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     Serial.println(F("...................."));
     delay(5000);
     lcd.clear();
@@ -1068,7 +1073,7 @@ void Activate_Menu_Option_Settings()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -1083,9 +1088,9 @@ void Activate_Menu_Option_Settings()
   {
     // EEPORM Clear MENU
     lcd.clear();
-    lcd.print("EEPROM Clear ?");
+    lcd.print(F("EEPROM Clear ?"));
     lcd.setCursor(0, 1);
-    lcd.print("Yes/No");
+    lcd.print(F("Yes/No"));
     Serial.println(F("Clear EEPROM Yes/No   - Press Up for Yes and Down for No.  Start to Confirm"));
     Menu_Mode_Selection = 0;
     Menu_Complete = false;
@@ -1106,14 +1111,14 @@ void Activate_Menu_Option_Settings()
         {
           Clear_EERPOM();
           lcd.clear();
-          lcd.print("EEPROM Cleared");
+          lcd.print(F("EEPROM Cleared"));
           lcd.setCursor(0, 1);
-          lcd.print("Power OFF Mower");
+          lcd.print(F("Power OFF Mower"));
         }
         if (Answer == 0)
         {
           lcd.clear();
-          lcd.print("Cancelled");
+          lcd.print(F("Cancelled"));
           lcd.setCursor(0, 1);
         }
         delay(2000);
@@ -1124,7 +1129,7 @@ void Activate_Menu_Option_Settings()
       {
         Answer = 1;
         lcd.setCursor(0, 1);
-        lcd.print("Yes    ");
+        lcd.print(F("Yes    "));
         Serial.println(F("Clear EEPROM = YES....  Press Start to Confirm"));
         delay(100);
       }
@@ -1132,7 +1137,7 @@ void Activate_Menu_Option_Settings()
       {
         Answer = 0;
         lcd.setCursor(0, 1);
-        lcd.print("No     ");
+        lcd.print(F("No     "));
         Serial.println(F("Clear EEPROM = No....Press Start to Confirm"));
         delay(100);
       }

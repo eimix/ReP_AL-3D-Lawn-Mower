@@ -14,7 +14,7 @@ int RawRainSensor;
 void Setup_Sensors(void)
 {
 #if (DEBUG_LEVEL >= 3)
-  Serial.println("Setup Sensor pins");
+  Serial.println(F("Setup Sensor pins"));
 #endif
 
 #ifdef UseLocalSensors
@@ -28,8 +28,8 @@ void Setup_Sensors(void)
   pinMode(LiftFrontLeftPin, INPUT_PULLUP);            // set pin as input
   pinMode(LiftFrontRightPin, INPUT_PULLUP);           // set pin as input
 
-  LiftFrontLeft  = HIGH;
-  LiftFrontRight = HIGH;
+  LiftFrontLeft  = LiftSensorBAD;
+  LiftFrontRight = LiftSensorBAD;
 #endif
 
 #ifdef UseBumperSensors
@@ -91,11 +91,11 @@ void Action_Sensors(void)
 {
 #ifdef UseLiftSensors
   // If both wheels are lifted - warning state
-  if (LiftFrontLeft == LOW && LiftFrontRight == LOW)
+  if (LiftFrontLeft == LiftSensorBAD && LiftFrontRight == LiftSensorBAD) 
     Mower_SaftyWarning = 1;
 
   // If both wheels touch ground - cancel warning state
-  if (LiftFrontLeft == HIGH && LiftFrontRight == HIGH)
+  if (LiftFrontLeft != LiftSensorBAD && LiftFrontRight != LiftSensorBAD)
     Mower_SaftyWarning = 0;
 #endif
 

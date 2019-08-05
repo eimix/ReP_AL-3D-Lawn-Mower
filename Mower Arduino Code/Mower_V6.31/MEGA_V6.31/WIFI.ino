@@ -86,14 +86,14 @@ void Execute_Blynk_Command_To_Mower()
     if (Mower_Docked == 1)   
     {   
       Serial.println("");
-      Serial.print("WIFI Command: "); 
+      Serial.print(F("WIFI Command: ")); 
       Serial.print(val_WIFI);
       Serial.print(F("Exit Dock| "));
       Serial.println(F("Zone 1"));
       lcd.clear();
-      lcd.print("WIFI Start");
+      lcd.print(F("WIFI Start"));
       lcd.setCursor(0,1);
-      lcd.print("Exit Dock Z1");
+      lcd.print(F("Exit Dock Z1"));
       delay(500);
       lcd.clear();
       Exit_Zone = 1;
@@ -106,32 +106,32 @@ void Execute_Blynk_Command_To_Mower()
   if (val_WIFI == 13) 
   {
    Serial.println("");
-   Serial.print("WIFI Command:"); 
+   Serial.print(F("WIFI Command:")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Quick Start"));
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("WIFI Start");
-   Serial.println("Quick Start");
+   lcd.print(F("WIFI Start"));
+   Serial.println(F("Quick Start"));
    if (Mower_Docked == 0) 
    { 
      Manouver_Start_Mower();
      lcd.clear();    
    }
    else 
-     Serial.println("Mower Docked - Quick Start not possible");   
+     Serial.println(F("Mower Docked - Quick Start not possible"));
   }
 
   // Go To Dock Button in Blynk App
   if (val_WIFI == 12) 
   {
    Serial.println("");
-   Serial.print("WIFI Command: "); 
+   Serial.print(F("WIFI Command: ")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Go To Dock"));
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("WIFI Go To Dock");
+   lcd.print(F("WIFI Go To Dock"));
    Menu_Mode_Selection = 0;                                      // Releases the loop in the membrane button section.
    delay(1000);
    lcd.clear();
@@ -143,7 +143,7 @@ void Execute_Blynk_Command_To_Mower()
   if (val_WIFI == 11)  
   {    
    Serial.println("");
-   Serial.print("WIFI Command: "); 
+   Serial.print(F("WIFI Command: ")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Pause/Stop"));
    Manouver_Park_The_Mower(); 
@@ -154,7 +154,7 @@ void Execute_Blynk_Command_To_Mower()
   if (val_WIFI == 15)  
   {    
    Serial.println("");
-   Serial.print("WIFI Command: "); 
+   Serial.print(F("WIFI Command: ")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Manuel Mode"));
    Manouver_Manuel_Mode(); 
@@ -166,7 +166,7 @@ void Execute_Blynk_Command_To_Mower()
   if (val_WIFI == 16)  
   {    
    Serial.println("");
-   Serial.print("WIFI Command: "); 
+   Serial.print(F("WIFI Command: ")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Automatic Mode"));
    Manouver_Park_The_Mower(); 
@@ -181,7 +181,7 @@ void Execute_Manuel_Blynk_Command_To_Mower()
   if (val_WIFI == 16)  
   {
    Serial.println("");
-   Serial.print("WIFI Command: "); 
+   Serial.print(F("WIFI Command: ")); 
    Serial.print(val_WIFI);
    Serial.println(F("|Automatic Mode"));
    Manouver_Park_The_Mower(); 

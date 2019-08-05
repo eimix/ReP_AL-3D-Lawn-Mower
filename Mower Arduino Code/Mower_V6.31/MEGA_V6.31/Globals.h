@@ -13,11 +13,15 @@ int LowBatteryCount = 0;
 #ifdef UseLiftSensors
 byte LiftFrontLeft;
 byte LiftFrontRight;
+
+#define LiftSensorBAD HIGH //PULLUP HIGH is BAD, LOW is GOOD
 #endif
 
 #ifdef UseBumperSensors
 byte BumperFrontLeft;
 byte BumperFrontRight;
+
+#define BumperSensorHIT HIGH //PULLUP HIGH is HIT, LOW is open path
 #endif
 
 #endif

@@ -41,7 +41,7 @@ void Check_if_Raining_From_Nano ()
   {
     Motor_Action_Stop_Motors();
     Serial.println("");
-    Serial.println("Rain detected");
+    Serial.println(F("Rain detected"));
     Serial.println("");
     Print_Raining_LCD();
     delay(2000);

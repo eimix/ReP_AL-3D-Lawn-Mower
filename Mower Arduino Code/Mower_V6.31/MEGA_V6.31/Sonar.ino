@@ -15,7 +15,7 @@
 void Setup_Sonar()
 {
 #if (DEBUG_LEVEL >= 3)
-  Serial.println("Setup Sonar pins");
+  Serial.println(F("Setup Sonar pins"));
 #endif
 
   pinMode(trigPin1, OUTPUT);
@@ -115,7 +115,7 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
       Sonar_Hit = 1;
       Print_Sonar_Hit();
       Serial.println("");
-      Serial.println("Sonar Hit Detected");
+      Serial.println(F("Sonar Hit Detected"));
     }
   }
 

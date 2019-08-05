@@ -67,7 +67,7 @@ void Compass_Turn_Mower_To_Home_Direction()
   Get_Compass_Reading();
   delay(500);
   lcd.clear();
-  lcd.print("Compass Set");
+  lcd.print(F("Compass Set"));
   Motor_Action_Stop_Motors();
   delay(2000);
   Turn_To_Compass_Heading();
@@ -80,7 +80,7 @@ void Turn_To_Compass_Heading()
   // Once the heading is found. the mower stops and can then activate the find wire function
 
   lcd.setCursor(0, 0);
-  lcd.print("Target: ");
+  lcd.print(F("Target: "));
   lcd.print(Compass_Target);
   lcd.setCursor(0, 1);
   lcd.print("Now:");
@@ -98,7 +98,7 @@ void Turn_To_Compass_Heading()
     Get_Compass_Reading();
     delay(50);
     lcd.setCursor(0, 0);
-    lcd.print("Degrees: ");
+    lcd.print(F("Degrees: "));
     lcd.print(Compass_Heading_Degrees);
     Serial.println("");
     float Compass_Error;
@@ -112,14 +112,14 @@ void Turn_To_Compass_Heading()
     if (Compass_Error < 0)
     {
       SetPins_ToTurnRight();
-      Serial.print("Spin Right");
+      Serial.print(F("Spin Right"));
       Serial.print(F("|"));
       delay(100);
     }
     if (Compass_Error > 0)
     {
       SetPins_ToTurnLeft();
-      Serial.print("Spin Left");
+      Serial.print(F("Spin Left"));
       Serial.print(F("|"));
       delay(100);
     }
@@ -172,7 +172,7 @@ void Calculate_Compass_Wheel_Compensation()
 
   if (Compass_Error < 0)                                               // Steer left
   {
-    Serial.print("Steer_Right|");
+    Serial.print(F("Steer_Right|"));
     PWM_Right = PWM_MaxSpeed_RH + (CPower * Compass_Error);            // Multiply the difference by D to increase the power then subtract from the PWM
     if (PWM_Right < 0)
       PWM_Right = PWM_MaxSpeed_RH - 50;
@@ -180,7 +180,7 @@ void Calculate_Compass_Wheel_Compensation()
   }
   if (Compass_Error >= 0)
   {
-    Serial.print("Steer_Left|");
+    Serial.print(F("Steer_Left|"));
     PWM_Right = PWM_MaxSpeed_RH;                                       // Keep the Left wheel at full power calibrated to go straight
     PWM_Left = PWM_MaxSpeed_LH - (CPower * Compass_Error);             // Multiply the difference by D to increase the power then subtract from the PWM
     if (PWM_Left < 0)

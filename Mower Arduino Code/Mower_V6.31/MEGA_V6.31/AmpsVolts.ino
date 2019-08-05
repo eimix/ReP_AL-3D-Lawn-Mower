@@ -24,7 +24,7 @@ void Process_Volt_Information()
     Serial.print("|");
     if (LowBatteryCount > MaxLowBatteryCount)
     {
-      Serial.println("Low Battery Detected");
+      Serial.println(F("Low Battery Detected"));
       if (Use_Charging_Station == 1) Manouver_Go_To_Charging_Station();                       // Stops the mowing and sends the mower back to the charging station via the permieter wire
       if (Use_Charging_Station == 0) Manouver_Park_The_Mower_Low_Batt();                      // Parks the mower with a low battery warning
     }
@@ -48,7 +48,7 @@ void Check_if_Charging()
   if (ChargeCurrent > 0.4)
     Mower_Charging = 1;
 
-  Serial.print("Charging:");
+  Serial.print(F("Charging:"));
   Serial.print(Mower_Charging);
   Serial.print("|");
   Print_Charging_LCD();
@@ -64,9 +64,9 @@ void Check_if_Docked()
     Serial.println(F("Mower Docked"));
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Docked in");
+    lcd.print(F("Docked in"));
     lcd.setCursor(0, 1);
-    lcd.print("Charging Station");                                // Prints info to LCD display
+    lcd.print(F("Charging Station"));                                // Prints info to LCD display
     delay(2000);
     Mower_Docked = 1;
     Manouver_Dock_The_Mower();                                    // Shuts down the Mower ready for charging and mowing again.

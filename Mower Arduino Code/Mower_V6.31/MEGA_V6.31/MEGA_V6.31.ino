@@ -337,16 +337,16 @@ void setup()
 
   Serial.println(" ");
   Serial.println(" ");
-  Serial.print("ReP_AL Robot :");
+  Serial.print(F("ReP_AL Robot :"));
   Serial.println(Version);
-  Serial.println("===================");
+  Serial.println(F("==================="));
   Serial.println("");
-  Serial.println("Starting Mower Setup");
-  Serial.println("===================");
+  Serial.println(F("Starting Mower Setup"));
+  Serial.println(F("==================="));
   Load_EEPROM_Saved_Data();
   if (Set_Time == 1)
   {
-    Serial.print("Setting Time");
+    Serial.print(F("Setting Time"));
     Set_Time_On_RTC();
   }
   DisplayTime();

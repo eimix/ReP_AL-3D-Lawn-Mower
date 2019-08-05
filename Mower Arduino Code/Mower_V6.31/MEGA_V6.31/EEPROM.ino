@@ -4,6 +4,8 @@
 #define EEPROMStructureVersion 2
 
 //TODO:
+
+//DONE
 //1. Write structure version to EEPROM and ignore all config if older version is found
 //---------------------------------------------------------------------------------------
 
@@ -55,7 +57,7 @@ void Load_EEPROM_Saved_Data()
     Alarm_1_Hour   = EEPROM.read(3);
     Alarm_1_Minute = EEPROM.read(4);
     Alarm_1_ON     = EEPROM.read(5);
-    Serial.print("Alarm 1 time from EEPROM ");
+    Serial.print(F("Alarm 1 time from EEPROM "));
     Serial.print(Alarm_1_Hour);
     Serial.print(":");
     if (Alarm_1_Minute < 10) Serial.print("0");
@@ -68,7 +70,7 @@ void Load_EEPROM_Saved_Data()
     Alarm_2_Hour   = EEPROM.read(7);
     Alarm_2_Minute = EEPROM.read(8);
     Alarm_2_ON     = EEPROM.read(9);
-    Serial.print("Alarm 2 time from EEPROM ");
+    Serial.print(F("Alarm 2 time from EEPROM "));
     Serial.print(Alarm_2_Hour);
     Serial.print(":");
     if (Alarm_2_Minute < 10) Serial.print("0");
@@ -81,7 +83,7 @@ void Load_EEPROM_Saved_Data()
     Alarm_3_Hour   = EEPROM.read(11);
     Alarm_3_Minute = EEPROM.read(12);
     Alarm_3_ON     = EEPROM.read(13);
-    Serial.print("Alarm 3 time from EEPROM ");
+    Serial.print(F("Alarm 3 time from EEPROM "));
     Serial.print(Alarm_3_Hour);
     Serial.print(":");
     if (Alarm_3_Minute < 10) Serial.print("0");
@@ -92,7 +94,7 @@ void Load_EEPROM_Saved_Data()
   if (PWM_LEFT_EEPROM == 1)
   {
     PWM_MaxSpeed_LH = EEPROM.read(15);
-    Serial.print("PWM Wheel Left value from EEPROM : ");
+    Serial.print(F("PWM Wheel Left value from EEPROM : "));
     Serial.println(PWM_MaxSpeed_LH);
   }
 
@@ -100,7 +102,7 @@ void Load_EEPROM_Saved_Data()
   if (PWM_RIGHT_EEPROM == 1)
   {
     PWM_MaxSpeed_RH = EEPROM.read(17);
-    Serial.print("PWM Wheel Right value from EEPROM : ");
+    Serial.print(F("PWM Wheel Right value from EEPROM : "));
     Serial.println(PWM_MaxSpeed_RH);
   }
 
@@ -108,7 +110,7 @@ void Load_EEPROM_Saved_Data()
   if (PWM_BLADE_EEPROM == 1)
   {
     PWM_Blade_Speed = EEPROM.read(19);
-    Serial.print("PWM Blade value from EEPROM : ");
+    Serial.print(F("PWM Blade value from EEPROM : "));
     Serial.println(PWM_Blade_Speed);
   }
 
@@ -116,7 +118,7 @@ void Load_EEPROM_Saved_Data()
   if (COMPASS_EEPROM == 1)
   {
     Compass_Activate = EEPROM.read(21);
-    Serial.print("Compass Settings from EEPROM : ");
+    Serial.print(F("Compass Settings from EEPROM : "));
     if (Compass_Activate == 0) Serial.println("OFF");
     if (Compass_Activate == 1) Serial.println("ON");
   }
@@ -127,7 +129,7 @@ void Load_EEPROM_Saved_Data()
   {
     PID_P = EEPROM.read(23);
     PID_P = PID_P / 100;
-    Serial.print("Traking PID P Setting from EEPROM : ");
+    Serial.print(F("Traking PID P Setting from EEPROM : "));
     Serial.println(PID_P);
   }
   delay(500);
@@ -145,7 +147,7 @@ void Clear_EERPOM()
   EEPROM.write(18, 0);    // Clear PWM Blade
   EEPROM.write(20, 0);    // Clear Compass
   EEPROM.write(22, 0);    // Clear PID
-  Serial.println("All EEPROM Settings Cleared");
+  Serial.println(F("All EEPROM Settings Cleared"));
   delay(1000);
 }
 //---------------------------------------------------------------------------------------

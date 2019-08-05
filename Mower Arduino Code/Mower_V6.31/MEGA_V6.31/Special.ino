@@ -10,7 +10,7 @@ void Special_Cut_Under_Trampoline_Function()
 // This poart of the code should eb modified to fit your garden needs
 void Special_Move_Into_Garden_Zone_X()
 {
-  Serial.println("start mower code here");
+  Serial.println(F("start mower code here"));
   Motor_Action_Stop_Motors();                                     // Stop the wheel motors
   SetPins_ToTurnLeft();                                           // Turn left
   Motor_Action_Go_Full_Speed();
@@ -23,14 +23,14 @@ void Special_Move_Into_Garden_Zone_X()
 void Special_Exit_From_Docking_Station()
 {
   lcd.clear();
-  lcd.print("Exiting Garage");
+  lcd.print(F("Exiting Garage"));
   delay(2000);
   SetPins_ToGoBackwards();                                        // Prepare motors pins to go Backwards
   Motor_Action_GoFullSpeed_Out_Garage();                          // Turn the wheels
-  Serial.print("Left Wheel PWM:");
+  Serial.print(F("Left Wheel PWM:"));
   Serial.print(PWM_MaxSpeed_LH);
   Serial.print("|");
-  Serial.print("Right Wheel PWM:");
+  Serial.print(F("Right Wheel PWM:"));
   Serial.println(PWM_MaxSpeed_RH);
   delay (4000);                                                   // Backwards time
   Motor_Action_Stop_Motors;                                       // Stop
@@ -48,7 +48,7 @@ void Special_Exit_From_Docking_Station()
   SetPins_ToGoForwards();                                         // Set to go wheel motor pins to go forwards
   Motor_Action_Stop_Motors();                                     // Stop / Park the mower here
   lcd.clear();                                                    // Clears the LCD display
-  lcd.print("Garage Clear");                                      // Prints to the LCD screen
+  lcd.print(F("Garage Clear"));                                      // Prints to the LCD screen
   delay(500);
   lcd.clear();
 }
@@ -58,7 +58,7 @@ void Specials_Find_Wire_Track()
 {
   Serial.println(F("Lost Mower - find wire Track"));
   lcd.clear();
-  lcd.print("Finding Wire...  ");
+  lcd.print(F("Finding Wire...  "));
   Motor_Action_Stop_Spin_Blades();
   delay(5);
   Abort_Wire_Find = 0;
@@ -89,9 +89,9 @@ void Specials_Find_Wire_Track()
       SetPins_ToGoBackwards();                                                              // Set the mower to back up
       delay(100);
       lcd.clear();
-      lcd.print("Backwards Try...  ");
+      lcd.print(F("Backwards Try...  "));
       lcd.setCursor(0, 1);
-      lcd.print("Finding Wire  ");
+      lcd.print(F("Finding Wire  "));
       delay(100);
       while (( inside != true) && (Abort_Wire_Find == 0) )                                 // While the mower is still outside the fence run this code
       {
@@ -119,9 +119,9 @@ void Specials_Find_Wire_Track()
     SetPins_ToGoForwards();                                                             // Set the motors to move the mower forwards
     delay(100);
     lcd.clear();
-    lcd.print("Forward Try...  ");
+    lcd.print(F("Forward Try...  "));
     lcd.setCursor(0, 1);
-    lcd.print("Finding Wire  ");
+    lcd.print(F("Finding Wire  "));
     delay(100);
     int cycle = 0;                                                                      // resets the cycles
     while ( inside != false)                                // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
@@ -135,7 +135,7 @@ void Specials_Find_Wire_Track()
     if (cycle > Max_Cycle_Wire_Find)                                                                // Track forwards for 500 cycles
     {
       No_Wire_Found = 1;                                                              // if mower is still tracking after 500 cycles then cancel the find.
-      Serial.println("Max Forward Cycles reached");
+      Serial.println(F("Max Forward Cycles reached"));
     }
   }
   Motor_Action_Stop_Motors();

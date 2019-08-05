@@ -2,16 +2,16 @@
 
 void Print_Mower_Status()
 {
-  //Serial.print("Mower Stat....");
+  //Serial.print(F("Mower Stat...."));
 #if (DEBUG_LEVEL >= 3)
-  if (Mower_Docked == 1)          Serial.print("Docked:1|");
-  if (Mower_Parked == 1)          Serial.print("Parked:1|");
-  if (Mower_Running == 1)         Serial.print("Running:1|");
-  if (Manuel_Mode == 1)           Serial.print("Manuel Mode:1|");
-  if (Mower_Parked_Low_Batt == 1) Serial.print("Park_Low_Batt:1|");
-  if (Mower_Error == 1)           Serial.print("Mower Error:1|");
-  if (Mower_SaftyWarning == 1)    Serial.print("Mower Warning:1|");
-  if (Mower_Charging == 1)        Serial.print("Charging:1|");
+  if (Mower_Docked == 1)          Serial.print(F("Docked:1|"));
+  if (Mower_Parked == 1)          Serial.print(F("Parked:1|"));
+  if (Mower_Running == 1)         Serial.print(F("Running:1|"));
+  if (Manuel_Mode == 1)           Serial.print(F("Manuel Mode:1|"));
+  if (Mower_Parked_Low_Batt == 1) Serial.print(F("Park_Low_Batt:1|"));
+  if (Mower_Error == 1)           Serial.print(F("Mower Error:1|"));
+  if (Mower_SaftyWarning == 1)    Serial.print(F("Mower Warning:1|"));
+  if (Mower_Charging == 1)        Serial.print(F("Charging:1|"));
 #endif
 }
 //---------------------------------------------------------------------------------------
@@ -43,10 +43,10 @@ void Setup_Compass()
     /*Setup Compass
     *************************************************************************/
     lcd.clear();
-    lcd.print("Compass  ");
+    lcd.print(F("Compass  "));
     lcd.setCursor(0, 1);
-    lcd.print("Setup");
-    Serial.println("Setup Compass");
+    lcd.print(F("Setup"));
+    Serial.println(F("Setup Compass"));
 
     while (!compass.begin())
     {
@@ -71,9 +71,9 @@ void Setup_Compass()
       compass.setSamples(QMC5883_SAMPLES_8);
     }
     lcd.clear();
-    lcd.print("Compass Setup ");
+    lcd.print(F("Compass Setup "));
     lcd.setCursor(0, 1);
-    lcd.print("Done!             ");
+    lcd.print(F("Done!             "));
     delay(500);
     lcd.clear();
   }
@@ -85,7 +85,7 @@ void Setup_Compass()
 
 void Setup_Relays()
 {
-  Serial.println("Setup Relays");
+  Serial.println(F("Setup Relays"));
   pinMode(Relay_Motors, OUTPUT);
   delay(5);
   Turn_Off_Relay();
@@ -95,7 +95,7 @@ void Setup_Relays()
 
 void Setup_Motor_Pins()
 {
-  Serial.println("Setup Motor Pins");
+  Serial.println(F("Setup Motor Pins"));
 
 #ifdef MowMotorDriver_BTS7960
   pinMode(L_EN, OUTPUT);
@@ -111,21 +111,21 @@ void Setup_Motor_Pins()
 
 void  Turn_On_Relay()
 {
-  Serial.print("Relay:ON|");
+  Serial.print(F("Relay:ON|"));
   digitalWrite(Relay_Motors, LOW);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 
 void  Turn_Off_Relay()
 {
-  Serial.print("Relay:Off|");
+  Serial.print(F("Relay:Off|"));
   digitalWrite(Relay_Motors, HIGH);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 
 void Setup_Membrane_Buttons()
 {
-  Serial.println("Setup Membrane Keys");
+  Serial.println(F("Setup Membrane Keys"));
   pinMode(StartKeyPin, INPUT_PULLUP);           // set pin as input
   pinMode(PlusKeyPin, INPUT_PULLUP);            // set pin as input
   pinMode(MinusKeyPin, INPUT_PULLUP);           // set pin as input
@@ -135,7 +135,7 @@ void Setup_Membrane_Buttons()
 
 void Setup_ADCMan()
 {
-  Serial.println("ADCMAN");
+  Serial.println(F("ADCMAN"));
   ADCMan.init();
   perimeter.setPins(pinPerimeterLeft, pinPerimeterRight);
   perimeter.useDifferentialPerimeterSignal = true;

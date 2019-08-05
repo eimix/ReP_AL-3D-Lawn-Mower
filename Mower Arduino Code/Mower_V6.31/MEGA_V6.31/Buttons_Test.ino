@@ -6,18 +6,18 @@
 // Test to displyed on the LCD screen when using the membrane key menus
 void Print_LCD_Menu_Tests(byte LCD_Menu_Tests)
 {
-  if (LCD_Menu_Tests == 1) lcd.print("Wire Test");
-  if (LCD_Menu_Tests == 2) lcd.print("Relay Test");
-  if (LCD_Menu_Tests == 3) lcd.print("Wheel Test");
-  if (LCD_Menu_Tests == 4) lcd.print("Blade Test");
-  if (LCD_Menu_Tests == 5) lcd.print("Sonar Test");
-  if (LCD_Menu_Tests == 6) lcd.print("Turn Test");
-  if (LCD_Menu_Tests == 7) lcd.print("Volt Amp Test");
-  if (LCD_Menu_Tests == 8) lcd.print("Compass Test");
-  if (LCD_Menu_Tests == 9) lcd.print("Spare 9");
-  if (LCD_Menu_Tests == 10) lcd.print("Spare 10");
-  if (LCD_Menu_Tests == 11) lcd.print("Spare 11");
-  if (LCD_Menu_Tests == 12) lcd.print("");   // Leave Blank
+  if (LCD_Menu_Tests == 1) lcd.print(F("Wire Test"));
+  if (LCD_Menu_Tests == 2) lcd.print(F("Relay Test"));
+  if (LCD_Menu_Tests == 3) lcd.print(F("Wheel Test"));
+  if (LCD_Menu_Tests == 4) lcd.print(F("Blade Test"));
+  if (LCD_Menu_Tests == 5) lcd.print(F("Sonar Test"));
+  if (LCD_Menu_Tests == 6) lcd.print(F("Turn Test"));
+  if (LCD_Menu_Tests == 7) lcd.print(F("Volt Amp Test"));
+  if (LCD_Menu_Tests == 8) lcd.print(F("Compass Test"));
+  if (LCD_Menu_Tests == 9) lcd.print(F("Spare 9"));
+  if (LCD_Menu_Tests == 10) lcd.print(F("Spare 10"));
+  if (LCD_Menu_Tests == 11) lcd.print(F("Spare 11"));
+  if (LCD_Menu_Tests >= 12) lcd.print("");   // Leave Blank
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ void Print_Membrane_Switch_Input_Tests()
       Menu_Complete = true;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Menu Cancelled");
+      lcd.print(F("Menu Cancelled"));
       delay(1000);
       lcd.clear();
       Menu_Mode_Selection = 0;
@@ -288,9 +288,9 @@ void Activate_Menu_Option_Testing()
   {
     // Perimeter Wire Test
     lcd.clear();
-    lcd.print("Wire Test");
+    lcd.print(F("Wire Test"));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     Serial.println(F("Perimeter Wire Test Started"));
     delay(5000);
     lcd.clear();
@@ -307,7 +307,7 @@ void Activate_Menu_Option_Testing()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -320,9 +320,9 @@ void Activate_Menu_Option_Testing()
     // Relay Test
     Menu_Mode_Selection = 0;
     lcd.clear();
-    lcd.print("Relay Test");
+    lcd.print(F("Relay Test"));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     delay(1000);
     lcd.clear();
     Menu_Mode_Selection = 0;
@@ -338,7 +338,7 @@ void Activate_Menu_Option_Testing()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -351,9 +351,9 @@ void Activate_Menu_Option_Testing()
     // Mower Motor Test
     Menu_Mode_Selection = 0;
     lcd.clear();
-    lcd.print("Wheel Motor Test");
+    lcd.print(F("Wheel Motor Test"));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     delay(1000);
     lcd.clear();
     Menu_Mode_Selection = 0;
@@ -367,9 +367,9 @@ void Activate_Menu_Option_Testing()
     // Blade Motor Test
     Menu_Mode_Selection = 0;
     lcd.clear();
-    lcd.print("Blade Motor Test");
+    lcd.print(F("Blade Motor Test"));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     delay(1000);
     lcd.clear();
     Menu_Mode_Selection = 0;
@@ -381,9 +381,9 @@ void Activate_Menu_Option_Testing()
   {
     Menu_Mode_Selection = 0;
     lcd.clear();
-    lcd.print("Sonar Test");
+    lcd.print(F("Sonar Test"));
     lcd.setCursor(0, 1);
-    lcd.print("Activated");
+    lcd.print(F("Activated"));
     delay(1000);
     lcd.clear();
     Menu_Complete = false;
@@ -397,7 +397,7 @@ void Activate_Menu_Option_Testing()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -408,7 +408,7 @@ void Activate_Menu_Option_Testing()
   if (Menu_Mode_Selection == 6)
   {
     lcd.clear();
-    lcd.print("Pattern Mow");
+    lcd.print(F("Pattern Mow"));
     Serial.println(F("Slot 6 Selected"));
     Menu_Mode_Selection = 0;
     delay(3000);
@@ -419,7 +419,7 @@ void Activate_Menu_Option_Testing()
   if (Menu_Mode_Selection == 7)
   {
     lcd.clear();
-    lcd.print("Volt Amps Test");
+    lcd.print(F("Volt Amps Test"));
     Serial.println(F("Volts and Amps Test"));
     Menu_Mode_Selection = 0;
     delay(1000);
@@ -449,7 +449,7 @@ void Activate_Menu_Option_Testing()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -460,15 +460,15 @@ void Activate_Menu_Option_Testing()
   if (Menu_Mode_Selection == 8)
   {
     lcd.clear();
-    lcd.print("Compass Test");
+    lcd.print(F("Compass Test"));
     Serial.println(F("Compass Test Selected"));
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Heading:");
+    lcd.print(F("Heading:"));
     lcd.setCursor(0, 1);
-    lcd.print("Degrees:");
+    lcd.print(F("Degrees:"));
     Menu_Complete = false;
     while (Menu_Complete == false)
     {
@@ -490,7 +490,7 @@ void Activate_Menu_Option_Testing()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Test Stopped");
+        lcd.print(F("Test Stopped"));
         delay(2000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -501,7 +501,7 @@ void Activate_Menu_Option_Testing()
   if (Menu_Mode_Selection == 9)
   {
     lcd.clear();
-    lcd.print("Spare 9");
+    lcd.print(F("Spare 9"));
     Serial.println(F("Slot 9 Selected"));
     Menu_Mode_Selection = 0;
     delay(3000);
@@ -511,7 +511,7 @@ void Activate_Menu_Option_Testing()
   if (Menu_Mode_Selection == 10)
   {
     lcd.clear();
-    lcd.print("Spare 10");
+    lcd.print(F("Spare 10"));
     Serial.println(F("Slot 10 Selected"));
     Menu_Mode_Selection = 0;
     delay(3000);

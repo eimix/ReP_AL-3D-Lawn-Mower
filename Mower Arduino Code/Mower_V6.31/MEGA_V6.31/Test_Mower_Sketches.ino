@@ -23,17 +23,17 @@ void Test_Mower_Check_Wire()
   }
 
   /* Prints Values to the Serial Monitor of mag, smag and signal quality.  */
-  Serial.print("Inside (1) or Outside (0):  ");
+  Serial.print(F("Inside (1) or Outside (0):  "));
   Serial.print((perimeter.isInside(0)));
-  Serial.print("     MAG: ");
+  Serial.print(F("     MAG: "));
   Serial.print((int)perimeter.getMagnitude(0));
-  Serial.print("    smag: ");
+  Serial.print(F("    smag: "));
   Serial.print((int)perimeter.getSmoothMagnitude(0));
-  Serial.print("     qaulity: ");
+  Serial.print(F("     qaulity: "));
   Serial.println((perimeter.getFilterQuality(0)));
 
   lcd.setCursor(0,0);
-  lcd.print("IN/Out:");
+  lcd.print(F("IN/Out:"));
   lcd.setCursor(8,0);
   lcd.print(perimeter.isInside(0));
   lcd.setCursor(0,1);
@@ -46,13 +46,13 @@ void Test_Mower_Check_Wire()
 void Test_Relay() 
 {
   digitalWrite(Relay_Motors, HIGH);
-  Serial.println("Relay OFF");
-  lcd.print("Relay OFF");
+  Serial.println(F("Relay OFF"));
+  lcd.print(F("Relay OFF"));
   delay(1000);
   lcd.clear();
   digitalWrite(Relay_Motors, LOW);
-  Serial.println("Relay ON");
-  lcd.print("Relay ON");
+  Serial.println(F("Relay ON"));
+  lcd.print(F("Relay ON"));
   delay(1000);
   lcd.clear();
 }
@@ -66,19 +66,19 @@ void Test_Wheel_Motors()
   {
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("Drive Wheel");
+    lcd.print(F("Drive Wheel"));
     lcd.setCursor(1,0);
     lcd.print("Test");
     delay(1000);
     lcd.clear();
   
-    lcd.print("Remove ALL");
+    lcd.print(F("Remove ALL"));
     lcd.setCursor(0,1);
-    lcd.print("Blades!!!");
+    lcd.print(F("Blades!!!"));
     delay(1000);
     lcd.clear();
   
-    lcd.print("<-- Turn Left");
+    lcd.print(F("<-- Turn Left"));
     delay(500);
     SetPins_ToTurnLeft();
     Motor_Action_Go_Full_Speed();
@@ -87,7 +87,7 @@ void Test_Wheel_Motors()
     delay(1000);
     lcd.clear();
   
-    lcd.print("Turn Right -->");
+    lcd.print(F("Turn Right -->"));
     delay(500);
     SetPins_ToTurnRight();
     Motor_Action_Go_Full_Speed();
@@ -96,7 +96,7 @@ void Test_Wheel_Motors()
     delay(1000);
     lcd.clear();
 
-    lcd.print("Forwards");
+    lcd.print(F("Forwards"));
     delay(500);
     SetPins_ToGoForwards();
     Motor_Action_Go_Full_Speed();
@@ -105,7 +105,7 @@ void Test_Wheel_Motors()
     delay(1000);
     lcd.clear();
   
-    lcd.print("Backwards");
+    lcd.print(F("Backwards"));
     delay(500);
     SetPins_ToGoBackwards();   
     Motor_Action_Go_Full_Speed();
@@ -226,7 +226,7 @@ void Test_Wheel_Motors()
     delay(1000);
   
     lcd.clear();
-    lcd.print("Test Finished");
+    lcd.print(F("Test Finished"));
     delay(1000);
     lcd.clear();
   
@@ -242,20 +242,20 @@ void Test_Mower_Blade_Motor()
   // Spin the blade motor for 7 seconds
   digitalWrite(Relay_Motors, LOW);
   delay(200);
-  lcd.print("Blade Motor");
+  lcd.print(F("Blade Motor"));
   lcd.setCursor(0,1);
-  lcd.print("Test..!!");
+  lcd.print(F("Test..!!"));
   delay(1000);
   lcd.clear();
-  lcd.print("Remove ALL");
+  lcd.print(F("Remove ALL"));
   lcd.setCursor(0,1);
-  lcd.print("Blades!!!");
+  lcd.print(F("Blades!!!"));
   delay(4000);
   lcd.clear();
   delay(2000);
-  lcd.print("BLADE MOTOR");
+  lcd.print(F("BLADE MOTOR"));
   delay(500);
-  Serial.println("Blades ON");
+  Serial.println(F("Blades ON"));
   lcd.setCursor(0,1);
   lcd.print("ON ");
   lcd.setCursor(6,1);
@@ -266,10 +266,10 @@ void Test_Mower_Blade_Motor()
 
   // Stop the blade motor spinning for 2 seconds
   lcd.clear();
-  Serial.println("Blades OFF");
-  lcd.print("BLADE MOTOR");
+  Serial.println(F("Blades OFF"));
+  lcd.print(F("BLADE MOTOR"));
   lcd.setCursor(0,1);
-  lcd.print("OFF..  ");
+  lcd.print(F("OFF..  "));
   Motor_Action_Stop_Spin_Blades();
   delay(2000);
   lcd.clear();
@@ -328,10 +328,10 @@ int PingSonarY(int trigPinY, int echoPinY, int sonarY, int LCDRow, int LCDColumn
   if (distanceY == 0) 
   {
     distanceY = 999;
-    Serial.print("SONAR ");
+    Serial.print(F("SONAR "));
     Serial.print(sonarY);
     Serial.print(": ");
-    Serial.println("NO PING ERROR REMOVED");
+    Serial.println(F("NO PING ERROR REMOVED"));
   }
 
   /*Prints the Sonar letter and distance measured on the serial Monitor*/

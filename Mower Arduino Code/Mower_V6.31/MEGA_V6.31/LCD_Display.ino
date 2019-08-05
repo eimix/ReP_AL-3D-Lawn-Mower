@@ -3,19 +3,19 @@
 
 void Setup_Run_LCD_Intro ()
 {
-  Serial.println("Setup LCD");
+  Serial.println(F("Setup LCD"));
   lcd.begin(16, 2);
   lcd.clear();
-  lcd.print("ReP_AL Robot");
+  lcd.print(F("ReP_AL Robot"));
   lcd.setCursor(0, 1);
   lcd.print(Version);
 #ifdef UseWiFi
   lcd.setCursor(7, 1);
-  lcd.print("WIFI ON");
+  lcd.print(F("WIFI ON"));
 #endif
   delay(1000);
   lcd.clear();
-  Serial.println("LCD Setup OK");
+  Serial.println(F("LCD Setup OK"));
 }
 //---------------------------------------------------------------------------------------
 
@@ -23,13 +23,13 @@ void Print_Mower_Warning()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Mower Warning");
+  lcd.print(F("Mower Warning"));
 
 #ifdef UseLiftSensors
-  if (LiftFrontLeft == LOW && LiftFrontRight == LOW)
+  if (LiftFrontLeft == LiftSensorBAD && LiftFrontRight == LiftSensorBAD)
   {
     lcd.setCursor(0, 1);
-    lcd.print("Mower lifted");
+    lcd.print(F("Mower lifted"));
   }
 #endif
 }
@@ -39,11 +39,11 @@ void Print_Mower_Error()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Mower Error");
+  lcd.print(F("Mower Error"));
   if (Wire_Off > 5)
   {
     lcd.setCursor(0, 1);
-    lcd.print("Wire Off");
+    lcd.print(F("Wire Off"));
   }
 }
 //---------------------------------------------------------------------------------------
@@ -61,9 +61,9 @@ void Print_Charging_LCD()
 {
   lcd.setCursor(0, 0);
   if (Mower_Charging == 1)
-    lcd.print("Charging");
+    lcd.print(F("Charging"));
   if ((Rain_Detected == 0) && (Mower_Charging != 1))
-    lcd.print("        ");
+    lcd.print(F("        "));
 }
 //---------------------------------------------------------------------------------------
 
@@ -81,14 +81,14 @@ void Print_Raining_LCD()
 void Print_Recharge_LCD()
 {
   lcd.setCursor(0, 1);
-  lcd.print("Recharge Batt");
+  lcd.print(F("Recharge Batt"));
 }
 //---------------------------------------------------------------------------------------
 
 void Print_LCD_Wire()
 {
   lcd.setCursor(0, 1);
-  lcd.print("WIRE Detect ");
+  lcd.print(F("WIRE Detect "));
 }
 //---------------------------------------------------------------------------------------
 
@@ -97,7 +97,7 @@ void Print_LCD_Mowing()
   if (Alarm_Timed_Mow_ON == 0)
   {
     lcd.setCursor(0, 1);
-    lcd.print("Mowing..    ");
+    lcd.print(F("Mowing..    "));
   }
   if (Alarm_Timed_Mow_ON == 1)
   {
@@ -117,14 +117,14 @@ void Print_LCD_Compass_Mowing()
   if (Compass_Heading_Locked == 1)
   {
     lcd.setCursor(0, 1);
-    if (PWM_Right > PWM_Left)  lcd.print("<H-Lock Mow ");
-    if (PWM_Left > PWM_Right)  lcd.print(" H-Lock Mow>");
-    if (PWM_Left == PWM_Right) lcd.print("|H-Lock Mow|");
+    if (PWM_Right > PWM_Left)  lcd.print(F("<H-Lock Mow "));
+    if (PWM_Left > PWM_Right)  lcd.print(F(" H-Lock Mow>"));
+    if (PWM_Left == PWM_Right) lcd.print(F("|H-Lock Mow|"));
   }
   if (Compass_Heading_Locked == 0)
   {
     lcd.setCursor(0, 1);
-    lcd.print("            ");
+    lcd.print(F("            "));
   }
 }
 //---------------------------------------------------------------------------------------
@@ -155,13 +155,13 @@ void Print_LCD_NO_Wire()
   if ((Mower_Docked == 1) || (Mower_Parked == 1) )
   {
     lcd.setCursor(7, 1);
-    lcd.print(":WIRE OFF");
+    lcd.print(F(":WIRE OFF"));
     Wire_ON_Printed = 0;
   }
   if ((Mower_Docked == 0) && (Mower_Parked == 0) )
   {
     lcd.setCursor(0, 1);
-    lcd.print(":WIRE OFF        ");
+    lcd.print(F(":WIRE OFF        "));
     Wire_ON_Printed = 0;
   }
 }
@@ -172,13 +172,13 @@ void Print_LCD_Wire_ON()
   if ((Mower_Docked == 1) || (Mower_Parked == 1)  && (Wire_ON_Printed = 0))
   {
     lcd.setCursor(7, 1);
-    lcd.print(":               ");
+    lcd.print(F(":               "));
     Wire_ON_Printed = 1;
   }
   if ((Mower_Docked == 0) && (Mower_Parked == 0) && (Wire_ON_Printed = 0))
   {
     lcd.setCursor(0, 1);
-    lcd.print(":               ");
+    lcd.print(F(":               "));
     Wire_ON_Printed = 1;
   }
 }
@@ -187,7 +187,7 @@ void Print_LCD_Wire_ON()
 void Print_Sonar_Hit()
 {
   lcd.setCursor(0, 1);
-  lcd.print("Sonar Object ");
+  lcd.print(F("Sonar Object "));
 }
 //---------------------------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ void Print_LCD_Compass_Home()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Compass Home");
+  lcd.print(F("Compass Home"));
   if (Rain_Detected == 1)
   {
     lcd.setCursor(0, 1);
@@ -207,7 +207,7 @@ void Print_LCD_Compass_Home()
 void Print_LCD_Heading_for_Home()
 {
   lcd.setCursor(0, 1);
-  lcd.print("Target:");
+  lcd.print(F("Target:"));
   lcd.print(((Heading_Lower_Limit_Compass - Heading_Lower_Limit_Compass) / 2 ) + Heading_Lower_Limit_Compass);
 }
 //---------------------------------------------------------------------------------------

@@ -11,28 +11,28 @@
 // Reads each of the membrane keys and detects if a key is pressed.
 void Read_Membrane_Keys()
 {
-  Start_Key_X   = digitalRead(StartKeyPin);
-  Plus_Key_X    = digitalRead(PlusKeyPin);
-  Minus_Key_X   = digitalRead(MinusKeyPin);
-  Stop_Key_X    = digitalRead(StopKeyPin);
+  Start_Key_X = digitalRead(StartKeyPin);
+  Plus_Key_X  = digitalRead(PlusKeyPin);
+  Minus_Key_X = digitalRead(MinusKeyPin);
+  Stop_Key_X  = digitalRead(StopKeyPin);
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
 // Test to displyed on the LCD screen when using the membrane key menus
 void Print_LCD_Menu_Docked(byte LCD_Menu_Docked)
 {
-  if (LCD_Menu_Docked == 1) lcd.print("Exit Dock Z-1");
-  if (LCD_Menu_Docked == 2) lcd.print("Exit Dock Z-2");
-  if (LCD_Menu_Docked == 3) lcd.print("Quick Start");
-  if (LCD_Menu_Docked == 4) lcd.print("Trampoline Cut");
-  if (LCD_Menu_Docked == 5) lcd.print("Mow the Line");
-  if (LCD_Menu_Docked == 6) lcd.print("Test Menu");
-  if (LCD_Menu_Docked == 7) lcd.print("Setup Mower");
-  if (LCD_Menu_Docked == 8) lcd.print("-- Spare 8 --");
-  if (LCD_Menu_Docked == 9) lcd.print("-- Spare 9 --");
-  if (LCD_Menu_Docked == 10) lcd.print("-- Spare 10 --");
-  if (LCD_Menu_Docked == 11) lcd.print("-- Spare 11 --");
-  if (LCD_Menu_Docked == 12) lcd.print("-- Spare 12 --");
+  if (LCD_Menu_Docked == 1) lcd.print(F("Exit Dock Z-1"));
+  if (LCD_Menu_Docked == 2) lcd.print(F("Exit Dock Z-2"));
+  if (LCD_Menu_Docked == 3) lcd.print(F("Quick Start"));
+  if (LCD_Menu_Docked == 4) lcd.print(F("Trampoline Cut"));
+  if (LCD_Menu_Docked == 5) lcd.print(F("Mow the Line"));
+  if (LCD_Menu_Docked == 6) lcd.print(F("Test Menu"));
+  if (LCD_Menu_Docked == 7) lcd.print(F("Setup Mower"));
+  if (LCD_Menu_Docked == 8) lcd.print(F("-- Spare 8 --"));
+  if (LCD_Menu_Docked == 9) lcd.print(F("-- Spare 9 --"));
+  if (LCD_Menu_Docked == 10) lcd.print(F("-- Spare 10 --"));
+  if (LCD_Menu_Docked == 11) lcd.print(F("-- Spare 11 --"));
+  if (LCD_Menu_Docked >= 12) lcd.print(F("-- Spare 12 --"));
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ void Check_Membrane_Switch_Input_Docked()
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print("Menu Cancelled");
+        lcd.print(F("Menu Cancelled"));
         delay(1000);
         lcd.clear();
         Menu_Mode_Selection = 0;
@@ -316,9 +316,9 @@ void Activate_Menu_Option_Docked()
   {
     // Exit the mower from the Garage and go to Zone 1;
     lcd.clear();
-    lcd.print("Manuel Start");
+    lcd.print(F("Manuel Start"));
     lcd.setCursor(0, 1);
-    lcd.print("Exit Dock Z1");
+    lcd.print(F("Exit Dock Z1"));
     Serial.println(F("Exit to Zone 1 - Free Mow"));
     delay(1000);
     lcd.clear();
@@ -340,9 +340,9 @@ void Activate_Menu_Option_Docked()
     // Exit the mower from the Garage and go to Zone 2;
     Menu_Mode_Selection = 0;
     lcd.clear();
-    lcd.print("Manuel Start");
+    lcd.print(F("Manuel Start"));
     lcd.setCursor(0, 1);
-    lcd.print("Exit Dock Z2");
+    lcd.print(F("Exit Dock Z2"));
     delay(1000);
     lcd.clear();
     Print_Membrane_Switch_Input_Timing();                            // Changes the menu to select the mow time
@@ -360,7 +360,7 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 3)
   {
     // Quick Start the Mower in the middle of the Garden;
-    Serial.println("Quick Start Selected");
+    Serial.println(F("Quick Start Selected"));
     Print_Membrane_Switch_Input_Timing();                             // Changes the menu to select the mow time
     Menu_Mode_Selection = 0;
     delay(1000);
@@ -372,7 +372,7 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 4)
   {
     lcd.clear();
-    lcd.print("Trampoline Cut!");
+    lcd.print(F("Trampoline Cut!"));
     Serial.println(F("Mower Set to Cut under Trampoline"));
     Menu_Mode_Selection = 0;
     delay(3000);
@@ -383,9 +383,9 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 5)
   {
     lcd.clear();
-    lcd.print("Blade will spin");
+    lcd.print(F("Blade will spin"));
     lcd.setCursor(0, 1);
-    lcd.print("Mow the Line");
+    lcd.print(F("Mow the Line"));
     delay(1000);
     lcd.clear();
     Print_Membrane_Switch_Input_Timing();                             // Changes the menu to select the mow time
@@ -403,7 +403,7 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 6)
   {
     lcd.clear();
-    lcd.print("Test Mower Menu");
+    lcd.print(F("Test Mower Menu"));
     Serial.println(F("Test Menu Selected"));
     Menu_Mode_Selection = 0;
     delay(1000);
@@ -414,7 +414,7 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 7)
   {
     lcd.clear();
-    lcd.print("Mower Setup");
+    lcd.print(F("Mower Setup"));
     Serial.println(F("Mower Setup Selected"));
     Menu_Mode_Selection = 0;
     delay(1000);

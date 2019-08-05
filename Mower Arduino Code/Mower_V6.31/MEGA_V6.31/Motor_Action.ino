@@ -131,7 +131,7 @@ void Motor_Action_Spin_Blades()
     delay(20);
 #endif
 
-    Serial.print("Blades:ON_|");
+    Serial.print(F("Blades:ON_|"));
   }
 
   if (Cutting_Blades_Activate == 0)                                      // Blades are turn off in settings and will not spin!
@@ -156,7 +156,7 @@ void Motor_Action_Stop_Spin_Blades()
   delay(20);
 #endif
 
-  Serial.print("Blades:0FF|");
+  Serial.print(F("Blades:0FF|"));
 }
 //---------------------------------------------------------------------------------------
 
