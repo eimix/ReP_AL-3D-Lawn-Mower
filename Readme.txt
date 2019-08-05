@@ -7,6 +7,7 @@ TARGETS:
 3. Safety sensors: lift, tilt etc.
 4. Load current sensor - for locked rotor detection
 5. Code review an bug fixes
+6. Remove Arduino Nano
 
 eimix
 ---------------------------------------------------
