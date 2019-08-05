@@ -2,8 +2,10 @@
 //  to see how well the wire is being followed.  Adjusting the P value in the settings
 //  can improve the wire tracking ability of the mower.
 
+//-----------------------------------------------------------------------------------------------------------------------------------
 
-void PrintWirePosition() {
+void PrintWirePosition() 
+{
   int PrintMAG_Now = MAG_Now / Scale;
   int PrintInMax = InMax / Scale;
   int PrintInMid = InMid / Scale;
@@ -12,8 +14,8 @@ void PrintWirePosition() {
   int PrintOutMid = OutMid / Scale;
   int PrintOutMax = OutMax / Scale;
 
-
-  for (int i = PrintInMax; i <= PrintOutMax; i++) {
+  for (int i = PrintInMax; i <= PrintOutMax; i++) 
+  {
     if (i == PrintInMax) Serial.print(F("|"));
     if (i == PrintInMid) Serial.print(F("|"));
     if (i == PrintInMin) Serial.print(F("|"));
@@ -24,16 +26,15 @@ void PrintWirePosition() {
     if (i == 0) Serial.print(F("0"));
 
     else Serial.print(F("."));
-
   }
   Serial.print(F("|MAG_Now:"));  Serial.print(MAG_Now); Serial.print(F("|"));
 }
-
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 // Function to follow the wire for a specific amount of time set by the itterations 'I'
 // Robot tracks the wire until the itterations are exhausted.
-void Track_Wire_From_Dock_to_Zone_X() {
+void Track_Wire_From_Dock_to_Zone_X() 
+{
   delay(100);
   ADCMan.run();
   if (Blade_Override == 1) {
@@ -51,9 +52,9 @@ void Track_Wire_From_Dock_to_Zone_X() {
   
   //uses the PID settings in the setup
   Serial.print(F("P = "));
-  Serial.print(P);
+  Serial.print(PID_P);
   Serial.print(F(" / D = "));
-  Serial.print(D);
+  Serial.print(PID_D);
   Serial.println(F(""));
   Tracking_Wire = 1;
   MAG_Now = 0;                                                              // Reset Values
@@ -61,12 +62,17 @@ void Track_Wire_From_Dock_to_Zone_X() {
   MAG_Error = 0;
   MAG_Goal = 0;
   delay(500);
-  if (WIFI_Enabled == 1) Get_WIFI_Commands();
+
+  #ifdef UseWiFi
+    Get_WIFI_Commands();
+  #endif
   delay(5);
   lcd.setCursor(10,1);
   lcd.print("0");
-  for (I = 0; I < Track_Wire_Itterations; I++) {                                              // Iterations 'I' before mower leaves the wire.
-      if (Mower_Parked == 0) {
+  for (Perimeter_I = 0; Perimeter_I < Track_Wire_Itterations; Perimeter_I++)                                               // Iterations 'I' before mower leaves the wire.
+  {
+    if (Mower_Parked == 0) 
+    {
       delay(5);
       ADCMan.run();
       MAG_Start = perimeter.getMagnitude(0);                                // Gets the signal strength of the sensor
@@ -82,7 +88,7 @@ void Track_Wire_From_Dock_to_Zone_X() {
       if (MAG_Error > 0) {                                                  // If the MAG_Error > 0 then turn right for CCW Tracking. PWM_left is set to max to turn right.
         // TURN RIGHT
         PWM_Left = PWM_MaxSpeed_LH;                                                     // sets the PWM to the max possible for the wheel
-        PWM_Right = 255 - (MAG_Error * P);                      // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM
+        PWM_Right = 255 - (MAG_Error * PID_P);                      // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM
         if (PWM_Right > 255)  PWM_Right = 255;                              // PWM_Right capped to Max PWM of 255.
         if (PWM_Right >= 0) {
           SetPins_ToGoForwards();
@@ -118,7 +124,7 @@ void Track_Wire_From_Dock_to_Zone_X() {
       if (MAG_Error <= 0) {                                                 // If the MAG_Error < 0 then turn left for CCW Tracking
         // TURN LEFT
         PWM_Right = 255;                                                    // PWM_Right set to max to rotate the mower to the left.
-        PWM_Left = 255 + (MAG_Error * P);                       // + as mag_error is negative to adjust PWM
+        PWM_Left = 255 + (MAG_Error * PID_P);                       // + as mag_error is negative to adjust PWM
         if (PWM_Left > 255) PWM_Left = 255;                                 // PWM_Left capped to mex PWM of 255
         if (PWM_Left >= 0) {
           SetPins_ToGoForwards();   
@@ -152,51 +158,50 @@ void Track_Wire_From_Dock_to_Zone_X() {
       }
       Serial.print(F(" : MAG_Error="));
       Serial.println(MAG_Error);
-      if (WIFI_Enabled == 1) Get_WIFI_Commands();
+      #ifdef UseWiFi
+        Get_WIFI_Commands();
+      #endif
       }
     }
   
 
-  if (CW_Tracking_To_Start == 1) {
+    if (CW_Tracking_To_Start == 1) 
+    {
       // Add Code here for CW tracking to the exit zone.
       // Use the code above for CCW tracking to the docking station
       // as a template.
-    
     }
-  lcd.setCursor(10,1);
-  lcd.print(I);
+    lcd.setCursor(10,1);
+    lcd.print(Perimeter_I);
   }  
-lcd.clear();
-Tracking_Wire = 0;
+  lcd.clear();
+  Tracking_Wire = 0;
 
-delay(5);
-
-
+  delay(5);
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 //  Track the Perimeter wire using a PID type method
 //  This code tracks the boundary wire and by calculating the Perimeter Magnitude and calculating the distance to the center of the wire.
 //  This error value of (position - center of wire) is mulitplied by the P value in the setup to send a PWM change to the left or right
 //  wheel to bring the sensor back over the wire.*/
 
-
-void Track_Perimeter_Wire_To_Dock()  {
+void Track_Perimeter_Wire_To_Dock()  
+{
   lcd.clear();
   lcd.print("Tracking to..");
   lcd.setCursor(0, 1);
   lcd.print("Charging Station");                                            // Prints info to LCD display
   Motor_Action_Stop_Spin_Blades();
-  Docked_Hits = 0;
+//  Docked_Hits = 0;
   Check_if_Charging();                                                        // Checks if an amperage is detected on the charge wire
   Check_if_Docked();
-  
 
   Serial.println(F(" Tracking the wire to the Garage: "));                     // Prints the PID values used.
   Serial.print(F("P = "));
-  Serial.print(P);
+  Serial.print(PID_P);
   Serial.print(F(" / D = "));
-  Serial.print(D);
+  Serial.print(PID_D);
   Serial.println(F(""));
 
   Tracking_Wire = 1;
@@ -224,7 +229,7 @@ void Track_Perimeter_Wire_To_Dock()  {
       if (MAG_Error > 0) {                                                      // Trun the mower to the right if MAG_Error > 0 with a CCW track direction.
         // RIGHT TURN
         PWM_Left = 255;                                                         // Set PWM_Left to maximum
-        PWM_Right = 255 - (MAG_Error * P);                                      // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM                 
+        PWM_Right = 255 - (MAG_Error * PID_P);                                      // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM                 
         if (PWM_Right > 255) PWM_Right = 255;                                   // Caps the PWM_Right to 255
         if (PWM_Right >= 0) {
           SetPins_ToGoForwards();
@@ -253,7 +258,7 @@ void Track_Perimeter_Wire_To_Dock()  {
       if (MAG_Error <= 0) {                                                     // Turn the mower to the left if MAG_Error < 0 with a CCW track direction
         //LEFT TURN
         PWM_Right = 255;                                                        // Set the PWM_Right to maximum
-        PWM_Left = 255 + (MAG_Error * P);                                       // + as mag_error is negative to adjust PWM
+        PWM_Left = 255 + (MAG_Error * PID_P);                                       // + as mag_error is negative to adjust PWM
         if (PWM_Left > 255) PWM_Left = 255;                                     // cap PWM_Left to the maximum 
         if (PWM_Left >= 0) {
           SetPins_ToGoForwards();
@@ -282,14 +287,21 @@ void Track_Perimeter_Wire_To_Dock()  {
       }
       Serial.print(F(" : MAG_Error="));
       Serial.print(MAG_Error);
-      Read_Serial1_Nano();
+
+      #ifdef UseRemoteSensors
+        Read_Serial1_Nano();                                                                    // Read the Serial data from the nano
+      #endif  
+      #ifdef UseLocalSensors
+        Loop_Sensors();                                                                         // Read sensors data
+      #endif
+
       Check_if_Charging();
       Check_if_Docked();
-      Dock_Cycles = Dock_Cycles + 1;
-      if ( (Dock_Cycles % 2) == 0 ) {
-        if (WIFI_Enabled == 1) Get_WIFI_Commands();
-      }
-      
+      Dock_Cycles++;
+      #ifdef UseWiFi
+      if ((Dock_Cycles % 2) == 0) 
+        Get_WIFI_Commands();
+      #endif
     }
   }
 
@@ -313,7 +325,7 @@ void Track_Perimeter_Wire_To_Dock()  {
       if (MAG_Error > 0) {                                      // if MAG_Error > 0 then Turn left in CW tracking                      
         // Turn LEFT
         PWM_Right = 255;                                        // Set the right wheel to max PWMto turn left
-        PWM_Left = 255 - (MAG_Error * P);
+        PWM_Left = 255 - (MAG_Error * PID_P);
         if (PWM_Left > 255) PWM_Left = 255;                     // 
         if (PWM_Left >= 0) {
           SetPins_ToGoForwards();                               // keep the mower moving forward
@@ -342,7 +354,7 @@ void Track_Perimeter_Wire_To_Dock()  {
       if (MAG_Error <= 0) {                                     // Turn the Mower to the right to get back on the wire.
         //Turn Right
         PWM_Left = 255;
-        PWM_Right = 255 + (MAG_Error * P);          // + as mag_error is negative to adjust PWM
+        PWM_Right = 255 + (MAG_Error * PID_P);          // + as mag_error is negative to adjust PWM
         if (PWM_Right > 255) PWM_Right = 255;
         if (PWM_Right >= 0) {
           SetPins_ToGoForwards();
@@ -370,31 +382,43 @@ void Track_Perimeter_Wire_To_Dock()  {
       }
       Serial.print(F(" : MAG_Error="));
       Serial.print(MAG_Error);
-      Read_Serial1_Nano();
+
+      #ifdef UseRemoteSensors
+        Read_Serial1_Nano();                                                                    // Read the Serial data from the nano
+      #endif  
+      #ifdef UseLocalSensors
+        Loop_Sensors();                                                                         // Read sensors data
+      #endif
+  
       Check_if_Charging();
       Check_if_Docked();
       Dock_Cycles = Dock_Cycles + 1;
-      if ( (Dock_Cycles % 2) == 0 ) {
-        if (WIFI_Enabled == 1) Get_WIFI_Commands();
-        }
-      }
-    
+      #ifdef UseWiFi
+      if ((Dock_Cycles % 2) == 0) 
+        Get_WIFI_Commands();
+      #endif
+    }
   }
- Tracking_Wire = 0;
-
+  Tracking_Wire = 0;
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 //Starts an algorithym to find the wire again after it is lost in tracking
-void Tracking_Restart_Blocked_Path() {
+void Tracking_Restart_Blocked_Path() 
+{
   Motor_Action_Stop_Motors();
   Serial.println(F("Possible Blocked Path - Trying to Avoid"));
   lcd.clear();
   lcd.print("Wire Lost.");
   lcd.setCursor(0, 1);
   lcd.print("Recovering.....");                                 // Prints info to LCD display
-  if (WIFI_Enabled == 1) Get_WIFI_Commands();                                   // TX and RX data from NodeMCU
-  if (Mower_Parked != 1) {                                                                              // If Pause has been pressed dont carry on.
+
+  #ifdef UseWiFi
+    Get_WIFI_Commands();                                   // TX and RX data from NodeMCU
+  #endif
+
+  if (Mower_Parked != 1)                                                                               // If Pause has been pressed dont carry on.
+  {
     SetPins_ToGoBackwards();
     delay(500);
     Motor_Action_Go_Full_Speed();
@@ -407,6 +431,6 @@ void Tracking_Restart_Blocked_Path() {
     if (Compass_Activate == 1) Compass_Turn_Mower_To_Home_Direction();
     Manouver_Find_Wire_Track();
     //Track_Perimeter_Wire_To_Dock();
-    }
-  
+  }
 }  
+//-----------------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 // digital clock display of the time
-void DisplayTime()   {
+void DisplayTime()   
+{
   Serial.print(F("Time:"));
   Time t = rtc.time();
  
@@ -16,23 +17,23 @@ void DisplayTime()   {
   // Print the formatted string to serial so we can see the time.
   Serial.print(buf);
  
-  }
+}
 
-void Print_Time_On_Serial() {
-      Serial.print("Time:");
-      Time t = rtc.time();
-      Serial.print(t.hr);
-      Serial.print(":");
-      if (t.min < 10) Serial.print ("0");
-      Serial.print(t.min);
-      Serial.print(".");
-      if (t.sec < 10) Serial.print ("0");
-      Serial.print(t.sec);
-      }
+void Print_Time_On_Serial() 
+{
+  Serial.print("Time:");
+  Time t = rtc.time();
+  Serial.print(t.hr);
+  Serial.print(":");
+  if (t.min < 10) Serial.print ("0");
+  Serial.print(t.min);
+  Serial.print(".");
+  if (t.sec < 10) Serial.print ("0");
+  Serial.print(t.sec);
+}
 
-
-void Activate_Alarms() {
-
+void Activate_Alarms() 
+{
   Time t = rtc.time();
 
   // Manual ALARM 1
@@ -78,8 +79,8 @@ void Activate_Alarms() {
 
 
 // Set when choosing an option of 1hr or 2hr mow etc.
-void Check_Timed_Mow() {
-  
+void Check_Timed_Mow() 
+{
   if (Alarm_Timed_Mow_ON == 1) {  
       Time t = rtc.time();
      if ((t.hr == Alarm_Timed_Mow_Hour) && (t.min == Alarm_Timed_Mow_Minute)) {
@@ -94,7 +95,8 @@ void Check_Timed_Mow() {
  
 
 // Prints the alarms set to the serial monitor
-void Display_Next_Alarm()  {
+void Display_Next_Alarm()  
+{
   //Print_Day();
   
   if (Alarm_1_ON == 1 ) {
@@ -130,19 +132,20 @@ void Display_Next_Alarm()  {
    
 }
 
-void Set_Time_On_RTC(){
-   // Set_Time to 1 in the setting menu to set time.  Load the sketch then immediatley Set_Time = 0 and reload the sketch.
-        rtc.writeProtect(false);
-        rtc.halt(false);
-        Time t(2019, 07, 12, 15, 8, 00, Time::kFriday);            // Year XXXX, Month XX, Day XX, Hour XX, Minute XX, Second, kXYZday
-        rtc.time(t);    
-        delay(10);
-   }
+void Set_Time_On_RTC()
+{
+  // Set_Time to 1 in the setting menu to set time.  Load the sketch then immediatley Set_Time = 0 and reload the sketch.
+  rtc.writeProtect(false);
+  rtc.halt(false);
+  Time t(2019, 07, 12, 15, 8, 00, Time::kFriday);            // Year XXXX, Month XX, Day XX, Hour XX, Minute XX, Second, kXYZday
+  rtc.time(t);    
+  delay(10);
+}
 
-
-void Manage_Alarms() {
-    Alarm_Timed_Mow_ON = 0;                                           // Turns off the 1 hr Alarm
-    if (Alarm_1_Repeat == 0) Alarm_1_ON = 0;
-    if (Alarm_2_Repeat == 0) Alarm_2_ON = 0;
-    if (Alarm_3_Repeat == 0) Alarm_3_ON = 0;
-    }
+void Manage_Alarms() 
+{
+  Alarm_Timed_Mow_ON = 0;                                           // Turns off the 1 hr Alarm
+  if (Alarm_1_Repeat == 0) Alarm_1_ON = 0;
+  if (Alarm_2_Repeat == 0) Alarm_2_ON = 0;
+  if (Alarm_3_Repeat == 0) Alarm_3_ON = 0;
+}
