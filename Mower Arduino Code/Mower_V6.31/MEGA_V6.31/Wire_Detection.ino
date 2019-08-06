@@ -56,13 +56,14 @@ void TestforBoundaryWire()
   ADCMan.run();
   UpdateWireSensor();
 
-  if (Perimeter_Wire_Enabled == 1) {                                               // Perimeter use is ON - Perimter_USE can be turned on or off in the setup.
-
-    /*Checks to see if the boundary wire is turned OFF.
+  if (Perimeter_Wire_Enabled == 1)                                                // Perimeter use is ON - Perimter_USE can be turned on or off in the setup.
+  {
+   /*Checks to see if the boundary wire is turned OFF.
       uses the mag field calculated. Between -50 and 50 normally the field is off.     */
 
     MAG_Now = perimeter.getMagnitude(0);
-    if ( (MAG_Now > -20 ) && (MAG_Now < 20 )  ) {
+    if ((MAG_Now > -20 ) && (MAG_Now < 20 ))
+    {
       Wire_Detected = 0;
       Print_LCD_NO_Wire();
       Wire_Off = Wire_Off + 1;
@@ -71,13 +72,15 @@ void TestforBoundaryWire()
 
     //Checks to see that the boundary fence is turned ON.
     //  uses the mag field. under -50 or above 50 means the field is on
-    if (   (MAG_Now < -50 ) || (MAG_Now > 50 )  ) {
+    if ((MAG_Now < -50 ) || (MAG_Now > 50 )) 
+    {
       Wire_Detected = 1;
       Mower_Running = 1;
       Print_LCD_Wire_ON();
       Wire_Off = 0;
     }
 
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("Wire"));
     Serial.print(F(":"));
     if (Wire_Detected == 0) Serial.print(F("OFF|"));
@@ -85,16 +88,18 @@ void TestforBoundaryWire()
     Serial.print(F("Mag:"));
     Serial.print(MAG_Now);
     Serial.print("|");
-
+#endif
   }
 
   // If the wire is in test mode
-  if (Perimeter_Wire_Enabled == 0) {
+  if (Perimeter_Wire_Enabled == 0)
+  {
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("Wire"));
     Serial.print(F(":"));
     Serial.print(F("TEST|"));
+#endif
     Wire_Detected = 1;
-
   }
 }
 
@@ -114,6 +119,7 @@ void UpdateWireSensor()
 
 void PrintBoundaryWireStatus()
 {
+#if (DEBUG_LEVEL >= 2)
   //perimeter.is(0);
   // = perimeter.is(0);
   Serial.print("IN/OUT:");
@@ -130,4 +136,5 @@ void PrintBoundaryWireStatus()
   Serial.print("|");
   //Serial.print(" |  Variable: ");
   //Serial.print(inside);
+#endif
 }

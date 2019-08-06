@@ -46,17 +46,23 @@ void Setup_Compass()
     lcd.print(F("Compass  "));
     lcd.setCursor(0, 1);
     lcd.print(F("Setup"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Setup Compass"));
+#endif
 
     while (!compass.begin())
     {
+#if (DEBUG_LEVEL >= 1)
       Serial.println(F("Could not find a valid QMC5883 sensor, check wiring!"));
       delay(500);
+#endif
     }
 
     if (compass.isHMC())
     {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Initialize HMC5883"));
+#endif
       compass.setRange(HMC5883L_RANGE_1_3GA);
       compass.setMeasurementMode(HMC5883L_CONTINOUS);
       compass.setDataRate(HMC5883L_DATARATE_15HZ);
@@ -64,7 +70,9 @@ void Setup_Compass()
     }
     else if (compass.isQMC())
     {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Initialize QMC5883"));
+#endif
       compass.setRange(QMC5883_RANGE_2GA);
       compass.setMeasurementMode(QMC5883_CONTINOUS);
       compass.setDataRate(QMC5883_DATARATE_50HZ);
@@ -78,14 +86,18 @@ void Setup_Compass()
     lcd.clear();
   }
 
+#if (DEBUG_LEVEL >= 2)
   if (Compass_Activate == 0)
     Serial.println(F("Compass Switched off - Select 1 in setup to switch on."));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
 void Setup_Relays()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Setup Relays"));
+#endif
   pinMode(Relay_Motors, OUTPUT);
   delay(5);
   Turn_Off_Relay();
@@ -95,7 +107,9 @@ void Setup_Relays()
 
 void Setup_Motor_Pins()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Setup Motor Pins"));
+#endif
 
 #ifdef MowMotorDriver_BTS7960
   pinMode(L_EN, OUTPUT);
@@ -111,21 +125,27 @@ void Setup_Motor_Pins()
 
 void  Turn_On_Relay()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Relay:ON|"));
+#endif
   digitalWrite(Relay_Motors, LOW);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 
 void  Turn_Off_Relay()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Relay:Off|"));
+#endif
   digitalWrite(Relay_Motors, HIGH);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 
 void Setup_Membrane_Buttons()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Setup Membrane Keys"));
+#endif
   pinMode(StartKeyPin, INPUT_PULLUP);           // set pin as input
   pinMode(PlusKeyPin, INPUT_PULLUP);            // set pin as input
   pinMode(MinusKeyPin, INPUT_PULLUP);           // set pin as input
@@ -135,7 +155,9 @@ void Setup_Membrane_Buttons()
 
 void Setup_ADCMan()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("ADCMAN"));
+#endif
   ADCMan.init();
   perimeter.setPins(pinPerimeterLeft, pinPerimeterRight);
   perimeter.useDifferentialPerimeterSignal = true;

@@ -16,12 +16,14 @@ void Print_Membrane_Switch_Input_Timing()
 {
   //Menu Options if the Mower is Timing.
   Read_Membrane_Keys();
-  Menu_Complete = 1;
+  Menu_Complete       = 1;
   Menu_Mode_Selection = 0;
-  Menu_View = 0;
+  Menu_View           = 0;
 
+#if (DEBUG_LEVEL >= 3)
   Serial.println();
   Serial.println(F("Test Menu Activated"));
+#endif
   Menu_Complete = false;                                // Menu complete will return to the normal loop
   lcd.clear();
   delay(5);
@@ -42,23 +44,32 @@ void Print_Membrane_Switch_Input_Timing()
     if (!Start_Key_X)
     {
       Menu_Complete = true;
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Start key is pressed"));
+#endif
       lcd.clear();
     }
     if (!Plus_Key_X)
     {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("+ key is pressed"));
+#endif
       Menu_View = Menu_View - 1;
       Run_Menu_Order_Timing();
     }
     if (!Minus_Key_X)
     {
+#if (DEBUG_LEVEL >= 3)
+      Serial.print(F("- key is pressed "));
+#endif
       Menu_View = Menu_View + 1;
       Run_Menu_Order_Timing();
     }
     if (!Stop_Key_X)
     {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Stop key is pressed"));
+#endif
       Menu_Complete = true;
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -74,7 +85,6 @@ void Print_Membrane_Switch_Input_Timing()
 
 void Run_Menu_Order_Timing()
 {
-  Serial.print(F("- key is pressed "));
   lcd.clear();
   lcd.setCursor(2, 0);
   Print_LCD_Menu_Timing(Menu_View);
@@ -83,10 +93,12 @@ void Run_Menu_Order_Timing()
   lcd.setCursor(0, 0);
   lcd.print(">");
   Menu_Mode_Selection = Menu_View;
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Menu View : "));
   Serial.print(Menu_View);
   Serial.print(F("| Menu Selection"));
   Serial.println(Menu_Mode_Selection);
+#endif
   delay(100);
 
   /*
@@ -173,7 +185,9 @@ void Activate_Menu_Option_Timing()
     lcd.print(F("Max Mow"));
     lcd.setCursor(0, 1);
     lcd.print(F("Selected"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Maximum Mow Time Selected"));
+#endif
     delay(5000);
     lcd.clear();
     Menu_Mode_Selection = 0;
@@ -187,7 +201,9 @@ void Activate_Menu_Option_Timing()
   if (Menu_Mode_Selection == 2)
   {
     // 1hr Mowing
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("1 hr Mow Time Selected"));
+#endif
     lcd.clear();
     Menu_Mode_Selection = 0;
     lcd.clear();
@@ -199,12 +215,14 @@ void Activate_Menu_Option_Timing()
     Alarm_Timed_Mow_Hour = t.hr + 1;                 // Sets time to 1 hour later.
     Alarm_Timed_Mow_Minute = t.min;                  // Minutes are the same
 
+#if (DEBUG_LEVEL >= 3)
     // Displays the Finish time on the Serial Monitor
     Serial.print(F("Finish Time set to : "));
     Serial.print(Alarm_Timed_Mow_Hour);
     Serial.print(F(":"));
     if (Alarm_Timed_Mow_Minute < 10) Serial.print ("0");
     Serial.println(Alarm_Timed_Mow_Minute);
+#endif
 
     lcd.print("1hr Mow Selected");
     lcd.setCursor(0, 1);
@@ -220,7 +238,9 @@ void Activate_Menu_Option_Timing()
   if (Menu_Mode_Selection == 3)
   {
     // 2hr Mowing
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("2 hr Mow Time Selected"));
+#endif
     lcd.clear();
     Menu_Mode_Selection = 0;
     lcd.clear();
@@ -232,12 +252,14 @@ void Activate_Menu_Option_Timing()
     Alarm_Timed_Mow_Hour = t.hr + 2;                 // Sets time to 1 hour later.
     Alarm_Timed_Mow_Minute = t.min;                  // Minutes are the same
 
+#if (DEBUG_LEVEL >= 3)
     // Displays the Finish time on the Serial Monitor
     Serial.print(F("Finish Time set to : "));
     Serial.print(Alarm_Timed_Mow_Hour);
     Serial.print(F(":"));
     if (Alarm_Timed_Mow_Minute < 10) Serial.print ("0");
     Serial.println(Alarm_Timed_Mow_Minute);
+#endif
 
     lcd.print(F("2hr Mow Selected"));
     lcd.setCursor(0, 1);

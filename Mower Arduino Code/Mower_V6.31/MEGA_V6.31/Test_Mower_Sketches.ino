@@ -22,6 +22,7 @@ void Test_Mower_Check_Wire()
     }
   }
 
+#if (DEBUG_LEVEL >= 3)
   /* Prints Values to the Serial Monitor of mag, smag and signal quality.  */
   Serial.print(F("Inside (1) or Outside (0):  "));
   Serial.print((perimeter.isInside(0)));
@@ -31,6 +32,7 @@ void Test_Mower_Check_Wire()
   Serial.print((int)perimeter.getSmoothMagnitude(0));
   Serial.print(F("     qaulity: "));
   Serial.println((perimeter.getFilterQuality(0)));
+#endif
 
   lcd.setCursor(0,0);
   lcd.print(F("IN/Out:"));
@@ -46,12 +48,16 @@ void Test_Mower_Check_Wire()
 void Test_Relay() 
 {
   digitalWrite(Relay_Motors, HIGH);
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Relay OFF"));
+#endif
   lcd.print(F("Relay OFF"));
   delay(1000);
   lcd.clear();
   digitalWrite(Relay_Motors, LOW);
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Relay ON"));
+#endif
   lcd.print(F("Relay ON"));
   delay(1000);
   lcd.clear();
@@ -255,7 +261,9 @@ void Test_Mower_Blade_Motor()
   delay(2000);
   lcd.print(F("BLADE MOTOR"));
   delay(500);
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Blades ON"));
+#endif
   lcd.setCursor(0,1);
   lcd.print("ON ");
   lcd.setCursor(6,1);
@@ -266,7 +274,9 @@ void Test_Mower_Blade_Motor()
 
   // Stop the blade motor spinning for 2 seconds
   lcd.clear();
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Blades OFF"));
+#endif
   lcd.print(F("BLADE MOTOR"));
   lcd.setCursor(0,1);
   lcd.print(F("OFF..  "));
@@ -317,7 +327,7 @@ int PingSonarY(int trigPinY, int echoPinY, int sonarY, int LCDRow, int LCDColumn
   digitalWrite(trigPinY, LOW);
 
   /*Reads the echoPin for the bounced wave and records the time in microseconds*/
-  long durationY = pulseIn(echoPinY, HIGH);
+  long durationY = pulseIn(echoPinY, HIGH, EchoTimeout);
 
   /*Calculates the distance in cm based on the measured time*/
   int distanceY = durationY * 0.034 / 2;
@@ -328,18 +338,22 @@ int PingSonarY(int trigPinY, int echoPinY, int sonarY, int LCDRow, int LCDColumn
   if (distanceY == 0) 
   {
     distanceY = 999;
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("SONAR "));
     Serial.print(sonarY);
     Serial.print(": ");
     Serial.println(F("NO PING ERROR REMOVED"));
+#endif
   }
 
+#if (DEBUG_LEVEL >= 3)
   /*Prints the Sonar letter and distance measured on the serial Monitor*/
   Serial.print("SONAR ");
   Serial.print(sonarY);
   Serial.print(": ");
   Serial.print(distanceY);
   Serial.println(" cm");
+#endif
   //Serial.println(maxdistancesonar);
 
   /*If sonar distance is less than maximum distance then an object is registered to avoid*/

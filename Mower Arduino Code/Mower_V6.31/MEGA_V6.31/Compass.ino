@@ -25,9 +25,11 @@ void Get_Compass_Reading()
   Compass_Heading_Degrees = Heading * 180 / M_PI;                 // Convert to degrees
   //Serial.print(F("Comp H:"));
   //Serial.print(Heading);
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Comp°:"));
   Serial.print(Compass_Heading_Degrees);
   Serial.print("|");
+#endif
   delay(5);
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -46,9 +48,11 @@ void Compass_Turn_Mower_To_Home_Direction()
   lcd.clear();
   Get_Compass_Reading();
   SetPins_ToTurnLeft();
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Compass Heading Now : "));
   Serial.println(Compass_Heading_Degrees);
   Serial.println(F("********************************"));
+#endif
   delay(100);
   lcd.print(Compass_Heading_Degrees);
   // This spins the mower a little to ensure a true compass reading is being read (calibration).
@@ -92,35 +96,45 @@ void Turn_To_Compass_Heading()
 
   while ((Compass_Heading_Degrees < Heading_Lower_Limit_Compass) || (Compass_Heading_Degrees > Heading_Upper_Limit_Compass) && (Cancel < 40))
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("Turning to Target:"));
     Serial.print(Compass_Target);
     Serial.print(F("|"));
+#endif
     Get_Compass_Reading();
     delay(50);
     lcd.setCursor(0, 0);
     lcd.print(F("Degrees: "));
     lcd.print(Compass_Heading_Degrees);
+#if (DEBUG_LEVEL >= 3)
     Serial.println("");
+#endif
     float Compass_Error;
     Compass_Error = Compass_Heading_Degrees - Compass_Target;
     lcd.setCursor(0, 1);
     lcd.print("Error:");
     lcd.print(Compass_Error);
+#if (DEBUG_LEVEL >= 3)
     Serial.print("Er:");
     Serial.print(Compass_Error);
     Serial.print(F("|"));
+#endif
     if (Compass_Error < 0)
     {
       SetPins_ToTurnRight();
+#if (DEBUG_LEVEL >= 3)
       Serial.print(F("Spin Right"));
       Serial.print(F("|"));
+#endif
       delay(100);
     }
     if (Compass_Error > 0)
     {
       SetPins_ToTurnLeft();
+#if (DEBUG_LEVEL >= 3)
       Serial.print(F("Spin Left"));
       Serial.print(F("|"));
+#endif
       delay(100);
     }
     if (Compass_Error < 10)  Turn_Adjust = 120;
@@ -166,13 +180,17 @@ void Calculate_Compass_Wheel_Compensation()
   if (Compass_Error < -180)
     Compass_Error = Compass_Error * -1 ;
 
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("C_Err:"));
   Serial.print(Compass_Error);
   Serial.print("|");
+#endif
 
   if (Compass_Error < 0)                                               // Steer left
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("Steer_Right|"));
+#endif
     PWM_Right = PWM_MaxSpeed_RH + (CPower * Compass_Error);            // Multiply the difference by D to increase the power then subtract from the PWM
     if (PWM_Right < 0)
       PWM_Right = PWM_MaxSpeed_RH - 50;
@@ -180,7 +198,9 @@ void Calculate_Compass_Wheel_Compensation()
   }
   if (Compass_Error >= 0)
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("Steer_Left|"));
+#endif
     PWM_Right = PWM_MaxSpeed_RH;                                       // Keep the Left wheel at full power calibrated to go straight
     PWM_Left = PWM_MaxSpeed_LH - (CPower * Compass_Error);             // Multiply the difference by D to increase the power then subtract from the PWM
     if (PWM_Left < 0)

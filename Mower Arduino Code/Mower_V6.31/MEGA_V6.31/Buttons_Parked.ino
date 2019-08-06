@@ -29,19 +29,23 @@ void Check_Membrane_Switch_Input_Parked()
 {
   //Menu Options if the Mower is Parked.
   Read_Membrane_Keys();
-  Menu_Complete = 1;
+  Menu_Complete       = 1;
   Menu_Mode_Selection = 0;
-  Menu_View = 0;
+  Menu_View           = 0;
 
   if (!Start_Key_X)                                      // If the start key is pressed
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.println();
     Serial.println(F("Start Key Pressed"));
+#endif
     Menu_Complete = false;                                // Menu complete will return to the normal loop
     lcd.clear();
     delay(5);
+#if (DEBUG_LEVEL >= 3)
     Serial.println();
     Serial.println(F("Parked Menu Activated"));
+#endif
     delay(500);
 
     while (Menu_Complete == false)                       // holds the program in a loop until a selection has been made in the membrane button menu
@@ -59,24 +63,33 @@ void Check_Membrane_Switch_Input_Parked()
 
       if (!Start_Key_X) 
       {
-        Menu_Complete = true;
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("Start key is pressed"));
+#endif
+        Menu_Complete = true;
         lcd.clear();
       }
       if (!Plus_Key_X) 
       {
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("+ key is pressed"));
+#endif
         Menu_View = Menu_View - 1;
         Run_Menu_Order_Parked();
       }
       if (!Minus_Key_X) 
       {
+#if (DEBUG_LEVEL >= 3)
+        Serial.print(F("- key is pressed "));
+#endif
         Menu_View = Menu_View + 1;
         Run_Menu_Order_Parked();
       }
       if (!Stop_Key_X) 
       {
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("Stop key is pressed"));
+#endif
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
@@ -93,7 +106,6 @@ void Check_Membrane_Switch_Input_Parked()
 
 void Run_Menu_Order_Parked()
 {
-  Serial.print(F("- key is pressed "));
   lcd.clear();
   lcd.setCursor(2, 0);
   Print_LCD_Menu_Parked(Menu_View);
@@ -102,10 +114,12 @@ void Run_Menu_Order_Parked()
   lcd.setCursor(0, 0);
   lcd.print(">");
   Menu_Mode_Selection = Menu_View;
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Menu View : "));
   Serial.print(Menu_View);
   Serial.print(F("| Menu Selection"));
   Serial.println(Menu_Mode_Selection);
+#endif
   delay(100);
 
   /*
@@ -302,7 +316,9 @@ void Activate_Menu_Option_Parked()
     Print_Membrane_Switch_Input_Timing();
     lcd.clear();
     lcd.print(F("Mow Re-Starting"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Mower Starting"));
+#endif
     delay(2000);
     Manouver_Start_Mower();                                             // Restarts the mower again from standing position
     lcd.clear();
@@ -314,7 +330,9 @@ void Activate_Menu_Option_Parked()
     {
       lcd.clear();
       lcd.print(F("Returning Home"));
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Sending Mower Home"));
+#endif
       delay(100);
       Menu_Mode_Selection = 0;                                      // Releases the loop in the membrane button section.
       delay(1000);
@@ -325,7 +343,9 @@ void Activate_Menu_Option_Parked()
     {
       lcd.clear();
       lcd.print(F("No Dock Active"));
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Activate Docking Station in Settings"));
+#endif
       delay(100);
       Menu_Mode_Selection = 0;                                      // Releases the loop in the membrane button section.
       delay(1000);
@@ -337,7 +357,9 @@ void Activate_Menu_Option_Parked()
   {
     lcd.clear();
     lcd.print(F("Trampoline Cut!"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Mower Set to Cut under Trampoline"));
+#endif
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();
@@ -348,7 +370,9 @@ void Activate_Menu_Option_Parked()
   {
     lcd.clear();
     lcd.print(F("Test Mower Menu"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Test Menu Selected"));
+#endif
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();
@@ -359,7 +383,9 @@ void Activate_Menu_Option_Parked()
   {
     lcd.clear();
     lcd.print(F("Setup Mower"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Mower Setup Selected"));
+#endif
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();
@@ -370,7 +396,9 @@ void Activate_Menu_Option_Parked()
   {
     lcd.clear();
     lcd.print(F("Slot 6 - Empty"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Slot 6 Selected"));
+#endif
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();

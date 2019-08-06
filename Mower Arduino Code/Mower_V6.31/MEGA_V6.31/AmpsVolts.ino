@@ -19,12 +19,16 @@ void Process_Volt_Information()
   if (BatteryVoltage < Battery_Min)
   {
     LowBatteryCount++;
+#if (DEBUG_LEVEL >= 2)
     Serial.print("VLow:");
     Serial.print(LowBatteryCount);
     Serial.print("|");
+#endif
     if (LowBatteryCount > MaxLowBatteryCount)
     {
+#if (DEBUG_LEVEL >= 1)
       Serial.println(F("Low Battery Detected"));
+#endif
       if (Use_Charging_Station == 1) Manouver_Go_To_Charging_Station();                       // Stops the mowing and sends the mower back to the charging station via the permieter wire
       if (Use_Charging_Station == 0) Manouver_Park_The_Mower_Low_Batt();                      // Parks the mower with a low battery warning
     }
@@ -32,9 +36,11 @@ void Process_Volt_Information()
 
   if (BatteryVoltage >= Battery_Min)
   {
+#if (DEBUG_LEVEL >= 2)
     Serial.print("VLow:");
     Serial.print(LowBatteryCount);
     Serial.print("|");
+#endif
     LowBatteryCount = 0;
   }
 }
@@ -48,9 +54,11 @@ void Check_if_Charging()
   if (ChargeCurrent > 0.4)
     Mower_Charging = 1;
 
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Charging:"));
   Serial.print(Mower_Charging);
   Serial.print("|");
+#endif
   Print_Charging_LCD();
 }
 //---------------------------------------------------------------------------------------
@@ -60,8 +68,11 @@ void Check_if_Docked()
   if (Mower_Charging == 1)                                     // if Amps are between this there is a charge detected.  Amps above 4 are discounted as a miscommunication
   {
     Motor_Action_Stop_Motors();
+#if (DEBUG_LEVEL >= 2)
     Serial.println(F("Charging Current detected"));
     Serial.println(F("Mower Docked"));
+    Serial.println("");
+#endif
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Docked in"));
@@ -72,7 +83,6 @@ void Check_if_Docked()
     Manouver_Dock_The_Mower();                                    // Shuts down the Mower ready for charging and mowing again.
     lcd.clear();
   }
-  Serial.println("");
 }
 //---------------------------------------------------------------------------------------
 
@@ -81,6 +91,7 @@ void Calculate_Volt_Amp_Charge()
 {
   if (Show_TX_Data == 1)
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.print("Amp:");
     Serial.print(RawValueAmp);
     Serial.print("|");
@@ -90,6 +101,7 @@ void Calculate_Volt_Amp_Charge()
     Serial.print("Rain:");
     Serial.print(Rain_Detected);
     Serial.print("|");
+#endif
   }
 
   // Calculate Amps from NANO RX Data
@@ -99,9 +111,11 @@ void Calculate_Volt_Amp_Charge()
   VoltageAmp = (RawValueAmp / 1024.0) * 5000; // Gets you mV
   ChargerCurrent =  ((VoltageAmp - ACSoffset) / mVperAmp);
 
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("A:"));
   Serial.print(ChargerCurrent);
   Serial.print(F("|"));
+#endif
 
   // Calculate Voltage from NANO RX Data
 

@@ -78,9 +78,9 @@ int distance3 = 999;
 
 int distance_blockage;
 
-int Sonar_Hit_1_Total;
-int Sonar_Hit_2_Total;
-int Sonar_Hit_3_Total;
+int  Sonar_Hit_1_Total;
+int  Sonar_Hit_2_Total;
+int  Sonar_Hit_3_Total;
 bool Sonar_Hit_Any_Total;
 bool Sonar_Hit_1 = 0;
 bool Sonar_Hit_2 = 0;
@@ -121,39 +121,24 @@ bool Alarm_Timed_Mow_ON = 0;
 byte Alarm_Timed_Mow_Hour;                         // Mowing Hour Number 3
 byte Alarm_Timed_Mow_Minute;                       // Alarm minute 3
 
-String dayAsString(const Time::Day day)
-{
-  switch (day)
-  {
-    case Time::kSunday: return "Sunday";
-    case Time::kMonday: return "Monday";
-    case Time::kTuesday: return "Tuesday";
-    case Time::kWednesday: return "Wednesday";
-    case Time::kThursday: return "Thursday";
-    case Time::kFriday: return "Friday";
-    case Time::kSaturday: return "Saturday";
-  }
-  return "(unknown day)";
-}
-
 //Perimeter Wire Tracking
-int Perimeter_I;
-int Track_Wire_Itterations;
-bool Outside_Wire;
-byte Exit_Zone;
-int MAG_Now;
-int MAG_OUT_Stop;
-int MAG_IN_Stop;
-int MAG_TURN;
-int MAG_Average_Start;
-int MAG_Last;
-byte Outside_Wire_Count = 0;
-int Tracking_Wire = 0;
-bool Wire_ON_Printed;
-int Wire_Off;
+int   Perimeter_I;
+int   Track_Wire_Itterations;
+bool  Outside_Wire;
+byte  Exit_Zone;
+int   MAG_Now;
+int   MAG_OUT_Stop;
+int   MAG_IN_Stop;
+int   MAG_TURN;
+int   MAG_Average_Start;
+int   MAG_Last;
+byte  Outside_Wire_Count = 0;
+int   Tracking_Wire = 0;
+bool  Wire_ON_Printed;
+int   Wire_Off;
 
-int Tracking_Turn_Left;
-int Tracking_Turn_Right;
+int  Tracking_Turn_Left;
+int  Tracking_Turn_Right;
 bool Mower_Track_To_Charge;
 bool Mower_Track_To_Exit;
 
@@ -170,15 +155,15 @@ byte PWM_Blade_Speed_Max;
 bool Blade_Override = 0;
 
 //Compass Variables
-float   Compass_Heading_Degrees;
-float   Heading;
-bool    Compass_Heading_Locked = 0;
-float   Heading_Lock;
-int     Heading_Upper_Limit_Compass;
-int     Heading_Lower_Limit_Compass;
-int     Compass_Target;
-int     Compass_Leg = 0;
-int     Turn_Adjust = 0;
+float Compass_Heading_Degrees;
+float Heading;
+bool  Compass_Heading_Locked = 0;
+float Heading_Lock;
+int   Heading_Upper_Limit_Compass;
+int   Heading_Lower_Limit_Compass;
+int   Compass_Target;
+int   Compass_Leg = 0;
+int   Turn_Adjust = 0;
 
 //Wire Track Printer
 int PrintInMax;
@@ -206,7 +191,7 @@ float val_WIFI;
 char Version[16] = "V6.31";
 
 bool Cutting_Blades_Activate    = 1;                          // Activates the cutting blades and disc in the code
-//  bool WIFI_Enabled               = 1;                          // Activates the WIFI Functions
+//bool WIFI_Enabled               = 1;                          // Activates the WIFI Functions
 bool Perimeter_Wire_Enabled     = 1;                          // Activates use of the perimeter boundary wire
 
 //Docking Station
@@ -217,7 +202,7 @@ bool CW_Tracking_To_Start       = 0;                          // Clock-Wise     
 bool CCW_Tracking_To_Start      = 1;                          // Counter-Clock-Wise tracking around the boundary wire to the charging station
 byte Docked_Filter_Hits         = 1;                          // Number of charge signals to be detected before mower powers off
 
-int Track_Wire_Zone_1_Cycles    = 600;                       // Zone 1 - Number of Itterations the PID function does before the mower exits the wire track
+int Track_Wire_Zone_1_Cycles    = 600;                        // Zone 1 - Number of Itterations the PID function does before the mower exits the wire track
 int Track_Wire_Zone_2_Cycles    = 1000;                       // Zone 2 - Therefore how long the mower is tracking the wire can be set = distance tracked.
 
 int  Max_Tracking_Turn_Right    = 270;                        // The maximum number of turn right commands during wire tracking before a renewed wire find function is called
@@ -237,11 +222,11 @@ bool Rain_Sensor_Installed          = 1;                      // 1 for Rain sens
 byte Rain_Total_Hits_Go_Home        = 10;                      // This sensor only makes sense in combination with a mower docking station
 // as the mower is sent there to get out of the rain.
 //Sonar Modules
-bool Sonar_1_Activate           = 1;                          // Activate (1) Deactivate (0) Sonar 1
-bool Sonar_2_Activate           = 1;                          // Activate (1) Deactivate (0) Sonar 2
-bool Sonar_3_Activate           = 1;                          // Activate (1) Deactivate (0) Sonar 3
-int  Max_Sonar_Hit              = 3;                          // Maximum number of Sonar hits before object is discovered
-long maxdistancesonar           = 30;                         // distance in cm from the mower that the sonar will activate at.
+bool Sonar_1_Activate          = 1;                          // Activate (1) Deactivate (0) Sonar 1
+bool Sonar_2_Activate          = 1;                          // Activate (1) Deactivate (0) Sonar 2
+bool Sonar_3_Activate          = 1;                          // Activate (1) Deactivate (0) Sonar 3
+int  Max_Sonar_Hit             = 3;                          // Maximum number of Sonar hits before object is discovered
+long maxdistancesonar          = 30;                         // distance in cm from the mower that the sonar will activate at.
 
 //Wheel Motors Setup
 int Max_Cycles                 = 150;                         // Number of loops the Sketch will run before the mower just turns around anyway.
@@ -250,9 +235,9 @@ int PWM_MaxSpeed_RH            = 255;     //EEPROM            // Straight line s
 
 int Max_Motor_PWM_LH           = 255;
 int Max_Motor_PWM_RH           = 255;
-int Mower_Turn_Delay_Min        = 1000;                       // Min Max Turn time of the Mower after it reverses at the wire.
-int Mower_Turn_Delay_Max        = 2500;                       // A random turn time between these numbers is selected by the software
-int Mower_Reverse_Delay         = 1800;                       // Time the mower revreses at the wire
+int Mower_Turn_Delay_Min       = 1000;                       // Min Max Turn time of the Mower after it reverses at the wire.
+int Mower_Turn_Delay_Max       = 2500;                       // A random turn time between these numbers is selected by the software
+int Mower_Reverse_Delay        = 1800;                       // Time the mower revreses at the wire
 
 
 
@@ -300,18 +285,18 @@ byte Alarm_Second               = 5;                          // Seconds
 
 // Wire detection Values
 /*Negative Values for In*/                                    // These values are based on the signal received by the wire sensor for my perimeter loop
-int InMin = -200;
-int InMid = -700;
-int InMax = -1500;                                            // the maximum received signal value  the wire
+int InMin                 = -200;
+int InMid                 = -700;
+int InMax                 = -1500;                            // the maximum received signal value  the wire
 /*General Setup PID numbers for wire tracking*/
-float PID_P               = 0.08;              //EEPROM           // Multiplication factor to the error measured to the wire center.  if jerky movement when tracking reduce number
-float PID_D               = 20;                                   // Dampening value to avoid the mower snaking on the wire.
-byte Scale                = 36;                                   // Serial Monitor Line Tracking Print Scale
+float PID_P               = 0.08;              //EEPROM       // Multiplication factor to the error measured to the wire center.  if jerky movement when tracking reduce number
+float PID_D               = 20;                               // Dampening value to avoid the mower snaking on the wire.
+byte Scale                = 36;                               // Serial Monitor Line Tracking Print Scale
 
 /*Positive Values for Out*/
-int OutMin = 150;
-int OutMid = 400;
-int OutMax = 1500;                                            // the maximum received signal value outside the wire
+int OutMin                = 150;
+int OutMid                = 400;
+int OutMax                = 1500;                             // the maximum received signal value outside the wire
 
 int Outside_Wire_Count_Max          = 15;                     // If the mower is outside the wire this many times the mower is stopped
 int Action_On_Over_Wire_Count_Max   = 3;                      // Set 1 to hibernate mower (Power Off and Stop)   Set 2 to refind garden using sonar and wire detect function
@@ -325,16 +310,19 @@ bool Show_TX_Data                   = 0;                      // Show the values
 
 void setup()
 {
+#if (DEBUG_LEVEL >= 1)
   Serial.begin(115200);
+#endif
 
 #ifdef UseRemoteSensors
-  Serial1.begin(1200);									// Open Serial port 1 for the nano communication
+  Serial1.begin(1200);							                      		// Open Serial port 1 for the nano communication
 #endif
 
 #ifdef UseWiFi
-  Serial2.begin(9600);					// If WIFI is on open Serial port 2 for the NodeMCU communication
+  Serial2.begin(9600);			                              		// If WIFI is on open Serial port 2 for the NodeMCU communication
 #endif
 
+#if (DEBUG_LEVEL >= 3)
   Serial.println(" ");
   Serial.println(" ");
   Serial.print(F("ReP_AL Robot :"));
@@ -343,14 +331,22 @@ void setup()
   Serial.println("");
   Serial.println(F("Starting Mower Setup"));
   Serial.println(F("==================="));
+#endif
+
   Load_EEPROM_Saved_Data();
   if (Set_Time == 1)
   {
+#if (DEBUG_LEVEL >= 2)
     Serial.print(F("Setting Time"));
+#endif
     Set_Time_On_RTC();
   }
   DisplayTime();
+
+#if (DEBUG_LEVEL >= 3)
   Serial.println("");
+#endif
+
   Prepare_Mower_from_Settings();
   Setup_Run_LCD_Intro ();
   Setup_Sonar();
@@ -393,7 +389,7 @@ void loop()
   // Mower is Parked ready to be started / re-started.
   if (Mower_Parked == 1)          Print_LCD_Volt_Info();                                  // Print the voltage to the LCD screen
   if (Mower_Parked == 1)          Check_if_Charging();
-  if (Mower_Parked == 1)          Check_if_Raining_From_Nano ();                               // Checks if the water sensor detects Rain
+  if (Mower_Parked == 1)          Check_if_Raining_From_Nano ();                          // Checks if the water sensor detects Rain
   if (Mower_Parked == 1)          Print_LCD_Info_Parked();                                // Print information to the LCD screen
   if (Mower_Parked == 1)          Check_Membrane_Switch_Input_Parked();                   // Check the membrane buttons for any input
   if (Mower_Parked == 1)          TestforBoundaryWire();
@@ -433,6 +429,8 @@ void loop()
   if (Manuel_Mode == 0) Get_WIFI_Commands();                                   // TX and RX data from NodeMCU
 #endif
 
+#if (DEBUG_LEVEL >= 2)
   Serial.println();
+#endif
 }
 //---------------------------------------------------------------------------------------

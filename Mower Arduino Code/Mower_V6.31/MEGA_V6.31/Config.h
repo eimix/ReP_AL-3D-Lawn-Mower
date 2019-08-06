@@ -1,7 +1,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define DEBUG_LEVEL 2 // 0 - None; 1 - Error; 2 - Warning; 3 - Info; 4 - ALL
+// DEBUG level limits Serial output
+// Use =0 - to disable Serial output, and it reduces sketch size most
+// Use >0 - to allow some output, highe value - more output
+#define DEBUG_LEVEL 1 // 0 - None; 1 - Error; 2 - Warning; 3 - Info; 4 - ALL
+#if (DEBUG_LEVEL == 0)
+#define Serial 0
+#endif
 
 //Pin setup for Arduino MEGA
 
@@ -127,6 +133,15 @@
 //-----------------------------------------------------------------------------------------------------------------------------------
 
 #define UseWiFi
+
+//-----------------------------------------------------------------------------------------------------------------------------------
+// LCD
+//-----------------------------------------------------------------------------------------------------------------------------------
+
+// For Aruino Uno (32k/2k) disable LCD, and use WiFi control only
+// THIS IS PLACE HOLDER ONLY, NO FUNCTIONALITY YET
+#define UseLCD16x2
+//#define UseLCD20x4
 
 //-----------------------------------------------------------------------------------------------------------------------------------
 // Clock

@@ -5,9 +5,12 @@ bool Motor_SaftyWarning_Pause()
   if (Mower_SaftyWarning)
   {
     Motor_Action_Stop_Motors();
-    Serial.print(F("Wheel:Warning|"));
     Motor_Action_Stop_Spin_Blades();
+
+#if (DEBUG_LEVEL >= 1)
+    Serial.print(F("Wheel:Warning|"));
     Serial.print(F("Blades:Warning|"));
+#endif
     return true;
   }
   return false;
@@ -21,7 +24,10 @@ void Motor_Action_Go_Full_Speed()
 
   analogWrite(ENAPin, PWM_MaxSpeed_RH);                       // Speed = 0-255  (255 is max speed). Speed is set in the settings
   analogWrite(ENBPin, PWM_MaxSpeed_LH);                       // AnalogWrite sends PWM signals Speed = 0-255  (255 is max speed)
+
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:FULL|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -38,7 +44,10 @@ void Motor_Action_GoFullSpeed_Out_Garage()
 
   analogWrite(ENAPin, PWM_MaxSpeed_RH);                                       // Speed = 0-255  (255 is max speed). Speed is set in the settings
   analogWrite(ENBPin, PWM_MaxSpeed_LH);
+  
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:FULL|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -48,7 +57,10 @@ void SetPins_ToGoForwards()                                      // Motor Bridge
   digitalWrite(IN2Pin, HIGH);
   digitalWrite(IN3Pin, LOW);
   digitalWrite(IN4Pin, HIGH);
+  
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:For|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -58,7 +70,10 @@ void SetPins_ToGoBackwards()                                     // Motor Bridge
   digitalWrite(IN2Pin, LOW);
   digitalWrite(IN3Pin, HIGH);                                     // Motor 2
   digitalWrite(IN4Pin, LOW);
+  
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:Rev|"));
+#endif
   delay(20);
 }
 //---------------------------------------------------------------------------------------
@@ -73,7 +88,9 @@ void Motor_Action_Stop_Motors()                                       // Motor B
   digitalWrite(IN3Pin, LOW);
   digitalWrite(IN4Pin, LOW);
 
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:0FF|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -83,7 +100,10 @@ void SetPins_ToTurnLeft()                                     // Pins are set so
   digitalWrite(IN2Pin, HIGH);
   digitalWrite(IN3Pin, HIGH);                                  // Motor 2
   digitalWrite(IN4Pin, LOW);
+
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:TL_|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -93,7 +113,10 @@ void SetPins_ToTurnRight()                                     // Pins are set s
   digitalWrite(IN2Pin, LOW);
   digitalWrite(IN3Pin, LOW);                                    //Motor 2
   digitalWrite(IN4Pin, HIGH);
+  
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Wheel:R|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -131,7 +154,9 @@ void Motor_Action_Spin_Blades()
     delay(20);
 #endif
 
+#if (DEBUG_LEVEL >= 2)
     Serial.print(F("Blades:ON_|"));
+#endif
   }
 
   if (Cutting_Blades_Activate == 0)                                      // Blades are turn off in settings and will not spin!
@@ -156,7 +181,9 @@ void Motor_Action_Stop_Spin_Blades()
   delay(20);
 #endif
 
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Blades:0FF|"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
@@ -168,11 +195,14 @@ void Motor_Action_Dynamic_PWM_Steering()
 
   analogWrite(ENAPin, PWM_Right);                             // ENA low = Right Swerve   ENB low = Left Swerve
   analogWrite(ENBPin, PWM_Left);
+
+#if (DEBUG_LEVEL >= 2)
   Serial.print("PWM_R:");
   Serial.print(PWM_Right);
   Serial.print("|");
   Serial.print("PWM_L:");
   Serial.print(PWM_Left);
   Serial.print("|");
+#endif
 }
 //---------------------------------------------------------------------------------------

@@ -1,26 +1,50 @@
+//-----------------------------------------------------------------------------------------------------------------------------------
+
+String dayAsString(const Time::Day day)
+{
+  switch (day)
+  {
+    case Time::kSunday: return "Sunday";
+    case Time::kMonday: return "Monday";
+    case Time::kTuesday: return "Tuesday";
+    case Time::kWednesday: return "Wednesday";
+    case Time::kThursday: return "Thursday";
+    case Time::kFriday: return "Friday";
+    case Time::kSaturday: return "Saturday";
+  }
+  return "(unknown day)";
+}
+//-----------------------------------------------------------------------------------------------------------------------------------
+
 // digital clock display of the time
 void DisplayTime()
 {
+#if (DEBUG_LEVEL >= 2)
   Serial.print(F("Time:"));
   Time t = rtc.time();
 
   // Name the day of the week.
-  const String day = dayAsString(t.day);
+//  const String day = dayAsString(t.day);
 
   // Format the time and date and insert into the temporary buffer.
   char buf[50];
-  snprintf(buf, sizeof(buf), "%s %04d-%02d-%02d %02d:%02d:%02d",
+  snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
+           t.yr, t.mon, t.date,
+           t.hr, t.min, t.sec);  
+/*  snprintf(buf, sizeof(buf), "%s %04d-%02d-%02d %02d:%02d:%02d",
            day.c_str(),
            t.yr, t.mon, t.date,
            t.hr, t.min, t.sec);
-
+*/
   // Print the formatted string to serial so we can see the time.
   Serial.print(buf);
-
+#endif
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Print_Time_On_Serial()
 {
+#if (DEBUG_LEVEL >= 2)
   Serial.print("Time:");
   Time t = rtc.time();
   Serial.print(t.hr);
@@ -30,17 +54,23 @@ void Print_Time_On_Serial()
   Serial.print(".");
   if (t.sec < 10) Serial.print ("0");
   Serial.print(t.sec);
+#endif
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Activate_Alarms()
 {
   Time t = rtc.time();
 
   // Manual ALARM 1
-  if (Alarm_1_ON == 1) {
-    if ((t.hr == Alarm_1_Hour) && (t.min == Alarm_1_Minute)) {
+  if (Alarm_1_ON == 1) 
+  {
+    if ((t.hr == Alarm_1_Hour) && (t.min == Alarm_1_Minute)) 
+    {
+#if (DEBUG_LEVEL >= 3)
       Serial.println("");
       Serial.println(F("ALARM 1"));
+#endif
       delay(2000);
       // Insert action for Alarm 1 Here
       Exit_Zone = 1;
@@ -51,10 +81,14 @@ void Activate_Alarms()
 
 
   // Manual ALARM 2
-  if (Alarm_2_ON == 1) {
-    if ((t.hr == Alarm_2_Hour) && (t.min == Alarm_2_Minute)) {
+  if (Alarm_2_ON == 1) 
+  {
+    if ((t.hr == Alarm_2_Hour) && (t.min == Alarm_2_Minute)) 
+    {
+#if (DEBUG_LEVEL >= 3)
       Serial.println("");
       Serial.println(F("ALARM 2"));
+#endif
       delay(2000);
       //Insert action for Alarm 2 Here
       //
@@ -64,10 +98,14 @@ void Activate_Alarms()
   }
 
   // Manual ALARM 3
-  if (Alarm_3_ON == 1) {
-    if ((t.hr == Alarm_3_Hour) && (t.min == Alarm_3_Minute)) {
+  if (Alarm_3_ON == 1) 
+  {
+    if ((t.hr == Alarm_3_Hour) && (t.min == Alarm_3_Minute)) 
+    {
+#if (DEBUG_LEVEL >= 3)
       Serial.println("");
       Serial.println(F("ALARM 3"));
+#endif
       delay(2000);
       //Insert action for Alarm 3 Here
       //
@@ -76,15 +114,18 @@ void Activate_Alarms()
     }
   }
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 // Set when choosing an option of 1hr or 2hr mow etc.
 void Check_Timed_Mow()
 {
   if (Alarm_Timed_Mow_ON == 1) {
     Time t = rtc.time();
-    if ((t.hr == Alarm_Timed_Mow_Hour) && (t.min == Alarm_Timed_Mow_Minute)) {
+    if ((t.hr == Alarm_Timed_Mow_Hour) && (t.min == Alarm_Timed_Mow_Minute)) 
+    {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Timed Mow Complete"));
+#endif
       delay(2000);
       //Insert action for Timed Mow Alarm Here
       if (Use_Charging_Station == 1) Manouver_Go_To_Charging_Station();                       // Stops the mowing and sends the mower back to the charging station via the permieter wire
@@ -92,14 +133,16 @@ void Check_Timed_Mow()
     }
   }
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 // Prints the alarms set to the serial monitor
 void Display_Next_Alarm()
 {
+#if (DEBUG_LEVEL >= 2)
   //Print_Day();
 
-  if (Alarm_1_ON == 1 ) {
+  if (Alarm_1_ON == 1) 
+  {
     Serial.print(F("|Alarm 1:"));
     Serial.print(Alarm_1_Hour);
     Serial.print(F(":"));
@@ -107,9 +150,11 @@ void Display_Next_Alarm()
     Serial.print(Alarm_1_Minute);
     Serial.print("|");
   }
-  if (Alarm_1_ON == 0) Serial.print(F("|Alarm 1 OFF"));
+  if (Alarm_1_ON == 0)
+    Serial.print(F("|Alarm 1 OFF"));
 
-  if (Alarm_2_ON == 1) {
+  if (Alarm_2_ON == 1) 
+  {
     Serial.print(F("|Alarm 2:"));
     Serial.print(Alarm_2_Hour);
     Serial.print(F(":"));
@@ -117,9 +162,11 @@ void Display_Next_Alarm()
     Serial.print(Alarm_2_Minute);
     Serial.print("|");
   }
-  if (Alarm_2_ON == 0) Serial.print(F("|Alarm 2 OFF"));
+  if (Alarm_2_ON == 0) 
+    Serial.print(F("|Alarm 2 OFF"));
 
-  if (Alarm_3_ON == 1) {
+  if (Alarm_3_ON == 1) 
+  {
     Serial.print(F("|Alarm 3:"));
     Serial.print(Alarm_3_Hour);
     Serial.print(F(":"));
@@ -127,10 +174,11 @@ void Display_Next_Alarm()
     Serial.print(Alarm_3_Minute);
     Serial.print("|");
   }
-  if (Alarm_3_ON == 0) Serial.print(F("|Alarm 3 OFF"));
-
-
+  if (Alarm_3_ON == 0) 
+    Serial.print(F("|Alarm 3 OFF"));
+#endif
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Set_Time_On_RTC()
 {
@@ -141,6 +189,7 @@ void Set_Time_On_RTC()
   rtc.time(t);
   delay(10);
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Manage_Alarms()
 {
@@ -149,3 +198,4 @@ void Manage_Alarms()
   if (Alarm_2_Repeat == 0) Alarm_2_ON = 0;
   if (Alarm_3_Repeat == 0) Alarm_3_ON = 0;
 }
+//-----------------------------------------------------------------------------------------------------------------------------------

@@ -73,20 +73,24 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
   if (distanceX == 0)
   {
     distanceX = 999;
+#if (DEBUG_LEVEL >= 3)
     Serial.print(F("S"));
     Serial.print(sonarX);
     Serial.print(F(":"));
     Serial.print(F("NP!"));
     Serial.print(F("|"));
+#endif
   }
 
   /*Prints the Sonar letter and distance measured on the serial Monitor*/
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("S"));
   Serial.print(sonarX);
   Serial.print(F(":"));
   Serial.print(distanceX);
   Serial.print(F("cm"));
   Serial.print(F("/"));
+#endif
 
   /*If sonar distance is less than maximum distance then an object is registered to avoid*/
   if (distanceX <= maxdistancesonar)
@@ -98,24 +102,32 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
     if (sonarX == 1)
     {
       Sonar_Hit_1_Total = (Sonar_Hit_1_Total + 1);
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_1_Total);
+#endif
     }
     if (sonarX == 2)
     {
       Sonar_Hit_2_Total = (Sonar_Hit_2_Total + 1);
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_2_Total);
+#endif
     }
     if (sonarX == 3)
     {
       Sonar_Hit_3_Total = (Sonar_Hit_3_Total + 1);
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_3_Total);
+#endif
     }
     if ((Sonar_Hit_1_Total >= Max_Sonar_Hit) || (Sonar_Hit_2_Total >= Max_Sonar_Hit) || (Sonar_Hit_3_Total >= Max_Sonar_Hit))
     {
       Sonar_Hit = 1;
       Print_Sonar_Hit();
+#if (DEBUG_LEVEL >= 2)
       Serial.println("");
       Serial.println(F("Sonar Hit Detected"));
+#endif
     }
   }
 
@@ -129,17 +141,23 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
     if (sonarX == 1)
     {
       Sonar_Hit_1_Total = 0;
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_1_Total);
+#endif
     }
     if (sonarX == 2)
     {
       Sonar_Hit_2_Total = 0;
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_2_Total);
+#endif
     }
     if (sonarX == 3)
     {
       Sonar_Hit_3_Total = 0;
+#if (DEBUG_LEVEL >= 2)
       Serial.print(Sonar_Hit_3_Total);
+#endif
     }
   }
 

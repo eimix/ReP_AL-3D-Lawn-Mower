@@ -40,19 +40,23 @@ void Check_Membrane_Switch_Input_Docked()
 {
   //Menu Options if the Mower is Docked
   Read_Membrane_Keys();
-  Menu_Complete = 1;
+  Menu_Complete       = 1;
   Menu_Mode_Selection = 0;
-  Menu_View = 0;
+  Menu_View           = 0;
 
   if (!Start_Key_X)                                      // If the start key is pressed
   {
+#if (DEBUG_LEVEL >= 3)
     Serial.println();
     Serial.println(F("Start Key Pressed"));
+#endif
     Menu_Complete = false;                                // Menu complete will return to the normal loop
     lcd.clear();
     delay(5);
+#if (DEBUG_LEVEL >= 3)
     Serial.println();
     Serial.println(F("Docked Menu Activated"));
+#endif
     delay(500);
     lcd.clear();
     delay(5);
@@ -72,27 +76,36 @@ void Check_Membrane_Switch_Input_Docked()
 
       if (!Start_Key_X)
       {
-        Menu_Complete = true;
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("Start key is pressed"));
+#endif
+        Menu_Complete = true;
         lcd.clear();
       }
 
       if (!Plus_Key_X)
       {
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("+ key is pressed"));
+#endif
         Menu_View = Menu_View - 1;
         Run_Menu_Order_Docked();
       }
 
       if (!Minus_Key_X)
       {
+#if (DEBUG_LEVEL >= 3)
+        Serial.print(F("- key is pressed "));
+#endif
         Menu_View = Menu_View + 1;
         Run_Menu_Order_Docked();
       }
 
       if (!Stop_Key_X)
       {
+#if (DEBUG_LEVEL >= 3)
         Serial.println(F("Stop key is pressed"));
+#endif
         Menu_Complete = true;
         lcd.clear();
         lcd.setCursor(0, 0);
@@ -110,7 +123,6 @@ void Check_Membrane_Switch_Input_Docked()
 // Code to scroll the menu and print the menu options in the LCD
 void Run_Menu_Order_Docked()
 {
-  Serial.print(F("- key is pressed "));
   lcd.clear();
   lcd.setCursor(2, 0);
   Print_LCD_Menu_Docked(Menu_View);
@@ -119,10 +131,12 @@ void Run_Menu_Order_Docked()
   lcd.setCursor(0, 0);
   lcd.print(">");
   Menu_Mode_Selection = Menu_View;
+#if (DEBUG_LEVEL >= 3)
   Serial.print(F("Menu View : "));
   Serial.print(Menu_View);
   Serial.print(F("| Menu Selection"));
   Serial.println(Menu_Mode_Selection);
+#endif
   delay(100);
 
   /*
@@ -319,7 +333,9 @@ void Activate_Menu_Option_Docked()
     lcd.print(F("Manuel Start"));
     lcd.setCursor(0, 1);
     lcd.print(F("Exit Dock Z1"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Exit to Zone 1 - Free Mow"));
+#endif
     delay(1000);
     lcd.clear();
     Print_Membrane_Switch_Input_Timing();
@@ -360,7 +376,9 @@ void Activate_Menu_Option_Docked()
   if (Menu_Mode_Selection == 3)
   {
     // Quick Start the Mower in the middle of the Garden;
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Quick Start Selected"));
+#endif
     Print_Membrane_Switch_Input_Timing();                             // Changes the menu to select the mow time
     Menu_Mode_Selection = 0;
     delay(1000);
@@ -373,7 +391,9 @@ void Activate_Menu_Option_Docked()
   {
     lcd.clear();
     lcd.print(F("Trampoline Cut!"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Mower Set to Cut under Trampoline"));
+#endif
     Menu_Mode_Selection = 0;
     delay(3000);
     lcd.clear();
@@ -391,7 +411,9 @@ void Activate_Menu_Option_Docked()
     Print_Membrane_Switch_Input_Timing();                             // Changes the menu to select the mow time
     if (Mow_Time_Set == 1)
     {
+#if (DEBUG_LEVEL >= 3)
       Serial.println(F("Cutting the grass on the boundary wire"));
+#endif
       Blade_Override = 1;
       Track_Wire_Itterations = 6000;
       Exit_Zone = 3;
@@ -404,7 +426,9 @@ void Activate_Menu_Option_Docked()
   {
     lcd.clear();
     lcd.print(F("Test Mower Menu"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Test Menu Selected"));
+#endif
     Menu_Mode_Selection = 0;
     delay(1000);
     lcd.clear();
@@ -415,7 +439,9 @@ void Activate_Menu_Option_Docked()
   {
     lcd.clear();
     lcd.print(F("Mower Setup"));
+#if (DEBUG_LEVEL >= 3)
     Serial.println(F("Mower Setup Selected"));
+#endif
     Menu_Mode_Selection = 0;
     delay(1000);
     lcd.clear();

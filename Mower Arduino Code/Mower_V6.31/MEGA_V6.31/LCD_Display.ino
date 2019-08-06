@@ -3,7 +3,9 @@
 
 void Setup_Run_LCD_Intro ()
 {
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("Setup LCD"));
+#endif
   lcd.begin(16, 2);
   lcd.clear();
   lcd.print(F("ReP_AL Robot"));
@@ -15,7 +17,9 @@ void Setup_Run_LCD_Intro ()
 #endif
   delay(1000);
   lcd.clear();
+#if (DEBUG_LEVEL >= 3)
   Serial.println(F("LCD Setup OK"));
+#endif
 }
 //---------------------------------------------------------------------------------------
 
