@@ -134,7 +134,8 @@ void Manouver_Find_Wire_Track()
       PrintBoundaryWireStatus();
 
       // First go backwards if the mower is outside the wire
-      if (( inside == false) && (Abort_Wire_Find == 0) ) {                                    // If the mower is outside the wire then run the following code.
+      if (( inside == false) && (Abort_Wire_Find == 0) )                                     // If the mower is outside the wire then run the following code.
+      {
         ADCMan.run();
         UpdateWireSensor();
         PrintBoundaryWireStatus();
@@ -147,7 +148,8 @@ void Manouver_Find_Wire_Track()
         lcd.setCursor(0, 1);
         lcd.print(F("Finding Wire  "));
         delay(100);
-        while (( inside != true) && (Abort_Wire_Find == 0) ) {                                // While the mower is still outside the fence run this code
+        while ((inside != true) && (Abort_Wire_Find == 0))                                 // While the mower is still outside the fence run this code
+        {
           Motor_Action_Go_Full_Speed();                                                       // Go full speed (in this case backwards)
           UpdateWireSensor();                                                                 // Read the wire sensor and see of the mower is now  or outside the wire
           ADCMan.run();
@@ -172,7 +174,8 @@ void Manouver_Find_Wire_Track()
       }
 
       // Code to go forwards until the mower is outside/ON the wire
-      if (( inside == true) && (Abort_Wire_Find == 0) && (No_Wire_Found == 0) ) {             // If the Mower is situated  the wire then run the following code.
+      if ((inside == true) && (Abort_Wire_Find == 0) && (No_Wire_Found == 0))              // If the Mower is situated  the wire then run the following code.
+      {
         ADCMan.run();
         UpdateWireSensor();
 #if (DEBUG_LEVEL >= 3)
@@ -189,7 +192,8 @@ void Manouver_Find_Wire_Track()
         lcd.print(F("Finding Wire  "));
         delay(100);
         int cycle = 0;                                                                      // resets the cycles
-        while (( inside != false) && (No_Wire_Found == 0) && (Mower_Parked == 0) ) {                              // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
+        while ((inside != false) && (No_Wire_Found == 0) && (Mower_Parked == 0))                               // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
+        {
           cycle = cycle + 1;
           lcd.setCursor(0, 1);
           lcd.print(F("Track -> Charge"));
@@ -211,7 +215,8 @@ void Manouver_Find_Wire_Track()
 #endif
             Abort_Wire_Find = 1;
           }
-          if (cycle > Max_Cycle_Wire_Find) {                                                                // Track forwards for 500 cycles
+          if (cycle > Max_Cycle_Wire_Find)                                                                 // Track forwards for 500 cycles
+          {
             No_Wire_Found = 1;                                                              // if mower is still tracking after 500 cycles then cancel the find.
 #if (DEBUG_LEVEL >= 2)
             Serial.println(F("Max Forward Cycles reached"));
@@ -227,7 +232,8 @@ void Manouver_Find_Wire_Track()
   }
 
   // Position the mower further over the wire so it has space to turn 90° onto the wire.
-  if ( (Abort_Wire_Find == 0) && (No_Wire_Found == 0) && (Mower_Parked == 0) ) {
+  if ( (Abort_Wire_Find == 0) && (No_Wire_Found == 0) && (Mower_Parked == 0) ) 
+  {
     SetPins_ToGoForwards();
     delay(100);
     Motor_Action_Go_Full_Speed();
@@ -238,17 +244,20 @@ void Manouver_Find_Wire_Track()
   // Sets the firection of spin depensing on if the mower is eciting or tracking home
 
   // Set pins to track home to charge.
-  if ((Mower_Track_To_Charge == 1) && (Mower_Parked == 0)) {
+  if ((Mower_Track_To_Charge == 1) && (Mower_Parked == 0)) 
+  {
     lcd.setCursor(0, 1);
     lcd.print(F("Track -> Charge"));
     delay(1000);
-    if (CW_Tracking_To_Charge == 1) {
+    if (CW_Tracking_To_Charge == 1) 
+    {
       SetPins_ToTurnRight();                                                                // Track perimeter wire in a Clockwise Direction to the charging station
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("CW Tracking to Charger"));
 #endif
     }
-    if (CCW_Tracking_To_Charge == 1) {
+    if (CCW_Tracking_To_Charge == 1)
+    {
       SetPins_ToTurnLeft();
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("CCW Tracking toCharger"));
@@ -257,24 +266,26 @@ void Manouver_Find_Wire_Track()
   }
 
   // Set pins to track to exit.
-  if ((Mower_Track_To_Exit == 1) && (Mower_Parked == 0)) {
+  if ((Mower_Track_To_Exit == 1) && (Mower_Parked == 0)) 
+  {
     lcd.setCursor(0, 1);
     lcd.print(F("Track -> Exit"));
     delay(1000);
-    if (CW_Tracking_To_Start == 1) {
+    if (CW_Tracking_To_Start == 1) 
+    {
       SetPins_ToTurnRight();                                                                // Track perimeter wire in a Clockwise Direction to the charging station
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("CW Tracking to Exit"));
 #endif
     }
-    if (CCW_Tracking_To_Start == 1) {
+    if (CCW_Tracking_To_Start == 1) 
+    {
       SetPins_ToTurnLeft();
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("CCW Tracking to Exit"));
 #endif
     }
   }
-
 
   delay(20);
   // Pins are now set to turn from the above logic which way to turn onto the wire
@@ -286,10 +297,11 @@ void Manouver_Find_Wire_Track()
   PrintBoundaryWireStatus();                                                                  // Prints of the status of the wire sensor readings
   delay(20);
 
-
   // Spins the mower over the wire in the driection of tracking
-  while (( inside == false)  && (Abort_Wire_Find == 0) && (No_Wire_Found == 0) && (Mower_Parked == 0) ) {
-    while ( inside != true) {                                                             // Do this loop until mower is back  the wire fence
+  while ((inside == false)  && (Abort_Wire_Find == 0) && (No_Wire_Found == 0) && (Mower_Parked == 0)) 
+  {
+    while ( inside != true)                                                              // Do this loop until mower is back  the wire fence
+    {
       Motor_Action_Go_Full_Speed();                                                         // Go full speed (in the case turning as set by the previous logic)
       UpdateWireSensor();                                                                   // Read the wire sensor and see of the mower is now  or outside the wire
       ADCMan.run();
@@ -463,7 +475,6 @@ void Manouver_Turn_Around()
     //Set the compass leg to the next stage.
     Compass_Leg = Compass_Leg + 1;
     if (Compass_Leg > 1) Compass_Leg = 0;
-
   }
 
   Motor_Action_Stop_Motors();

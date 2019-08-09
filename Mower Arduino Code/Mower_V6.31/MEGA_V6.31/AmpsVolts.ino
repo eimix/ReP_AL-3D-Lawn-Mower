@@ -109,11 +109,11 @@ void Calculate_Volt_Amp_Charge()
   int ACSoffset = 2500;
   double VoltageAmp = 0;
   VoltageAmp = (RawValueAmp / 1024.0) * 5000; // Gets you mV
-  ChargerCurrent =  ((VoltageAmp - ACSoffset) / mVperAmp);
+  ChargeCurrent = ((VoltageAmp - ACSoffset) / mVperAmp);
 
 #if (DEBUG_LEVEL >= 3)
   Serial.print(F("A:"));
-  Serial.print(ChargerCurrent);
+  Serial.print(ChargeCurrent);
   Serial.print(F("|"));
 #endif
 
@@ -139,8 +139,8 @@ void Calculate_Volt_Amp_Charge()
   Serial.print(BatteryVoltage);
   Serial.print(F("|"));
 
-  if (ChargerCurrent < 0.4) Mower_Charging = 0;
-  if (ChargerCurrent > 0.4) Mower_Charging = 1;
+  if (ChargeCurrent < 0.4) Mower_Charging = 0;
+  if (ChargeCurrent > 0.4) Mower_Charging = 1;
 }
 #endif
 //---------------------------------------------------------------------------------------

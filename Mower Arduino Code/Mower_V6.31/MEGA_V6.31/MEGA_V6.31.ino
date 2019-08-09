@@ -8,10 +8,9 @@
 //TODO
 //1. Variables with no config should be #define'ed, ex.: Battery_Max
 //2. User configurable variables and defines should be in Config.ino
-//3. Serial output is flooded every loop - debug levels could be used (1-error; 2-warning; 3-info; 4-debug; 5-full)
-//4. Bumper sensors to use with or without sonar sensors
-//5. Very much dalay(>1000), and no safty checks could be done
-//6. Manouvers - state machine to perform list of commands (now complex debuging, many dalay() that blocks loop execution
+//3. Bumper sensors to use with or without sonar sensors
+//4. Very much dalay(>1000), and no safty checks could be done
+//5. Manouvers - state machine to perform list of commands (now complex debuging, many dalay() that blocks loop execution
 // {
 //   {Command: 'Go forward', Condition: 'Time', Paramter1: 5}, 
 //   {Command: 'Wait', Condition: 'Time', Paramter1: 10}, 
@@ -23,8 +22,9 @@
 // }
 
 //DONE
-//1. Variable P is too short to be global, rename it - changed to P -> PID_P; D -> PID_D; I -> Perimeter_I
+//1. Variable P is too short to be global, rename it - changed to P -> PID_P; D -> PID_D; I -> Perimeter_I (PID_I)
 //2. Lift sensor (kill switch), warning - it works in normal conditions, but not in "delay(>1000)"
+//3. Serial output is flooded every loop - debug levels could be used (1-error; 2-warning; 3-info; 4-debug; 5-full)
 //
 
 //Libraries for Perimeter Wire Receiver
@@ -173,9 +173,6 @@ int PrintOutMin;
 int PrintOutMid;
 int PrintOutMax;
 int PrintMAG_Now;
-
-//WIFI Variables
-float val_WIFI;
 
 /***********************************************************************************************
 

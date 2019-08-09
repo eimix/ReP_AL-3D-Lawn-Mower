@@ -9,6 +9,10 @@ void Receive_All_From_MEGA ()
   {
     char r = Serial.read(); //NodeMCU
 
+    //Ignore end of line characters (received if other side does "println")
+    if (r == '\n' || r == '\r')
+      continue;
+
     //If any other (not special character) received - add it to buffer
     if (r < 'a' || r > 'z') 
     {

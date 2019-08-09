@@ -1,38 +1,44 @@
 //---------------------------------------------------------------------------------------
 
 #ifdef UseRemoteSensors
+String Serial1_RX = "_";
+
 void Read_Serial1_Nano()
 {
-  String Serial1_RX_Value  = "";                                              // changed to string
-
   while (Serial1.available() > 0)
   {
-    char recieved = Serial1.read();
-    if ( recieved != '\q' && recieved != '\j' && recieved != '\w' )
+    char r = Serial1.read();
+
+    //Ignore end of line characters (received if other side does "println")
+    if (r == '\n' || r == '\r')
+      continue;
+
+    //If any other (not special character) received - add it to buffer
+    if (r < 'a' || r > 'z') 
     {
-      Serial1_RX_Value = Serial1_RX_Value + (char)recieved;          // hack to joining chars in correct way to Serial1_Rx_Value
+      Serial1_RX = Serial1_RX + (char)r;
+      continue;
     }
-    else if (recieved == '\q')
+
+    //Ignore first "packet", it is not sure that it is received from begining, 
+    //only reading first "end of packet" byte confirms that new "packet" will start
+    if (Serial1_RX[0] == '_') 
     {
-      RawValueAmp = Serial1_RX_Value.toInt();                                 // if end of value found, set AmpsTX and clear Serial1_Rx_Value temp var Serial1_Rx_Value used for holding value until \q or \j
-      Serial1_RX_Value = ""; // changed to string
+      Serial1_RX = "";
+      continue;
     }
-    else if (recieved == '\j')
+
+    switch (r)
     {
-      RawValueVolt = Serial1_RX_Value.toInt();                                // same as upper but for VoltsTX,
-      Serial1_RX_Value = "";
+      case 'q': RawValueAmp   = Serial1_RX.toInt();
+                break;
+      case 'j': RawValueVolt  = Serial1_RX.toInt();
+                break;
+      case 'w': Rain_Detected = Serial1_RX.toInt();
+                break;
     }
-    else if (recieved == '\w')
-    {
-      Rain_Detected = Serial1_RX_Value.toInt();                               // same as upper but for VoltsTX
-      Serial1_RX_Value = "";
-    }
-    else 
-    {
-#if (DEBUG_LEVEL >= 3)
-      Serial.print(F("No Data Received|"));
-#endif
-    }  
+    
+    Serial1_RX = "";
   }
 
   Calculate_Volt_Amp_Charge();

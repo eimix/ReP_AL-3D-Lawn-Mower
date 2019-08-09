@@ -1,78 +1,123 @@
+//-----------------------------------------------------------------------------------------------------------------------------------
 // Blynk TX and RX functions to communicate with the MEGA and NODEMCU
 // Each transmission has a label n or p or q or
 
 // USE V5 Blynk  12th Feb 2019
 
+//TODO:
+
+//DONE:
+//1. Serial communication with buffer - dont miss commands from NodeMCU (ESP8266)
+//2. In manual mode - report data to ESP8266
+//3. Skip real special EOL characters '\r' or '\n', and do not use escaped characters that are not escaped
+//4. val_WIFI is not global, just in this file, and int is enougth
+
 #ifdef UseWiFi
+int val_WIFI;
+//-----------------------------------------------------------------------------------------------------------------------------------
+String Serial2_RX = "_";
 
 void Get_WIFI_Commands()
 {
-  Receive_Data_From_NODEMCU();
+  Receive_Data_From_NODEMCU(false);
   delay(5);
   Transmit_All_To_NODEMCU();
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
-void Receive_Data_From_NODEMCU()
+void Receive_Data_From_NODEMCU(bool ManualMode)
 {
+  //Using global variable NodeMCU_RX_Value as receive buffer
+  
   while (Serial2.available() > 0)
   {
-    val_WIFI = Serial2.parseInt();
-    if (Serial2.read() == '\p')
+    char r = Serial2.read();
+
+    //Ignore end of line characters (received if other side does "println")
+    if (r == '\n' || r == '\r')
+      continue;
+
+    //If any other (not special character) received - add it to buffer
+    if (r < 'a' || r > 'z') 
     {
-      delay(1000);
-      Execute_Blynk_Command_To_Mower();
+      Serial2_RX = Serial2_RX + (char)r;
+      continue;
     }
+
+    //Ignore first "packet", it is not sure that it is received from begining, 
+    //only reading first "end of packet" byte confirms that new "packet" will start
+    if (Serial2_RX[0] == '_') 
+    {
+      Serial2_RX = "";
+      continue;
+    }
+
+    switch (r)
+    {
+      case 'p': val_WIFI = Serial2_RX.toInt();
+                if (ManualMode)
+                {
+                  delay(5); //Why this?
+                  Execute_Manuel_Blynk_Command_To_Mower();
+                }
+                else
+                {
+                  delay(1000); //Why this?
+                  Execute_Blynk_Command_To_Mower();
+                }
+                break;
+    }
+
+    //Always clear buffer if "end of packet" received
+    Serial2_RX = "";
   }
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Receive_WIFI_Manuel_Commands()
 {
-  while (Serial2.available() > 0)
-  {
-    val_WIFI = Serial2.parseInt();
-    if (Serial2.read() == '\p')
-    {
-      delay(5);
-      Execute_Manuel_Blynk_Command_To_Mower();
-    }
-  }
+  Receive_Data_From_NODEMCU(true);  
+  delay(5);
+  Transmit_All_To_NODEMCU();
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Transmit_All_To_NODEMCU()
 {
   delay(5);
   Serial2.print(BatteryVoltage);
-  Serial2.println("\g");
+  Serial2.println("g");
   delay(5);
   Serial2.print(Loop_Cycle_Mowing);
-  Serial2.println("\c");
+  Serial2.println("c");
   delay(5);
   Serial2.print(Mower_Docked);
-  Serial2.println("\d");
+  Serial2.println("d");
   delay(5);
   Serial2.print(Mower_Running);
-  Serial2.println("\z");
+  Serial2.println("z");
   delay(5);
   Serial2.print(Mower_Parked);
-  Serial2.println("\y");
+  Serial2.println("y");
   delay(5);
   Serial2.println(Mower_Charging);
-  Serial2.println("\o");
+  Serial2.println("o");
   delay(5);
   Serial2.println(Tracking_Wire);
-  Serial2.println("\m");
+  Serial2.println("m");
 
   //*************
 
   //Serial2.print(Mower_Parked_Low_Batt);
-  //Serial2.println("\b");
+  //Serial2.println("b");
 
   //Serial2.print(Mower_Error);
-  //Serial2.println("\l");
+  //Serial2.println("l");
 
   //Serial2.println(Compass_Heading_Locked);
-  //Serial2.println("\w");
+  //Serial2.println("w");
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Execute_Blynk_Command_To_Mower()
 {
@@ -161,7 +206,7 @@ void Execute_Blynk_Command_To_Mower()
     Serial.println(F("|Pause/Stop"));
 #endif
     Manouver_Park_The_Mower();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   // Manuel Button in Blynk App
@@ -175,7 +220,7 @@ void Execute_Blynk_Command_To_Mower()
 #endif
     Manouver_Manuel_Mode();
     Turn_On_Relay();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   // Automatic Button in Blynk App
@@ -189,9 +234,10 @@ void Execute_Blynk_Command_To_Mower()
 #endif
     Manouver_Park_The_Mower();
     Turn_On_Relay();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void Execute_Manuel_Blynk_Command_To_Mower()
 {
@@ -206,7 +252,7 @@ void Execute_Manuel_Blynk_Command_To_Mower()
 #endif
     Manouver_Park_The_Mower();
     Turn_On_Relay();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   if (val_WIFI == 17)
@@ -220,7 +266,7 @@ void Execute_Manuel_Blynk_Command_To_Mower()
     Motor_Action_Go_Full_Speed();
     delay(300);
     Motor_Action_Stop_Motors();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   if (val_WIFI == 18)
@@ -234,7 +280,7 @@ void Execute_Manuel_Blynk_Command_To_Mower()
     Motor_Action_Go_Full_Speed();
     delay(300);
     Motor_Action_Stop_Motors();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   if (val_WIFI == 19)
@@ -248,7 +294,7 @@ void Execute_Manuel_Blynk_Command_To_Mower()
     Motor_Action_Go_Full_Speed();
     delay(200);
     Motor_Action_Stop_Motors();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
   if (val_WIFI == 20)
@@ -262,7 +308,9 @@ void Execute_Manuel_Blynk_Command_To_Mower()
     Motor_Action_Go_Full_Speed();
     delay(200);
     Motor_Action_Stop_Motors();
-    val_WIFI = 0;   // restes val2 to zero so the command is only executed once
+    val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
+
 #endif
