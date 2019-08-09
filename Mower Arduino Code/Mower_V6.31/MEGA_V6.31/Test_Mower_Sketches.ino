@@ -12,6 +12,8 @@ void Test_Mower_Check_Wire()
   ADCMan.run();
   // ADCMan.setCapture(pinPerimeterLeft, 1, 0);
 
+  UpdateWireSensor();
+/*  
   if (millis() >= nextTime)  
   {
     nextTime = millis() + 50;
@@ -21,6 +23,7 @@ void Test_Mower_Check_Wire()
       counter++;
     }
   }
+*/
 
 #if (DEBUG_LEVEL >= 3)
   /* Prints Values to the Serial Monitor of mag, smag and signal quality.  */

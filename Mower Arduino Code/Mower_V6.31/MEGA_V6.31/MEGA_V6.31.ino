@@ -60,8 +60,8 @@ DFRobot_QMC5883 compass;
 
 //Perimeter Variables
 Perimeter perimeter;
-unsigned long nextTime = 0;
-int counter = 0;
+unsigned long nextTime = 0;             // Next time wire sensor reading is required, incremented by 50ms
+int WireCrossCounter = 0;               // ??? Probably not used
 boolean inside = true;
 int Wire_Detected;
 

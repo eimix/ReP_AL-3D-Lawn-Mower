@@ -134,7 +134,7 @@ void Manouver_Find_Wire_Track()
       PrintBoundaryWireStatus();
 
       // First go backwards if the mower is outside the wire
-      if (( inside == false) && (Abort_Wire_Find == 0) )                                     // If the mower is outside the wire then run the following code.
+      if (inside == false && Abort_Wire_Find == 0)                                            // If the mower is outside the wire then run the following code.
       {
         ADCMan.run();
         UpdateWireSensor();
@@ -148,7 +148,7 @@ void Manouver_Find_Wire_Track()
         lcd.setCursor(0, 1);
         lcd.print(F("Finding Wire  "));
         delay(100);
-        while ((inside != true) && (Abort_Wire_Find == 0))                                 // While the mower is still outside the fence run this code
+        while (inside != true && Abort_Wire_Find == 0)                                        // While the mower is still outside the fence run this code
         {
           Motor_Action_Go_Full_Speed();                                                       // Go full speed (in this case backwards)
           UpdateWireSensor();                                                                 // Read the wire sensor and see of the mower is now  or outside the wire

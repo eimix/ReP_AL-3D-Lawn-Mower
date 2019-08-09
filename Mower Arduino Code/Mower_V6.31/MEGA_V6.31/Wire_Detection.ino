@@ -1,19 +1,22 @@
+//-----------------------------------------------------------------------------------------------------------------------------------
+//TODO:
+//1. TestforBoundaryWire inconsisten conditions (-20;20) and (-inf; -50)U(50;inf). What to do in this range [-50;20] and [20;50]?
+
+// Check the mower is inside (0) or outside (1) the perimeter wire
 void Check_Wire_In_Out()
 {
-  // Check the mower is inside (0) or outside (1) the perimeter wire
-
   if (Perimeter_Wire_Enabled == 1)
   {
-    UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now  or outside the wire
+    UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now or outside the wire
     ADCMan.run();
     PrintBoundaryWireStatus();
-    if ( (perimeter.isInside(0)) == 0 )
+    if ((perimeter.isInside(0)) == 0)
     {
       Outside_Wire = 1;                                               // Mower is outside the perimeter wire
       Print_LCD_Wire();
-      Outside_Wire_Count = Outside_Wire_Count + 1;                    // Number of outside wire counts is increased.
+      Outside_Wire_Count++;                                           // Number of outside wire counts is increased.
     }
-    if ( (perimeter.isInside(0)) == 1 )
+    if ((perimeter.isInside(0)) == 1)
     {
       Outside_Wire = 0;                                               // Mower is inside the perimeter wire
       Outside_Wire_Count = 0;                                         // The number of outside wire counts is reset to 0
@@ -26,7 +29,8 @@ void Check_Wire_In_Out()
     if  (Action_On_Over_Wire_Count_Max == 1) Manouver_Hibernate_Mower();                  // Put the mower to sleep and wait
     if  (Action_On_Over_Wire_Count_Max == 2) Manouver_Outside_Wire_ReFind_Function();     // re-find Garden using Sonar 1 and wire detect
 
-    if  (Action_On_Over_Wire_Count_Max == 3) {     // try to locate the wire using wire find function
+    if  (Action_On_Over_Wire_Count_Max == 3)      // try to locate the wire using wire find function
+    {
       lcd.clear();
       lcd.print(F("Wire Find"));
       lcd.setCursor(0, 1);
@@ -48,9 +52,9 @@ void Check_Wire_In_Out()
     }
   }
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 //Check that boundary wire is turned on
-//************************************************************************************
 void TestforBoundaryWire()
 {
   ADCMan.run();
@@ -62,17 +66,18 @@ void TestforBoundaryWire()
       uses the mag field calculated. Between -50 and 50 normally the field is off.     */
 
     MAG_Now = perimeter.getMagnitude(0);
-    if ((MAG_Now > -20 ) && (MAG_Now < 20 ))
+    if (MAG_Now > -20 && MAG_Now < 20)
     {
       Wire_Detected = 0;
       Print_LCD_NO_Wire();
-      Wire_Off = Wire_Off + 1;
-      if ((Wire_Off > 5) && (Mower_Docked == 0)) Manouver_Hibernate_Mower();
+      Wire_Off = Wire_Off++;
+      if (Wire_Off > 5 && Mower_Docked == 0)
+        Manouver_Hibernate_Mower();
     }
 
     //Checks to see that the boundary fence is turned ON.
     //  uses the mag field. under -50 or above 50 means the field is on
-    if ((MAG_Now < -50 ) || (MAG_Now > 50 )) 
+    if (MAG_Now < -50 || MAG_Now > 50) 
     {
       Wire_Detected = 1;
       Mower_Running = 1;
@@ -102,6 +107,7 @@ void TestforBoundaryWire()
     Wire_Detected = 1;
   }
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void UpdateWireSensor()
 {
@@ -111,11 +117,11 @@ void UpdateWireSensor()
     if (perimeter.isInside(0) != inside)
     {
       inside = perimeter.isInside(0);
-      counter++;
+      WireCrossCounter++;
     }
   }
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
 
 void PrintBoundaryWireStatus()
 {
@@ -138,3 +144,4 @@ void PrintBoundaryWireStatus()
   //Serial.print(inside);
 #endif
 }
+//-----------------------------------------------------------------------------------------------------------------------------------
