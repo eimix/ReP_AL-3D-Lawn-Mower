@@ -1,7 +1,7 @@
 // Infornation to be printed to the Mower LCD screen
 //---------------------------------------------------------------------------------------
 
-void Setup_Run_LCD_Intro ()
+void Setup_Run_LCD_Intro()
 {
 #if (DEBUG_LEVEL >= 3)
   Serial.println(F("Setup LCD"));
@@ -15,7 +15,7 @@ void Setup_Run_LCD_Intro ()
   lcd.setCursor(7, 1);
   lcd.print(F("WIFI ON"));
 #endif
-  delay(1000);
+  lawn_delay(1000);
   lcd.clear();
 #if (DEBUG_LEVEL >= 3)
   Serial.println(F("LCD Setup OK"));
@@ -23,31 +23,62 @@ void Setup_Run_LCD_Intro ()
 }
 //---------------------------------------------------------------------------------------
 
-void Print_Mower_Warning()
+void Print_LCD_Mower_Warning()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Mower Warning"));
+
+#if (DEBUG_LEVEL >= 2)
+  Serial.print(F("Mower Warning:"));
+#endif
 
 #ifdef UseLiftSensors
   if (LiftFrontLeft == LiftSensorBAD && LiftFrontRight == LiftSensorBAD)
   {
     lcd.setCursor(0, 1);
     lcd.print(F("Mower lifted"));
+
+#if (DEBUG_LEVEL >= 2)
+    Serial.print(F("Mower lifted;"));
+#endif
   }
+#endif
+
+  if (LoadCurrent > MaxLoadCurrent)
+  {
+    lcd.setCursor(0, 1);
+    lcd.print(F("High load"));
+
+#if (DEBUG_LEVEL >= 1)
+    Serial.print(F("High load;"));
+#endif
+  }
+
+#if (DEBUG_LEVEL >= 2)
+  Serial.println();
 #endif
 }
 //---------------------------------------------------------------------------------------
 
-void Print_Mower_Error()
+void Print_LCD_Mower_Error()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Mower Error"));
+
+#if (DEBUG_LEVEL >= 1)
+  Serial.println(F("Mower Error"));
+#endif
+  
   if (Wire_Off > 5)
   {
     lcd.setCursor(0, 1);
-    lcd.print(F("Wire Off"));
+    lcd.print(F("Wire OFF"));
+
+#if (DEBUG_LEVEL >= 1)
+    Serial.println(F("Wire OFF"));
+#endif    
   }
 }
 //---------------------------------------------------------------------------------------
@@ -56,7 +87,7 @@ void Print_LCD_Volt_Info()
 {
   lcd.setCursor(10, 0);
   lcd.print("V:");
-  lcd.setCursor(12, 0);
+  //lcd.setCursor(12, 0);
   lcd.print(BatteryVoltage);
 }
 //---------------------------------------------------------------------------------------
@@ -66,7 +97,7 @@ void Print_Charging_LCD()
   lcd.setCursor(0, 0);
   if (Mower_Charging == 1)
     lcd.print(F("Charging"));
-  if ((Rain_Detected == 0) && (Mower_Charging != 1))
+  if (Rain_Detected == 0 && Mower_Charging != 1)
     lcd.print(F("        "));
 }
 //---------------------------------------------------------------------------------------
@@ -77,15 +108,15 @@ void Print_Raining_LCD()
   if (Rain_Detected == 1)
     lcd.print("Rain");
   // See raining and charging clause if this is not displying correctly.
-  if ((Rain_Detected == 0) && (Mower_Charging == 0))
+  if (Rain_Detected == 0 && Mower_Charging == 0)
     lcd.print("    ");
 }
 //---------------------------------------------------------------------------------------
 
-void Print_Recharge_LCD()
+void Print_LCD_Recharge()
 {
   lcd.setCursor(0, 1);
-  lcd.print(F("Recharge Batt"));
+  lcd.print(F("Recharge Battery"));
 }
 //---------------------------------------------------------------------------------------
 
@@ -103,7 +134,8 @@ void Print_LCD_Mowing()
     lcd.setCursor(0, 1);
     lcd.print(F("Mowing..    "));
   }
-  if (Alarm_Timed_Mow_ON == 1)
+  //if (Alarm_Timed_Mow_ON == 1)
+  else
   {
     lcd.setCursor(0, 1);
     lcd.print("Timer:");
@@ -122,10 +154,10 @@ void Print_LCD_Compass_Mowing()
   {
     lcd.setCursor(0, 1);
     if (PWM_Right > PWM_Left)  lcd.print(F("<H-Lock Mow "));
-    if (PWM_Left > PWM_Right)  lcd.print(F(" H-Lock Mow>"));
+    if (PWM_Left  > PWM_Right)  lcd.print(F(" H-Lock Mow>"));
     if (PWM_Left == PWM_Right) lcd.print(F("|H-Lock Mow|"));
   }
-  if (Compass_Heading_Locked == 0)
+  else
   {
     lcd.setCursor(0, 1);
     lcd.print(F("            "));
@@ -140,10 +172,10 @@ void Print_LCD_Info_Parked()
 }
 //---------------------------------------------------------------------------------------
 
-void Print_LCD_Info_Manuel()
+void Print_LCD_Info_Manual()
 {
   lcd.setCursor(0, 1);
-  lcd.print("Manuel");
+  lcd.print("Manual");
 }
 //---------------------------------------------------------------------------------------
 
@@ -156,13 +188,14 @@ void Print_LCD_Info_Docked()
 
 void Print_LCD_NO_Wire()
 {
-  if ((Mower_Docked == 1) || (Mower_Parked == 1) )
+  if (Mower_Docked == 1 || Mower_Parked == 1)
   {
     lcd.setCursor(7, 1);
     lcd.print(F(":WIRE OFF"));
     Wire_ON_Printed = 0;
   }
-  if ((Mower_Docked == 0) && (Mower_Parked == 0) )
+  //if (Mower_Docked == 0 && Mower_Parked == 0)
+  else
   {
     lcd.setCursor(0, 1);
     lcd.print(F(":WIRE OFF        "));
@@ -173,13 +206,17 @@ void Print_LCD_NO_Wire()
 
 void Print_LCD_Wire_ON()
 {
-  if ((Mower_Docked == 1) || (Mower_Parked == 1)  && (Wire_ON_Printed = 0))
+  if (Wire_ON_Printed == 0)
+    return;
+    
+  if (Mower_Docked == 1 || Mower_Parked == 1)
   {
     lcd.setCursor(7, 1);
     lcd.print(F(":               "));
     Wire_ON_Printed = 1;
   }
-  if ((Mower_Docked == 0) && (Mower_Parked == 0) && (Wire_ON_Printed = 0))
+  //if (Mower_Docked == 0 && Mower_Parked == 0)
+  else
   {
     lcd.setCursor(0, 1);
     lcd.print(F(":               "));
@@ -212,20 +249,31 @@ void Print_LCD_Heading_for_Home()
 {
   lcd.setCursor(0, 1);
   lcd.print(F("Target:"));
-  lcd.print(((Heading_Lower_Limit_Compass - Heading_Lower_Limit_Compass) / 2 ) + Heading_Lower_Limit_Compass);
+  lcd.print(Compass_Target); //Was some strange: (Heading_Lower_Limit_Compass - Heading_Lower_Limit_Compass) / 2 + Heading_Lower_Limit_Compass;
 }
 //---------------------------------------------------------------------------------------
 
-void Print_Time_On_LCD()
+void Print_LCD_Time()
 {
-  if ((Mower_Charging == 0) && (Mower_Running == 0) && (Rain_Detected == 0))
+  if (Mower_Charging == 0 && Mower_Running == 0 && Rain_Detected == 0)
   {
+#ifdef UseClockDS1302
+    Time t      = rtc.time();
+    byte hour   = t.hr;
+    byte minute = t.min;
+#endif
+#ifdef UseClockDS1307
+    DateTime t  = rtc.now();
+    byte hour   = t.hour();
+    byte minute = t.minute();
+#endif
+
     lcd.setCursor(0, 0);            // Spaces to the right & down
-    Time t = rtc.time();
-    lcd.print(t.hr);
+    if (hour < 10) lcd.print ("0");
+    lcd.print(hour);
     lcd.print(":");
-    if (t.min < 10) lcd.print ("0");
-    lcd.print(t.min);
+    if (minute < 10) lcd.print ("0");
+    lcd.print(minute);
   }
 }
 //---------------------------------------------------------------------------------------

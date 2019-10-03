@@ -1,6 +1,10 @@
 //-----------------------------------------------------------------------------------------------------------------------------------
 //TODO:
-//1. TestforBoundaryWire inconsisten conditions (-20;20) and (-inf; -50)U(50;inf). What to do in this range [-50;20] and [20;50]?
+
+//DONE:
+// 1. TestforBoundaryWire inconsisten conditions (-20;20) and (-inf; -50)U(50;inf). What to do in this range [-50;20] and [20;50]?
+//    Explanation:If in range [-50;20] and [20;50] do not turn wire OFF, neither turn ON if it was turned OFF
+
 
 // Check the mower is inside (0) or outside (1) the perimeter wire
 void Check_Wire_In_Out()
@@ -10,15 +14,15 @@ void Check_Wire_In_Out()
     UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now or outside the wire
     ADCMan.run();
     PrintBoundaryWireStatus();
-    if ((perimeter.isInside(0)) == 0)
+    if (perimeter.isInside(0) == 0)
     {
       Outside_Wire = 1;                                               // Mower is outside the perimeter wire
       Print_LCD_Wire();
       Outside_Wire_Count++;                                           // Number of outside wire counts is increased.
     }
-    if ((perimeter.isInside(0)) == 1)
+    if (perimeter.isInside(0) == 1)
     {
-      Outside_Wire = 0;                                               // Mower is inside the perimeter wire
+      Outside_Wire       = 0;                                         // Mower is inside the perimeter wire
       Outside_Wire_Count = 0;                                         // The number of outside wire counts is reset to 0
     }
   }
@@ -35,17 +39,17 @@ void Check_Wire_In_Out()
       lcd.print(F("Wire Find"));
       lcd.setCursor(0, 1);
       lcd.print(F("Special Function"));
-      delay(2000);
+      lawn_delay(2000);
       Outside_Wire_Count = 0;
       Specials_Find_Wire_Track();
       SetPins_ToGoBackwards();                                                              // Set the mower to back up
       Motor_Action_Go_Full_Speed();
-      delay(1000);
+      lawn_delay(1000);
       Motor_Action_Stop_Motors();
       UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now  or outside the wire
       ADCMan.run();
       PrintBoundaryWireStatus();
-      delay(1000);
+      lawn_delay(1000);
       UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now  or outside the wire
       ADCMan.run();
       PrintBoundaryWireStatus();
@@ -62,19 +66,23 @@ void TestforBoundaryWire()
 
   if (Perimeter_Wire_Enabled == 1)                                                // Perimeter use is ON - Perimter_USE can be turned on or off in the setup.
   {
-   /*Checks to see if the boundary wire is turned OFF.
-      uses the mag field calculated. Between -50 and 50 normally the field is off.     */
+   /*
+      Checks to see if the boundary wire is turned OFF.
+      uses the mag field calculated. Between -50 and 50 normally the field is off.     
+   */
 
     MAG_Now = perimeter.getMagnitude(0);
     if (MAG_Now > -20 && MAG_Now < 20)
     {
       Wire_Detected = 0;
       Print_LCD_NO_Wire();
-      Wire_Off = Wire_Off++;
+      Wire_Off++;
       if (Wire_Off > 5 && Mower_Docked == 0)
         Manouver_Hibernate_Mower();
     }
 
+    //If in range [-50;20] and [20;50] do not turn wire OFF, neither turn ON if it was turned OFF
+    
     //Checks to see that the boundary fence is turned ON.
     //  uses the mag field. under -50 or above 50 means the field is on
     if (MAG_Now < -50 || MAG_Now > 50) 
@@ -111,14 +119,14 @@ void TestforBoundaryWire()
 
 void UpdateWireSensor()
 {
-  if (millis() >= nextTime)
+  if (millis() < nextTime)
+    return;
+    
+  nextTime = millis() + 50;
+  if (perimeter.isInside(0) != inside)
   {
-    nextTime = millis() + 50;
-    if (perimeter.isInside(0) != inside)
-    {
-      inside = perimeter.isInside(0);
-      WireCrossCounter++;
-    }
+    inside = perimeter.isInside(0);
+    WireCrossCounter++;
   }
 }
 //-----------------------------------------------------------------------------------------------------------------------------------

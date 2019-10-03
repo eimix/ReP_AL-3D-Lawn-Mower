@@ -3,15 +3,36 @@
 
 //----------------------------------------------------------------------------------------------
 
-void Transmit_Blynk_Data_to_Mega()
+void Transmit_Blynk_Data_to_Mega(int code)
 {
-  int code = transmit_blynk_code + 10;           // Transmits the code and adds 10 to the number
-  NodeMCU.print(code);
-  NodeMCU.println("p");
-  delay(30);
-  Serial.print("TX_Code_to_MEGA:");
-  Serial.print(code);
-  Serial.print("");
-  delay(20);
+  if (code < 0)
+    return;
+    
+  SerialToAtmega.print(code + 10);
+  SerialToAtmega.println("p");
+
+  Serial.print("TX to MEGA:");
+  Serial.println(code);
+}
+//----------------------------------------------------------------------------------------------
+
+void Transmit_Blynk_Joystick_Data_to_Mega(int code, int JoystickX, int JoystickY) 
+{
+  if (code < 0)
+    return;
+    
+  SerialToAtmega.print(code + 10);
+  SerialToAtmega.print("|");
+  SerialToAtmega.print(JoystickX);
+  SerialToAtmega.print("|");
+  SerialToAtmega.print(JoystickY);
+  SerialToAtmega.println("j");
+
+  Serial.print("TX to MEGA:");
+  Serial.print(code + 10);
+  Serial.print("|");
+  Serial.print(JoystickX);
+  Serial.print("|");
+  Serial.println(JoystickY);
 }
 //----------------------------------------------------------------------------------------------

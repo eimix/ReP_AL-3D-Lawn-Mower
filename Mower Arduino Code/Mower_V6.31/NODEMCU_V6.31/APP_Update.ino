@@ -2,31 +2,32 @@
 
 void Update_Blynk_App_With_Status()
 {
+/*
   if (Mower_Docked_Filter == 2)
   {
     //App Buttons
-    Blynk.virtualWrite(V10, LOW);      // Exit Dock Button
-    Blynk.virtualWrite(V0, LOW);       // Quick Start Button
-    Blynk.virtualWrite(V2, LOW);       // Pause/Stop Button
-    Blynk.virtualWrite(V1, LOW);       // Go To Dock Button
+    Blynk.virtualWrite(V10, LOW);       // Exit Dock Button
+    Blynk.virtualWrite(V0,  LOW);       // Quick Start Button
+    Blynk.virtualWrite(V2,  LOW);       // Pause/Stop Button
+    Blynk.virtualWrite(V1,  LOW);       // Go To Dock Button
   }
 
   if (Mower_Running_Filter == 2)
   {
     //App Buttons
-    Blynk.virtualWrite(V10, LOW);      // Exit Dock Button
-    Blynk.virtualWrite(V0, LOW);       // Quick Start Button
-    Blynk.virtualWrite(V2, LOW);       // Pause/Stop Button
-    Blynk.virtualWrite(V1, LOW);       // Go To Dock Button
+    Blynk.virtualWrite(V10, LOW);       // Exit Dock Button
+    Blynk.virtualWrite(V0,  LOW);       // Quick Start Button
+    Blynk.virtualWrite(V2,  LOW);       // Pause/Stop Button
+    Blynk.virtualWrite(V1,  LOW);       // Go To Dock Button
   }
 
-  if (Manuel_Mode == 1)
+  if (ManualMode == 1)
   {
     //App Buttons
-    Blynk.virtualWrite(V10, LOW);      // Exit Dock Button
-    Blynk.virtualWrite(V0, LOW);       // Quick Start Button
-    Blynk.virtualWrite(V2, LOW);       // Pause/Stop Button
-    Blynk.virtualWrite(V1, LOW);       // Go To Dock Button
+    Blynk.virtualWrite(V10, LOW);       // Exit Dock Button
+    Blynk.virtualWrite(V0,  LOW);       // Quick Start Button
+    Blynk.virtualWrite(V2,  LOW);       // Pause/Stop Button
+    Blynk.virtualWrite(V1,  LOW);       // Go To Dock Button
 
     Blynk.virtualWrite(V6, 0);
     Blynk.virtualWrite(V7, 0);
@@ -37,125 +38,125 @@ void Update_Blynk_App_With_Status()
   if (Mower_Parked == 1)
   {
     //App Buttons
-    Blynk.virtualWrite(V10, LOW);      // Exit Dock Button
-    Blynk.virtualWrite(V0, LOW);       // Quick Start Button
-    Blynk.virtualWrite(V2, LOW);       // Pause/Stop Button
-    Blynk.virtualWrite(V1, LOW);       // Go To Dock Button
+    Blynk.virtualWrite(V10, LOW);       // Exit Dock Button
+    Blynk.virtualWrite(V0,  LOW);       // Quick Start Button
+    Blynk.virtualWrite(V2,  LOW);       // Pause/Stop Button
+    Blynk.virtualWrite(V1,  LOW);       // Go To Dock Button
   }
 
-  if (Charge_Detected == 4)          Blynk.virtualWrite(V12, 1023);        // Charging LED ON
-  if (Charge_Detected == 0)          Blynk.virtualWrite(V12, 0);           // Charging LED OFF
-  if (Tracking_Wire == 1)            Blynk.virtualWrite(V9, 1023);         // Tracking LED ON
-  if (Tracking_Wire == 0)            Blynk.virtualWrite(V9, 0);            // Tracking LED OFF
-  if (Mower_Parked == 1)             Blynk.virtualWrite(V6, 1023);         // Parked LED
-  if (Mower_Parked == 0)             Blynk.virtualWrite(V6, 0);            // Parked LED
-  if (Mower_Running_Filter == 2)     Blynk.virtualWrite(V7, 1023);         // Mowing LED
-  if (Mower_Running_Filter != 2)     Blynk.virtualWrite(V7, 0);            // Mowing LED
-  if (Mower_Docked_Filter == 2)      Blynk.virtualWrite(V8, 1023);         // Docked LED
-  if (Mower_Docked_Filter != 2)      Blynk.virtualWrite(V8, 0);            // Docked LED
+>  if (Charge_Detected == 4)          Blynk.virtualWrite(V12, 1023);        // Charging LED ON
+>  if (Charge_Detected == 0)          Blynk.virtualWrite(V12, 0);           // Charging LED OFF
+>  if (Tracking_Wire == 1)            Blynk.virtualWrite(V9, 1023);         // Tracking LED ON
+>  if (Tracking_Wire == 0)            Blynk.virtualWrite(V9, 0);            // Tracking LED OFF
+>  if (Mower_Parked == 1)             Blynk.virtualWrite(V6, 1023);         // Parked LED
+>  if (Mower_Parked == 0)             Blynk.virtualWrite(V6, 0);            // Parked LED
+>  if (Mower_Running_Filter == 2)     Blynk.virtualWrite(V7, 1023);         // Mowing LED
+>  if (Mower_Running_Filter != 2)     Blynk.virtualWrite(V7, 0);            // Mowing LED
+>  if (Mower_Docked_Filter == 2)      Blynk.virtualWrite(V8, 1023);         // Docked LED
+>  if (Mower_Docked_Filter != 2)      Blynk.virtualWrite(V8, 0);            // Docked LED
+*/  
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V0)       // Quick Start Mowing Function
+BLYNK_CONNECTED()
 {
-  Clear_APP();
+  Blynk.syncAll();
+}
+//----------------------------------------------------------------------------------------------
 
-  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+BLYNK_WRITE(V0)                           // Quick Start Mowing Function
+{
+//  Clear_APP();
+  int pinValue = param.asInt();
   if (pinValue == 1)
+  {
     StartMower();
-  //Clear_APP();
-  lcd.clear();
-  lcd.print(0, 0, "Starting . . ");      // Print to APP LCD
-  delay(100);
-  Blynk.virtualWrite(V0, HIGH);   // Start Mowing Buton ON
+    //Clear_APP();
+    lcd.clear();
+    lcd.print(0, 0, "Starting . .");        // Print to APP LCD
+  }
+//??? delay(100);
+//??? Blynk.virtualWrite(V0, HIGH);           // Start Mowing Buton ON
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V1)      // Go to Docking Station
+BLYNK_WRITE(V1)                           // Go to Docking Station
 {
-  int pinValue = param.asInt(); // assigning incoming value from pin V1 to a variable
+  int pinValue = param.asInt();
   if (pinValue == 1)
+  {
     Going_Home();
-  //Clear_APP();
-  lcd.clear();
-  lcd.print(0, 0, "Docking . . ");        // Print to APP LCD
-  delay(100);
-  Blynk.virtualWrite(V1, HIGH);           // Docking Button ON
+    //Clear_APP();
+    lcd.clear();
+    lcd.print(0, 0, "Docking . .");         // Print to APP LCD
+  }  
+//???  delay(100);
+//???  Blynk.virtualWrite(V1, HIGH);           // Docking Button ON
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V2)      // Pause Mower Function
+BLYNK_WRITE(V2)                           // Pause Mower Function
 {
-  int pinValue = param.asInt(); // assigning incoming value from pin V2 to a variable
+  int pinValue = param.asInt();
   if (pinValue == 1)
+  {
     Pause_Mower();
-  //Clear_APP();
-  lcd.clear();
-  lcd.print(0, 0, "Stopping . . ");       // Print to APP LCD
-  delay(100);
-  Blynk.virtualWrite(V2, HIGH);           // Pause Button ON
+    //Clear_APP();
+    lcd.clear();
+    lcd.print(0, 0, "Stopping . .");        // Print to APP LCD
+  }  
+//???  delay(100);
+//???  Blynk.virtualWrite(V2, HIGH);           // Pause Button ON
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V10)      // Exit Dock Function
+BLYNK_WRITE(V10)                          // Exit Dock Function
 {
-  int pinValue = param.asInt(); // assigning incoming value from pin V10 to a variable
+  int pinValue = param.asInt();
   if (pinValue == 1)
+  {
     Exit_Dock();
-  //Clear_APP();
-  lcd.clear();
-  lcd.print(0, 0, "Exiting . . ");      // Print to APP LCD
-  delay(100);
-  Blynk.virtualWrite(V10, HIGH);        // Dock Button ON
+    //Clear_APP();
+    lcd.clear();
+    lcd.print(0, 0, "Exiting . .");         // Print to APP LCD
+  }  
+//???  delay(100);
+//???  Blynk.virtualWrite(V10, HIGH);          // Dock Button ON
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V13)                        // Manuel Forward Motion
+BLYNK_WRITE(V13)                          // Manual Forward Motion
 {
-  if (Manuel_Mode = 1)
-  {
-    int pinValue = param.asInt(); // assigning incoming value from pin V10 to a variable
-    if (pinValue == 1)
-      transmit_blynk_code = 7;
-    Transmit_Blynk_Data_to_Mega();
-    Blynk.virtualWrite(V13, LOW);   // Start Mowing Buton ON
-  }
+  ForwardPinState = param.asInt(); 
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V14)                        // Manuel Reverse Motion
+BLYNK_WRITE(V14)                          // Manual Reverse Motion
 {
-  if (Manuel_Mode = 1)
-  {
-    int pinValue = param.asInt(); // assigning incoming value from pin V10 to a variable
-    if (pinValue == 1)
-      transmit_blynk_code = 8;
-    Transmit_Blynk_Data_to_Mega();
-  }
+  ReversePinState = param.asInt(); 
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V15)                        // Manuel Left Turn
+BLYNK_WRITE(V15)                          // Manual Left Turn
 {
-  if (Manuel_Mode = 1)
-  {
-    int pinValue = param.asInt(); // assigning incoming value from pin V10 to a variable
-    if (pinValue == 1)
-      transmit_blynk_code = 9;
-    Transmit_Blynk_Data_to_Mega();
-  }
+  LeftPinState = param.asInt(); 
 }
 //----------------------------------------------------------------------------------------------
 
-BLYNK_WRITE(V16)                        // Manuel Right Turn
+BLYNK_WRITE(V16)                          // Manual Right Turn
 {
-  if (Manuel_Mode = 1)
-  {
-    int pinValue = param.asInt(); // assigning incoming value from pin V10 to a variable
-    if (pinValue == 1)
-      transmit_blynk_code = 10;
-    Transmit_Blynk_Data_to_Mega();
-  }
+  RightPinState = param.asInt(); 
+}
+//----------------------------------------------------------------------------------------------
+
+BLYNK_WRITE(V18)                          // Manual Right Turn
+{
+  JoystickX = param[0].asInt(); 
+  JoystickY = param[1].asInt(); 
+
+  JoystickPinState = 0;
+  if (JoystickX != 256 || JoystickY != 256)
+    JoystickPinState = 1;
 }
 //----------------------------------------------------------------------------------------------
 
@@ -164,41 +165,37 @@ BLYNK_WRITE(V4)
   switch (param.asInt())
   {
     case 1:
-      { // Item 1
-        Serial.println("Automatic Mode");
-        Automatic_Mode = 1;
-        Manuel_Mode = 0;
-        Set_To_Automatic_Mode();
-        Update_Blynk_App_With_Status();
+      { 
+        Set_To_AutomaticMode();
         break;
       }
     case 2:
-      { // Item 2
-        Serial.println("Manuel Mode");
-        Manuel_Mode = 1;
-        Automatic_Mode = 0;
-        Set_To_Manuel_Mode();
-        Mower_Parked = 0;
-        Mower_Docked = 0;
-        Mower_Running = 0;
-        Update_Blynk_App_With_Status();
+      { 
+        Set_To_ManualMode();
         break;
       }
   }
+  Update_Blynk_App_With_Status();
 }
 //----------------------------------------------------------------------------------------------
 
 void Clear_APP()
 {
-  Blynk.virtualWrite(V0, LOW);   // Start Mowing Buton OFF
+  lcd.clear();
+
+  Blynk.virtualWrite(V0, LOW);  // Start Mowing Buton OFF
   Blynk.virtualWrite(V1, LOW);  // Go-Home Button OFF
   Blynk.virtualWrite(V2, LOW);  // Stop Button OFF
-  Blynk.virtualWrite(V3, 0);    // Reset Voltage
-  Blynk.virtualWrite(V5, 0);    // Loops
-  Blynk.virtualWrite(V7, 0);    // Mow LED
-  Blynk.virtualWrite(V8, 0);    // Dock LED Off
-  Blynk.virtualWrite(V9, 0);    // TrackingLED OFF
   Blynk.virtualWrite(V10, LOW); // Dock Button OFF
+
+  Blynk.virtualWrite(V3, 0);    // Reset Voltage
+  Blynk.virtualWrite(V20, 0);    // Reset Load current
+  Blynk.virtualWrite(V21, 0);    // Reset Charge current
+  Blynk.virtualWrite(V5, 0);    // Loops
+  
+  Blynk.virtualWrite(V7, 0);    // Mow LED OFF
+  Blynk.virtualWrite(V8, 0);    // Dock LED OFF
+  Blynk.virtualWrite(V9, 0);    // TrackingLED OFF
   Blynk.virtualWrite(V11, 0);   // Compass LED OFF
   Blynk.virtualWrite(V12, 0);   // Charging LED OFF
 }

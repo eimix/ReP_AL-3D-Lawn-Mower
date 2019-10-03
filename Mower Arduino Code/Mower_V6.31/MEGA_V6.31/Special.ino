@@ -16,7 +16,7 @@ void Special_Move_Into_Garden_Zone_X()
   Motor_Action_Stop_Motors();                                     // Stop the wheel motors
   SetPins_ToTurnLeft();                                           // Turn left
   Motor_Action_Go_Full_Speed();
-  delay(1400);                                                     // Turn left for 0.7seconds
+  lawn_delay(1400);                                                     // Turn left for 0.7seconds
   Motor_Action_Stop_Motors();                                     // Stop the wheel motors.
   SetPins_ToGoForwards();                                         // Get ready to move off
 }
@@ -26,7 +26,7 @@ void Special_Exit_From_Docking_Station()
 {
   lcd.clear();
   lcd.print(F("Exiting Garage"));
-  delay(2000);
+  lawn_delay(2000);
   SetPins_ToGoBackwards();                                        // Prepare motors pins to go Backwards
   Motor_Action_GoFullSpeed_Out_Garage();                          // Turn the wheels
 #if (DEBUG_LEVEL >= 3)
@@ -36,24 +36,24 @@ void Special_Exit_From_Docking_Station()
   Serial.print(F("Right Wheel PWM:"));
   Serial.println(PWM_MaxSpeed_RH);
 #endif
-  delay (4000);                                                   // Backwards time
+  lawn_delay(4000);                                                   // Backwards time
   Motor_Action_Stop_Motors;                                       // Stop
   SetPins_ToTurnLeft();                                           // Prepare motors to turn left
   Motor_Action_Turn_Speed();                                      // Turn the wheels
-  delay(500);                                                    // Turn time
+  lawn_delay(500);                                                     // Turn time
   Motor_Action_Stop_Motors;                                       // Stop
   SetPins_ToGoBackwards();                                        // Set again to go backwards
   Motor_Action_Go_Full_Speed();                                   // Turn the wheels
-  delay (500);                                                    // Backwards Time
+  lawn_delay(500);                                                    // Backwards Time
   SetPins_ToTurnLeft();                                           // Set to go left
   Motor_Action_Turn_Speed();                                      // Turn the wheels
-  delay(200);                                                     // Turning time
+  lawn_delay(200);                                                     // Turning time
   Motor_Action_Stop_Motors();                                     // Stop
   SetPins_ToGoForwards();                                         // Set to go wheel motor pins to go forwards
   Motor_Action_Stop_Motors();                                     // Stop / Park the mower here
   lcd.clear();                                                    // Clears the LCD display
   lcd.print(F("Garage Clear"));                                      // Prints to the LCD screen
-  delay(500);
+  lawn_delay(500);
   lcd.clear();
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void Specials_Find_Wire_Track()
   Motor_Action_Stop_Spin_Blades();
   delay(5);
   Abort_Wire_Find = 0;
-  No_Wire_Found = 0;
+  No_Wire_Found   = 0;
   TestforBoundaryWire();                                                                    // Check to see that the wire is on.
 
   for (int i = 0; i <= 1; i++)
@@ -95,14 +95,14 @@ void Specials_Find_Wire_Track()
       UpdateWireSensor();
       PrintBoundaryWireStatus();
       Motor_Action_Stop_Motors();                                                           // Stop all wheel motion
-      delay(1000);
+      lawn_delay(1000);
       SetPins_ToGoBackwards();                                                              // Set the mower to back up
-      delay(100);
+      lawn_delay(100);
       lcd.clear();
       lcd.print(F("Backwards Try...  "));
       lcd.setCursor(0, 1);
       lcd.print(F("Finding Wire  "));
-      delay(100);
+      lawn_delay(100);
       while (( inside != true) && (Abort_Wire_Find == 0) )                                 // While the mower is still outside the fence run this code
       {
         Motor_Action_Go_Full_Speed();                                                       // Go full speed (in this case backwards)
@@ -129,16 +129,16 @@ void Specials_Find_Wire_Track()
 #endif
     PrintBoundaryWireStatus();
     Motor_Action_Stop_Motors();
-    delay(1000);
+    lawn_delay(1000);
     SetPins_ToGoForwards();                                                             // Set the motors to move the mower forwards
-    delay(100);
+    lawn_delay(100);
     lcd.clear();
     lcd.print(F("Forward Try...  "));
     lcd.setCursor(0, 1);
     lcd.print(F("Finding Wire  "));
-    delay(100);
+    lawn_delay(100);
     int cycle = 0;                                                                      // resets the cycles
-    while ( inside != false)                                // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
+    while (inside != false)                                // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
     {
       cycle = cycle + 1;
       Motor_Action_Go_Full_Speed();                                                     // Go full speed (in this case forwards)

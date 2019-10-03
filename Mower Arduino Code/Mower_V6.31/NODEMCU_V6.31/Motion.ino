@@ -5,63 +5,84 @@
 
 void Pause_Mower()
 {
-  Serial.println("");
   Serial.println("Pause/Stop");
-  transmit_blynk_code = 1;
-  Transmit_Blynk_Data_to_Mega();
+  Transmit_Blynk_Data_to_Mega(1);
 }
 //----------------------------------------------------------------------------------------------
 
 void Going_Home()
 {
-  Serial.println("");
   Serial.println("Go to Dock");
-  transmit_blynk_code = 2;
-  Transmit_Blynk_Data_to_Mega();
+  Transmit_Blynk_Data_to_Mega(2);
 }
 //----------------------------------------------------------------------------------------------
 
 void StartMower()
 {
-  Serial.println("");
   Serial.println("Quick Start");
-  Mower_Parked = 0;
-  Update_Blynk_App_With_Status();
-  transmit_blynk_code = 3;                    // Code used to let MEGA know what to do
-  Transmit_Blynk_Data_to_Mega();              // Transmits that code to the MEGA
+//???  Mower_Parked = 0;
+//???  Update_Blynk_App_With_Status();
+  Transmit_Blynk_Data_to_Mega(3);              // Transmits that code to the MEGA
 }
 //----------------------------------------------------------------------------------------------
 
 void Exit_Dock() 
 {
-  Serial.println("");
   Serial.println("Exit Dock");
-  Mower_Docked = 0;                           // Forces the APP to show docked as false.
-  // Otherwise the APP needs to wait for the next update round
-  Update_Blynk_App_With_Status();
-  transmit_blynk_code = 4;
-  Transmit_Blynk_Data_to_Mega();
+//???  Mower_Docked = 0;                           // Forces the APP to show docked as false.
+//???  // Otherwise the APP needs to wait for the next update round
+//???  Update_Blynk_App_With_Status();
+  Transmit_Blynk_Data_to_Mega(4);
 }
 //----------------------------------------------------------------------------------------------
 
-void Set_To_Manuel_Mode() 
+void Set_To_ManualMode() 
 {
-  Serial.println("");
-  Serial.println("Manuel Mode Selected");
-  Update_Blynk_App_With_Status();
-  transmit_blynk_code = 5;
-  Transmit_Blynk_Data_to_Mega();
-  Manuel_Mode = 1;
+  ManualMode    = 1;
+  AutomaticMode = 0;
+  Serial.println("Manual Mode Selected");
+//???  Update_Blynk_App_With_Status();
+  Transmit_Blynk_Data_to_Mega(5);
+
+/* TODO XXX These values should be received from Mower
+  Mower_Parked   = 0;
+  Mower_Docked   = 0;
+  Mower_Running  = 0;
+*/
 }
 //----------------------------------------------------------------------------------------------
 
-void Set_To_Automatic_Mode() 
+void Set_To_AutomaticMode() 
 {
-  Serial.println("");
+  AutomaticMode = 1;
+  ManualMode    = 0;
   Serial.println("Automatic Mode Selected");
-  Update_Blynk_App_With_Status();
-  transmit_blynk_code = 6;
-  Transmit_Blynk_Data_to_Mega();
-  Automatic_Mode = 1;
+//???  Update_Blynk_App_With_Status();
+  Transmit_Blynk_Data_to_Mega(6);
+}
+//----------------------------------------------------------------------------------------------
+
+void Process_ManualMode() 
+{
+  if (!ManualMode)
+    return;
+
+  long Delay = (long)(millis() - LastTXToAtmega);
+  if (Delay < TXDelay)
+    return;
+  
+  if (ForwardPinState)
+    Transmit_Blynk_Data_to_Mega(7);  
+  if (ReversePinState)
+    Transmit_Blynk_Data_to_Mega(8);  
+  if (LeftPinState)
+    Transmit_Blynk_Data_to_Mega(9);  
+  if (RightPinState)
+    Transmit_Blynk_Data_to_Mega(10); 
+
+  if (JoystickPinState)   
+    Transmit_Blynk_Joystick_Data_to_Mega(11, JoystickX, JoystickY); 
+
+  LastTXToAtmega = millis();  
 }
 //----------------------------------------------------------------------------------------------

@@ -14,13 +14,17 @@
 
 #ifdef UseWiFi
 int val_WIFI;
+
+#define ManualCommandDelay 300
+unsigned long LastTX = 0;
+
 //-----------------------------------------------------------------------------------------------------------------------------------
 String Serial2_RX = "_";
 
 void Get_WIFI_Commands()
 {
   Receive_Data_From_NODEMCU(false);
-  delay(5);
+  //delay(5); //WHY!?!
   Transmit_All_To_NODEMCU();
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +32,7 @@ void Get_WIFI_Commands()
 void Receive_Data_From_NODEMCU(bool ManualMode)
 {
   //Using global variable NodeMCU_RX_Value as receive buffer
-  
+
   while (Serial2.available() > 0)
   {
     char r = Serial2.read();
@@ -38,15 +42,15 @@ void Receive_Data_From_NODEMCU(bool ManualMode)
       continue;
 
     //If any other (not special character) received - add it to buffer
-    if (r < 'a' || r > 'z') 
+    if (r < 'a' || r > 'z')
     {
       Serial2_RX = Serial2_RX + (char)r;
       continue;
     }
 
-    //Ignore first "packet", it is not sure that it is received from begining, 
+    //Ignore first "packet", it is not sure that it is received from begining,
     //only reading first "end of packet" byte confirms that new "packet" will start
-    if (Serial2_RX[0] == '_') 
+    if (Serial2_RX[0] == '_')
     {
       Serial2_RX = "";
       continue;
@@ -54,55 +58,81 @@ void Receive_Data_From_NODEMCU(bool ManualMode)
 
     switch (r)
     {
-      case 'p': val_WIFI = Serial2_RX.toInt();
-                if (ManualMode)
-                {
-                  delay(5); //Why this?
-                  Execute_Manuel_Blynk_Command_To_Mower();
-                }
-                else
-                {
-                  delay(1000); //Why this?
-                  Execute_Blynk_Command_To_Mower();
-                }
-                break;
-    }
+      case 'p':
+//        {
+          val_WIFI = Serial2_RX.toInt();
+          if (ManualMode)
+          {
+            delay(5); //Why this?
+            Execute_Manual_Blynk_Command_To_Mower();
+          }
+          else
+          {
+            lawn_delay(1000); //Why this? -
+            //sthis makes delay to enabling Manual mode
+            Execute_Blynk_Command_To_Mower();
+          }
+          break;
+//        }
+      case 'j':  //Incoming Joystick command Code|JoystickX|JoystickY
+        {
+          val_WIFI      = Serial2_RX.substring(0, Serial2_RX.indexOf("|")).toInt();
+          int JoystickX = Serial2_RX.substring(Serial2_RX.indexOf("|") + 1, Serial2_RX.lastIndexOf("|")).toInt(); 
+          int JoystickY = Serial2_RX.substring(Serial2_RX.lastIndexOf("|") + 1).toInt(); 
 
+#if (DEBUG_LEVEL >= 4)
+          Serial.println();
+          Serial.print("WiFi:");
+          Serial.print(val_WIFI);
+          Serial.print("|");
+          Serial.print(JoystickX);
+          Serial.print("|");
+          Serial.print(JoystickY);
+          Serial.println();
+#endif
+
+          Execute_Manual_Joystick_Blynk_Command_To_Mower(val_WIFI, JoystickX, JoystickY);
+
+          break;
+        }
+    }
     //Always clear buffer if "end of packet" received
     Serial2_RX = "";
   }
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
-void Receive_WIFI_Manuel_Commands()
+void Receive_WIFI_Manual_Commands()
 {
-  Receive_Data_From_NODEMCU(true);  
-  delay(5);
+  Receive_Data_From_NODEMCU(true);
   Transmit_All_To_NODEMCU();
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
 void Transmit_All_To_NODEMCU()
 {
-  delay(5);
-  Serial2.print(BatteryVoltage);
+  //Send "driver" controls data sending in 250ms intervals
+  if (calcTimeDiff(LastTX, millis()) < 250)
+    return;
+  LastTX = millis();
+
+  Serial2.print(BatteryVoltage, 2);            //2 decimal digits
   Serial2.println("g");
-  delay(5);
+  Serial2.print(LoadCurrent, 2);               //2 decimal digits
+  Serial2.println("a");
+  Serial2.print(ChargeCurrent, 2);             //2 decimal digits
+  Serial2.println("b");
+
   Serial2.print(Loop_Cycle_Mowing);
   Serial2.println("c");
-  delay(5);
   Serial2.print(Mower_Docked);
   Serial2.println("d");
-  delay(5);
   Serial2.print(Mower_Running);
   Serial2.println("z");
-  delay(5);
   Serial2.print(Mower_Parked);
   Serial2.println("y");
-  delay(5);
   Serial2.println(Mower_Charging);
   Serial2.println("o");
-  delay(5);
   Serial2.println(Tracking_Wire);
   Serial2.println("m");
 
@@ -141,7 +171,7 @@ void Execute_Blynk_Command_To_Mower()
       lcd.print(F("WIFI Start"));
       lcd.setCursor(0, 1);
       lcd.print(F("Exit Dock Z1"));
-      delay(500);
+      lawn_delay(500);
       lcd.clear();
       Exit_Zone = 1;
       Track_Wire_Itterations = Track_Wire_Zone_1_Cycles;
@@ -190,7 +220,7 @@ void Execute_Blynk_Command_To_Mower()
     lcd.setCursor(0, 0);
     lcd.print(F("WIFI Go To Dock"));
     Menu_Mode_Selection = 0;                                      // Releases the loop in the membrane button section.
-    delay(1000);
+    lawn_delay(1000);
     lcd.clear();
 
     Manouver_Go_To_Charging_Station();
@@ -209,16 +239,16 @@ void Execute_Blynk_Command_To_Mower()
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
 
-  // Manuel Button in Blynk App
+  // Manual Button in Blynk App
   if (val_WIFI == 15)
   {
 #if (DEBUG_LEVEL >= 3)
     Serial.println("");
     Serial.print(F("WIFI Command: "));
     Serial.print(val_WIFI);
-    Serial.println(F("|Manuel Mode"));
+    Serial.println(F("|Manual Mode"));
 #endif
-    Manouver_Manuel_Mode();
+    Manouver_Manual_Mode();
     Turn_On_Relay();
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
@@ -239,7 +269,7 @@ void Execute_Blynk_Command_To_Mower()
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
-void Execute_Manuel_Blynk_Command_To_Mower()
+void Execute_Manual_Blynk_Command_To_Mower()
 {
   // insert wheel motions here.
   if (val_WIFI == 16)
@@ -258,13 +288,14 @@ void Execute_Manuel_Blynk_Command_To_Mower()
   if (val_WIFI == 17)
   {
 #if (DEBUG_LEVEL >= 3)
+    Serial.println("");
     Serial.print("WIFI");
     Serial.print(val_WIFI);
-    Serial.print(F("|Wheel Forward"));
+    Serial.println(F("|Wheel Forward"));
 #endif
     SetPins_ToGoForwards();
     Motor_Action_Go_Full_Speed();
-    delay(300);
+    lawn_delay(ManualCommandDelay);
     Motor_Action_Stop_Motors();
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
@@ -272,13 +303,14 @@ void Execute_Manuel_Blynk_Command_To_Mower()
   if (val_WIFI == 18)
   {
 #if (DEBUG_LEVEL >= 3)
+    Serial.println("");
     Serial.print("WIFI:");
     Serial.print(val_WIFI);
-    Serial.print(F("|Wheel Reverse"));
+    Serial.println(F("|Wheel Reverse"));
 #endif
     SetPins_ToGoBackwards();
     Motor_Action_Go_Full_Speed();
-    delay(300);
+    lawn_delay(ManualCommandDelay);
     Motor_Action_Stop_Motors();
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
@@ -286,13 +318,14 @@ void Execute_Manuel_Blynk_Command_To_Mower()
   if (val_WIFI == 19)
   {
 #if (DEBUG_LEVEL >= 3)
+    Serial.println("");
     Serial.print("WIFI:");
     Serial.print(val_WIFI);
-    Serial.print(F("|Wheel Left"));
+    Serial.println(F("|Wheel Left"));
 #endif
     SetPins_ToTurnLeft();
     Motor_Action_Go_Full_Speed();
-    delay(200);
+    lawn_delay(ManualCommandDelay);
     Motor_Action_Stop_Motors();
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
   }
@@ -300,15 +333,38 @@ void Execute_Manuel_Blynk_Command_To_Mower()
   if (val_WIFI == 20)
   {
 #if (DEBUG_LEVEL >= 3)
+    Serial.println("");
+
     Serial.print("WIFI:");
     Serial.print(val_WIFI);
-    Serial.print(F("|Wheel Right"));
+    Serial.println(F("|Wheel Right"));
 #endif
     SetPins_ToTurnRight();
     Motor_Action_Go_Full_Speed();
-    delay(200);
+    lawn_delay(ManualCommandDelay);
     Motor_Action_Stop_Motors();
+    
     val_WIFI = 0;   // resets val2 to zero so the command is only executed once
+  }
+}
+//-----------------------------------------------------------------------------------------------------------------------------------
+
+void Execute_Manual_Joystick_Blynk_Command_To_Mower(byte Code, int JoystickX, int JoystickY)
+{
+  if (Code == 21)
+  {
+#if (DEBUG_LEVEL >= 3)
+    Serial.println("");
+
+    Serial.print("WIFI:");
+    Serial.print(val_WIFI);
+    Serial.println(F("|Joystick stearing"));
+#endif 
+    Motor_Action_Joystick_Steering(JoystickX - 256, JoystickY - 256);
+    lawn_delay(ManualCommandDelay);
+    Motor_Action_Stop_Motors();
+
+    val_WIFI = 0;
   }
 }
 //-----------------------------------------------------------------------------------------------------------------------------------

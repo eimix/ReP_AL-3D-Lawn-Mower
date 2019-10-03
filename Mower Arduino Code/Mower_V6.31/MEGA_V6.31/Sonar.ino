@@ -93,7 +93,7 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
 #endif
 
   /*If sonar distance is less than maximum distance then an object is registered to avoid*/
-  if (distanceX <= maxdistancesonar)
+  if (distanceX <= MaxDistanceSonar)
   {
     //Prints that Sonar X has detected an object to the Mower LCD.
     lcd.setCursor(LCDColumn, LCDRow);                //sets location for text to be written
@@ -132,7 +132,7 @@ int PingSonarX(int trigPinX, int echoPinX, int sonarX, int LCDRow, int LCDColumn
   }
 
   /*If sonar distance is greater than maximum distance then no object is registered to avoid*/
-  if (distanceX > maxdistancesonar)
+  if (distanceX > MaxDistanceSonar)
   {
     //Prints that the path of Sonar X is open.
     lcd.setCursor(LCDColumn, LCDRow);                 //sets location for text to be written

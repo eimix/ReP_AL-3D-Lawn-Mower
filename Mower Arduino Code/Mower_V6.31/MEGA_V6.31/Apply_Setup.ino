@@ -7,11 +7,18 @@ void Print_Mower_Status()
   if (Mower_Docked == 1)          Serial.print(F("Docked:1|"));
   if (Mower_Parked == 1)          Serial.print(F("Parked:1|"));
   if (Mower_Running == 1)         Serial.print(F("Running:1|"));
-  if (Manuel_Mode == 1)           Serial.print(F("Manuel Mode:1|"));
+  if (Manual_Mode == 1)           Serial.print(F("Manual Mode:1|"));
   if (Mower_Parked_Low_Batt == 1) Serial.print(F("Park_Low_Batt:1|"));
   if (Mower_Error == 1)           Serial.print(F("Mower Error:1|"));
-  if (Mower_SaftyWarning == 1)    Serial.print(F("Mower Warning:1|"));
+  if (Mower_SaftyWarning > 0)     Serial.print(F("Mower Warning:1|"));
   if (Mower_Charging == 1)        Serial.print(F("Charging:1|"));
+  Serial.print(F("Loop:"));
+  if (LoopLength < 10)
+    Serial.print(" ");
+  if (LoopLength < 100)
+    Serial.print(" ");
+  Serial.print(LoopLength);
+  Serial.print("|");
 #endif
 }
 //---------------------------------------------------------------------------------------
@@ -20,19 +27,18 @@ void Prepare_Mower_from_Settings()
 {
   Mower_Charging = false;
 
-  if (Use_Charging_Station == 1)
+  if (Use_Charging_Station == true)
   {
-    Mower_Docked  = 1;
+    Mower_Docked  = true;
     Mower_Parked  = false;
-    Mower_Running = false;
+  }
+  else
+  {
+    Mower_Docked  = false;
+    Mower_Parked  = true;
   }
 
-  if (Use_Charging_Station == 0)
-  {
-    Mower_Docked  = 0;
-    Mower_Parked  = 1;
-    Mower_Running = false;
-  }
+  Mower_Running = false;
 }
 //---------------------------------------------------------------------------------------
 
@@ -54,7 +60,7 @@ void Setup_Compass()
     {
 #if (DEBUG_LEVEL >= 1)
       Serial.println(F("Could not find a valid QMC5883 sensor, check wiring!"));
-      delay(500);
+      lawn_delay(500);
 #endif
     }
 
@@ -73,7 +79,7 @@ void Setup_Compass()
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("Initialize QMC5883"));
 #endif
-      compass.setRange(QMC5883_RANGE_2GA);
+      compass.setRange(QMC5883_RANGE_8GA); //QMC5883_RANGE_2GA || QMC5883_RANGE_8GA
       compass.setMeasurementMode(QMC5883_CONTINOUS);
       compass.setDataRate(QMC5883_DATARATE_50HZ);
       compass.setSamples(QMC5883_SAMPLES_8);
@@ -82,7 +88,7 @@ void Setup_Compass()
     lcd.print(F("Compass Setup "));
     lcd.setCursor(0, 1);
     lcd.print(F("Done!             "));
-    delay(500);
+    lawn_delay(500);
     lcd.clear();
   }
 
@@ -99,16 +105,16 @@ void Setup_Relays()
   Serial.println(F("Setup Relays"));
 #endif
   pinMode(Relay_Motors, OUTPUT);
-  delay(5);
+//  delay(5);
   Turn_Off_Relay();
-  delay(5);
+//  delay(5);
 }
 //---------------------------------------------------------------------------------------
 
 void Setup_Motor_Pins()
 {
 #if (DEBUG_LEVEL >= 3)
-  Serial.println(F("Setup Motor Pins"));
+  Serial.println(F("Setup Motor Pin(s)"));
 #endif
 
 #ifdef MowMotorDriver_BTS7960
@@ -123,21 +129,21 @@ void Setup_Motor_Pins()
 }
 //---------------------------------------------------------------------------------------
 
-void  Turn_On_Relay()
+void Turn_On_Relay()
 {
 #if (DEBUG_LEVEL >= 3)
   Serial.print(F("Relay:ON|"));
 #endif
-  digitalWrite(Relay_Motors, LOW);                         // Turn of the relay for the main battery power
+  digitalWrite(Relay_Motors, Relay_Motors_On);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 
-void  Turn_Off_Relay()
+void Turn_Off_Relay()
 {
 #if (DEBUG_LEVEL >= 3)
-  Serial.print(F("Relay:Off|"));
+  Serial.print(F("Relay:OFF|"));
 #endif
-  digitalWrite(Relay_Motors, HIGH);                         // Turn of the relay for the main battery power
+  digitalWrite(Relay_Motors, Relay_Motors_Off);                         // Turn of the relay for the main battery power
 }
 //---------------------------------------------------------------------------------------
 

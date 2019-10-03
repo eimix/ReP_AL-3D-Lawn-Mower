@@ -16,7 +16,7 @@ void Check_if_Raining_From_Nano ()
       if (Rain_Detected == 0) Rain_Hit_Detected = Rain_Hit_Detected - 1;
       if (Rain_Hit_Detected < 0) Rain_Hit_Detected = 0;
     }
-
+    else
     if ((Rain_Detected != 1) && (Rain_Detected != 0))
     {
 #if (DEBUG_LEVEL >= 3)
@@ -54,7 +54,7 @@ void Check_if_Raining_From_Nano ()
     Serial.println("");
 #endif
     Print_Raining_LCD();
-    delay(2000);
+    lawn_delay(2000);
     Manouver_Go_To_Charging_Station();            // If the Mower is running then go to the charge station.
   }
 }

@@ -39,7 +39,7 @@ void Print_Membrane_Switch_Input_Timing()
     }
     // Gets the values again from the keys
     Read_Membrane_Keys();
-    delay(100);
+    lawn_delay(ButtonPressDelay);
 
     if (!Start_Key_X)
     {
@@ -74,7 +74,7 @@ void Print_Membrane_Switch_Input_Timing()
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(F("Menu Cancelled"));
-      delay(1000);
+      lawn_delay(1000);
       lcd.clear();
       Menu_Mode_Selection = 0;
     }
@@ -99,80 +99,6 @@ void Run_Menu_Order_Timing()
   Serial.print(F("| Menu Selection"));
   Serial.println(Menu_Mode_Selection);
 #endif
-  delay(100);
-
-  /*
-    if (Menu_View == 1)
-    {
-      Serial.print(F("- key is pressed "));
-      lcd.clear();
-      lcd.setCursor(2,0);
-      Print_LCD_Menu_Timing(1);
-      lcd.setCursor(2,1);
-      Print_LCD_Menu_Timing(2);
-      lcd.setCursor(0,0);
-      lcd.print(">");
-      Menu_Mode_Selection = 1;
-      Serial.print(F("Menu View : "));
-      Serial.print(Menu_View);
-      Serial.print(F("| Menu Selection"));
-      Serial.println(Menu_Mode_Selection);
-      delay(100);
-    }
-    if (Menu_View == 2)
-    {
-      Serial.print(F("- key is pressed "));
-      lcd.clear();
-      lcd.setCursor(2,0);
-      Print_LCD_Menu_Timing(2);
-      lcd.setCursor(2,1);
-      Print_LCD_Menu_Timing(3);
-      lcd.setCursor(0,0);
-      lcd.print(">");
-      Menu_Mode_Selection = 2;
-      Serial.print(F("Menu View : "));
-      Serial.print(Menu_View);
-      Serial.print(F("| Menu Selection"));
-      Serial.println(Menu_Mode_Selection);
-      delay(100);
-    }
-    if (Menu_View == 3)
-    {
-      Serial.print(F("- key is pressed "));
-      lcd.clear();
-      lcd.setCursor(2,0);
-      Print_LCD_Menu_Timing(3);
-      lcd.setCursor(2,1);
-      Print_LCD_Menu_Timing(4);
-      lcd.setCursor(0,0);
-      lcd.print(">");
-      Menu_Mode_Selection = 3;
-      Serial.print(F("Menu View : "));
-      Serial.print(Menu_View);
-      Serial.print(F("| Menu Selection"));
-      Serial.println(Menu_Mode_Selection);
-      delay(100);
-    }
-    if (Menu_View == 4)
-    {
-      Serial.print(F("- key is pressed "));
-      lcd.clear();
-      lcd.setCursor(2,0);
-      Print_LCD_Menu_Timing(4);
-      lcd.setCursor(2,1);
-      Print_LCD_Menu_Timing(5);
-      lcd.setCursor(0,0);
-      lcd.print(">");
-      Menu_Mode_Selection = 4;
-      Serial.print(F("Menu View : "));
-      Serial.print(Menu_View);
-      Serial.print(F("| Menu Selection"));
-      Serial.println(Menu_Mode_Selection);
-      delay(100);
-    }
-
-    delay(100);
-  */
 }
 //---------------------------------------------------------------------------------------
 
@@ -188,7 +114,7 @@ void Activate_Menu_Option_Timing()
 #if (DEBUG_LEVEL >= 3)
     Serial.println(F("Maximum Mow Time Selected"));
 #endif
-    delay(5000);
+    lawn_delay(5000);
     lcd.clear();
     Menu_Mode_Selection = 0;
     lcd.clear();
@@ -210,10 +136,19 @@ void Activate_Menu_Option_Timing()
     Menu_Complete = false;
 
     // Ations Here
-    Time t = rtc.time();
+#ifdef UseClockDS1302
+    Time t      = rtc.time();
+    byte hour   = t.hr;
+    byte minute = t.min;
+#endif
+#ifdef UseClockDS1307
+    DateTime t  = rtc.now();
+    byte hour   = t.hour();
+    byte minute = t.minute();
+#endif
     Alarm_Timed_Mow_ON = 1;                          // Activate the Mow Timer Alarm
-    Alarm_Timed_Mow_Hour = t.hr + 1;                 // Sets time to 1 hour later.
-    Alarm_Timed_Mow_Minute = t.min;                  // Minutes are the same
+    Alarm_Timed_Mow_Hour   = hour + 1;               // Sets time to 1 hour later.
+    Alarm_Timed_Mow_Minute = minute;                  // Minutes are the same
 
 #if (DEBUG_LEVEL >= 3)
     // Displays the Finish time on the Serial Monitor
@@ -232,7 +167,7 @@ void Activate_Menu_Option_Timing()
     if (Alarm_Timed_Mow_Minute < 10) lcd.print("0");
     lcd.print(Alarm_Timed_Mow_Minute);
     Mow_Time_Set = 1;
-    delay(2000);
+    lawn_delay(2000);
   }
 
   if (Menu_Mode_Selection == 3)
@@ -247,10 +182,19 @@ void Activate_Menu_Option_Timing()
     Menu_Complete = false;
 
     // Ations Here
-    Time t = rtc.time();
+#ifdef UseClockDS1302
+    Time t      = rtc.time();
+    byte hour   = t.hr;
+    byte minute = t.min;
+#endif
+#ifdef UseClockDS1307
+    DateTime t  = rtc.now();
+    byte hour   = t.hour();
+    byte minute = t.minute();
+#endif
     Alarm_Timed_Mow_ON = 1;                          // Activate the Mow Timer Alarm
-    Alarm_Timed_Mow_Hour = t.hr + 2;                 // Sets time to 1 hour later.
-    Alarm_Timed_Mow_Minute = t.min;                  // Minutes are the same
+    Alarm_Timed_Mow_Hour   = hour + 2;               // Sets time to 2 hour later.
+    Alarm_Timed_Mow_Minute = minute;                  // Minutes are the same
 
 #if (DEBUG_LEVEL >= 3)
     // Displays the Finish time on the Serial Monitor
@@ -269,7 +213,7 @@ void Activate_Menu_Option_Timing()
     if (Alarm_Timed_Mow_Minute < 10) lcd.print("0");
     lcd.print(Alarm_Timed_Mow_Minute);
     Mow_Time_Set = 1;
-    delay(2000);
+    lawn_delay(2000);
   }
 }
 //-----------------------------------------------------------------------------------------------------------------------------------

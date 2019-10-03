@@ -34,14 +34,16 @@ void Save_EEPROM_Data()
   EEPROM.write(16, 1);
   EEPROM.write(17, PWM_MaxSpeed_RH);
 
+#ifdef MowMotorDriver_BTS7960
   EEPROM.write(18, 1);
   EEPROM.write(19, PWM_Blade_Speed);
+#endif
 
-  EEPROM.write(20 , 1);
-  EEPROM.write(21 , Compass_Activate);
+  EEPROM.write(20, 1);
+  EEPROM.write(21, Compass_Activate);
 
-  EEPROM.write(22, 1);
-  EEPROM.write(23, (PID_P * 100));
+  EEPROM.write(23, 1);
+  EEPROM.write(24, (PID_P * 100));
 }
 //---------------------------------------------------------------------------------------
 
@@ -116,6 +118,7 @@ void Load_EEPROM_Saved_Data()
 #endif
   }
 
+#ifdef MowMotorDriver_BTS7960
   byte PWM_BLADE_EEPROM = EEPROM.read(18);
   if (PWM_BLADE_EEPROM == 1)
   {
@@ -125,6 +128,7 @@ void Load_EEPROM_Saved_Data()
     Serial.println(PWM_Blade_Speed);
 #endif
   }
+#endif
 
   byte COMPASS_EEPROM = EEPROM.read(20);
   if (COMPASS_EEPROM == 1)
@@ -150,7 +154,7 @@ void Load_EEPROM_Saved_Data()
     Serial.println(PID_P);
 #endif
   }
-//  delay(500); //WHY???
+//  lawn_delay(500); //WHY???
 }
 //---------------------------------------------------------------------------------------
 
@@ -168,6 +172,6 @@ void Clear_EERPOM()
 #if (DEBUG_LEVEL >= 3)
   Serial.println(F("All EEPROM Settings Cleared"));
 #endif
-//  delay(1000); //WHY?
+//  lawn_delay(1000); //WHY?
 }
 //---------------------------------------------------------------------------------------
