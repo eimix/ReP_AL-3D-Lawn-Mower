@@ -1,13 +1,14 @@
 // BUTTONS SETTINGS MENU
 
 // TODO
-//1. BUG Recursion (infinite): (Print_Membrane_Switch_Input_Settings -> Activate_Menu_Option_Settings)
-//   Solution: Use local Menu_Complete and disable Print_Membrane_Switch_Input_Settings call in last function
+// 1. BUG Recursion (infinite): (Print_Membrane_Switch_Input_Settings -> Activate_Menu_Option_Settings)
+//    Solution: Use local Menu_Complete and disable Print_Membrane_Switch_Input_Settings call in last function
+// 2. 6.4 ReP_AL version has additional settings menu items (SettingsMenuItems)
 
 // DONE
-//1. OPTIMZE Activate_Menu_Option_Settings code optimize, remove commented code after tests
-//2. BUG First level menu has 12 items, and code allows go beond that
-//3. OPTIMZE Use array for menu List: http://www.gammon.com.au/progmem
+// 1. OPTIMZE Activate_Menu_Option_Settings code optimize, remove commented code after tests
+// 2. BUG First level menu has 12 items, and code allows go beond that
+// 3. OPTIMZE Use array for menu List: http://www.gammon.com.au/progmem
 //-----------------------------------------------------------------------------------------------------------------------------------
 
 void Activate_Menu_Option_Settings()

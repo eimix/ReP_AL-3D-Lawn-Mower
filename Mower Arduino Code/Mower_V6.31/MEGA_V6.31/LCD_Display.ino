@@ -80,6 +80,16 @@ void Print_LCD_Mower_Error()
     Serial.println(F("Wire OFF"));
 #endif    
   }
+
+  if (Wire_Refind_Tries > 4) 
+  {
+    lcd.setCursor(0,1);
+    lcd.print("Cant Refind Wire");
+
+#if (DEBUG_LEVEL >= 1)
+    Serial.println(F("Cant Refind Wire"));
+#endif      
+  }  
 }
 //---------------------------------------------------------------------------------------
 

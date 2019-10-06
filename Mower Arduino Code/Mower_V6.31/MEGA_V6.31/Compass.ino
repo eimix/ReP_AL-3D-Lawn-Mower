@@ -62,14 +62,22 @@ void Get_Compass_Reading_Multiple(byte Count, int Delay)
 // Avoiding tracking around the whole wire to get back to the docking station
 void Compass_Turn_Mower_To_Home_Direction()
 {
+  //Stop the motors
   Motor_Action_Stop_Motors;
-  lawn_delay(1000);
-  Print_LCD_Compass_Home();
   lawn_delay(2000);
+  Print_LCD_Compass_Home();
+  lawn_delay(1000);
   Compass_Target = Home_Wire_Compass_Heading;
   Print_LCD_Heading_for_Home();
   lawn_delay(2000);
   lcd.clear();
+
+  // Reverse the mower a little
+  SetPins_ToGoBackwards();
+  Motor_Action_Go_Full_Speed();
+  lawn_delay(800);
+  Motor_Action_Stop_Motors;  
+      
   Get_Compass_Reading();
   SetPins_ToTurnLeft();
 #if (DEBUG_LEVEL >= 3)

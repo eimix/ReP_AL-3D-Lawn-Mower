@@ -69,10 +69,14 @@ void Track_Wire_From_Dock_to_Zone_X()
   Serial.println(F(""));
 #endif
   Tracking_Wire = 1;
+  Mower_Running = 0;
+
   MAG_Now   = 0;                                                              // Reset Values
   MAG_Start = 0;
   MAG_Error = 0;
   MAG_Goal  = 0;
+  int Dock_Cycles = 0;
+
   lawn_delay(500);
 
 #ifdef UseWiFi
@@ -96,7 +100,7 @@ void Track_Wire_From_Dock_to_Zone_X()
 
       // Tracks the wire from the docking station in a Counter-Clockwise direction to the start position
 
-      if (CCW_Tracking_To_Start == 1) 
+      if (CCW_Tracking_To_Start == 1)
       {
         if (MAG_Error > 0)                                                   // If the MAG_Error > 0 then turn right for CCW Tracking. PWM_left is set to max to turn right.
         {
@@ -104,7 +108,7 @@ void Track_Wire_From_Dock_to_Zone_X()
           PWM_Left  = PWM_MaxSpeed_LH;                                       // sets the PWM to the max possible for the wheel
           PWM_Right = 255 - (MAG_Error * PID_P);                             // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM
           if (PWM_Right > 255) PWM_Right = 255;                              // PWM_Right capped to Max PWM of 255.
-          if (PWM_Right >= 0) 
+          if (PWM_Right >= 0)
           {
             SetPins_ToGoForwards();
             lcd.setCursor(15, 1);
@@ -138,14 +142,14 @@ void Track_Wire_From_Dock_to_Zone_X()
             Tracking_Restart_Blocked_Path();
           }
         }
-        
+
         if (MAG_Error <= 0)                                                  // If the MAG_Error < 0 then turn left for CCW Tracking
         {
           // TURN LEFT
           PWM_Right = 255;                                                   // PWM_Right set to max to rotate the mower to the left.
-          PWM_Left = 255 + (MAG_Error * PID_P);                              // + as mag_error is negative to adjust PWM
+          PWM_Left  = 255 + (MAG_Error * PID_P);                             // + as mag_error is negative to adjust PWM
           if (PWM_Left > 255) PWM_Left = 255;                                // PWM_Left capped to mex PWM of 255
-          if (PWM_Left >= 0) 
+          if (PWM_Left >= 0)
           {
             SetPins_ToGoForwards();
             lcd.setCursor(0, 1);
@@ -168,7 +172,7 @@ void Track_Wire_From_Dock_to_Zone_X()
 #endif
           Tracking_Turn_Right = 0;
           Tracking_Turn_Left++;
-          if (Tracking_Turn_Left > Max_Tracking_Turn_Left) 
+          if (Tracking_Turn_Left > Max_Tracking_Turn_Left)
           {
             Motor_Action_Stop_Motors();
             lcd.clear();
@@ -183,9 +187,18 @@ void Track_Wire_From_Dock_to_Zone_X()
         Serial.print(F(" : MAG_Error="));
         Serial.println(MAG_Error);
 #endif
+
+        Dock_Cycles++;
+        Loop_Cycle_Mowing = Perimeter_I;
+        if (Dock_Cycles > 10)
+        {
+          Tracking_Wire++;                            // Makes the wire tracking LED in the app blink.
+          if (Tracking_Wire > 1) Tracking_Wire = 0;
 #ifdef UseWiFi
-        Get_WIFI_Commands();
+          Get_WIFI_Commands();
 #endif
+          Dock_Cycles = 0;
+        }
       }
     }
 
@@ -199,7 +212,8 @@ void Track_Wire_From_Dock_to_Zone_X()
     lcd.print(Perimeter_I);
   }
   lcd.clear();
-  Tracking_Wire = 0;
+  Tracking_Wire     = 0;
+  Loop_Cycle_Mowing = 0;
 
   delay(5);
 }
@@ -230,7 +244,10 @@ void Track_Perimeter_Wire_To_Dock()
   Serial.println(F(""));
 #endif
 
-  Tracking_Wire = 1;
+  Tracking_Wire     = 1;
+  Loop_Cycle_Mowing = 0;
+  Mower_Running     = 0;
+
   MAG_Now   = 0;                                                              // Reset Values
   MAG_Start = 0;
   MAG_Error = 0;
@@ -242,7 +259,7 @@ void Track_Perimeter_Wire_To_Dock()
 #if (DEBUG_LEVEL >= 3)
     Serial.println(F("TRACKING COUNTER-CLOCKWISE"));
 #endif
-    while (Mower_Docked == 0 && Mower_Parked == 0) 
+    while (Mower_Docked == 0 && Mower_Parked == 0)
     {
       lcd.clear();
       lcd.print(F("Tracking CCW to"));
@@ -255,6 +272,7 @@ void Track_Perimeter_Wire_To_Dock()
       delay(5);
       MAG_Error = MAG_Goal - MAG_Start;                                         // Calculates the Error to the center of the wire which is normally zero magnitude (remember - - is + )
       PrintWirePosition();                                                      // Prints the overview to the Serial Monitor.
+      Loop_Cycle_Mowing++;
 
       if (MAG_Error > 0)                                                        // Turn the mower to the right if MAG_Error > 0 with a CCW track direction.
       {
@@ -262,7 +280,7 @@ void Track_Perimeter_Wire_To_Dock()
         PWM_Left  = 255;                                                        // Set PWM_Left to maximum
         PWM_Right = 255 - (MAG_Error * PID_P);                                  // Mag_Error * P is the value reduced from the max value set PWM and sent to the PWM
         if (PWM_Right > 255) PWM_Right = 255;                                   // Caps the PWM_Right to 255
-        if (PWM_Right >= 0) 
+        if (PWM_Right >= 0)
         {
           SetPins_ToGoForwards();
           lcd.setCursor(15, 0);
@@ -293,7 +311,7 @@ void Track_Perimeter_Wire_To_Dock()
         PWM_Right = 255;                                                        // Set the PWM_Right to maximum
         PWM_Left  = 255 + (MAG_Error * PID_P);                                  // + as mag_error is negative to adjust PWM
         if (PWM_Left > 255) PWM_Left = 255;                                     // cap PWM_Left to the maximum
-        if (PWM_Left >= 0) 
+        if (PWM_Left >= 0)
         {
           SetPins_ToGoForwards();
           lcd.setCursor(15, 0);
@@ -319,7 +337,7 @@ void Track_Perimeter_Wire_To_Dock()
         if (Tracking_Turn_Left > Max_Tracking_Turn_Left)
         {
           Tracking_Restart_Blocked_Path();
-          if (Mower_Parked == 1) 
+          if (Mower_Parked == 1)
             Mower_Docked = 1;
         }
       }
@@ -338,11 +356,19 @@ void Track_Perimeter_Wire_To_Dock()
       Check_if_Charging();
       Check_if_Docked();
       Dock_Cycles++;
+
+      if (Dock_Cycles > 10)
+      {
+        Tracking_Wire++;                            // Makes the wire tracking LED in the app blink.
+        if (Tracking_Wire > 1) Tracking_Wire = 0;
+        Mower_Running = 0;
 #ifdef UseWiFi
-      if ((Dock_Cycles % 2) == 0)
         Get_WIFI_Commands();
 #endif
+        Dock_Cycles = 0;
+      }
     }
+    Loop_Cycle_Mowing = 0;
   }
 
   if (CW_Tracking_To_Charge == 1)                               // Mower tracks the wire in a Counter Clockwise Direction
@@ -350,7 +376,7 @@ void Track_Perimeter_Wire_To_Dock()
 #if (DEBUG_LEVEL >= 3)
     Serial.println(F("TRACKING ---  CLOCKWISE"));               // With the same functions as above
 #endif
-    while (Mower_Docked == 0 && Mower_Parked == 0) 
+    while (Mower_Docked == 0 && Mower_Parked == 0)
     {
       delay(5);
       lcd.clear();
@@ -363,6 +389,7 @@ void Track_Perimeter_Wire_To_Dock()
       delay(5);
       MAG_Error = MAG_Goal - MAG_Start;
       PrintWirePosition();
+      Loop_Cycle_Mowing++;
 
       // Turn the Mower to the left to get back on the wire. Clock Wise Motion around the wire
       // Power down the left wheel and full power right wheel to turn left
@@ -372,14 +399,14 @@ void Track_Perimeter_Wire_To_Dock()
         PWM_Right = 255;                                       // Set the right wheel to max PWMto turn left
         PWM_Left  = 255 - (MAG_Error * PID_P);
         if (PWM_Left > 255) PWM_Left = 255;                    //
-        if (PWM_Left >= 0) 
+        if (PWM_Left >= 0)
         {
           SetPins_ToGoForwards();                              // keep the mower moving forward
           lcd.setCursor(15, 0);
           lcd.print(" ");
         }
 
-        if (PWM_Left < 0) 
+        if (PWM_Left < 0)
         {
           PWM_Left = (-1 * PWM_Left) + 220;
           if (PWM_Left > 255) PWM_Left = 255;
@@ -395,7 +422,7 @@ void Track_Perimeter_Wire_To_Dock()
 #endif
         Tracking_Turn_Right = 0;
         Tracking_Turn_Left++;
-        if (Tracking_Turn_Left > Max_Tracking_Turn_Left) 
+        if (Tracking_Turn_Left > Max_Tracking_Turn_Left)
           Tracking_Restart_Blocked_Path();
       }
       if (MAG_Error <= 0)                                      // Turn the Mower to the right to get back on the wire.
@@ -411,7 +438,7 @@ void Track_Perimeter_Wire_To_Dock()
           lcd.print(" ");
         }
 
-        if (PWM_Right < 0) 
+        if (PWM_Right < 0)
         {
           PWM_Right = (-1 * PWM_Right) + 220;
           if (PWM_Right > 255) PWM_Right = 255;
@@ -426,7 +453,7 @@ void Track_Perimeter_Wire_To_Dock()
 #endif
         Tracking_Turn_Left = 0;
         Tracking_Turn_Right++;
-        if (Tracking_Turn_Right > Max_Tracking_Turn_Right) 
+        if (Tracking_Turn_Right > Max_Tracking_Turn_Right)
           Tracking_Restart_Blocked_Path();
       }
 #if (DEBUG_LEVEL >= 3)
@@ -444,13 +471,22 @@ void Track_Perimeter_Wire_To_Dock()
       Check_if_Charging();
       Check_if_Docked();
       Dock_Cycles++;
+
+      if (Dock_Cycles > 10)
+      {
+        Tracking_Wire = Tracking_Wire + 1;                            // Makes the wire tracking LED in the app blink.
+        if (Tracking_Wire > 1) Tracking_Wire = 0;
+        Mower_Running = 0;
 #ifdef UseWiFi
-      if ((Dock_Cycles % 2) == 0)
         Get_WIFI_Commands();
 #endif
+        Dock_Cycles = 0;
+      }
     }
+    Loop_Cycle_Mowing = 0;
   }
-  Tracking_Wire = 0;
+  Tracking_Wire     = 0;
+  Loop_Cycle_Mowing = 0;
 }
 //-----------------------------------------------------------------------------------------------------------------------------------
 
@@ -461,6 +497,33 @@ void Tracking_Restart_Blocked_Path()
 #if (DEBUG_LEVEL >= 2)
   Serial.println(F("Possible Blocked Path - Trying to Avoid"));
 #endif
+
+  //Some Morse code to WiFi app? :)
+  Mower_Running = 1;
+  Tracking_Wire = 1;
+#ifdef UseWiFi
+  Get_WIFI_Commands();                                             // TX and RX data from NodeMCU
+#endif
+  lawn_delay(1000);
+  Mower_Running = 0;
+  Tracking_Wire = 0;
+#ifdef UseWiFi
+  Get_WIFI_Commands();                                             // TX and RX data from NodeMCU
+#endif
+  lawn_delay(1000);
+  Mower_Running = 1;
+  Tracking_Wire = 1;
+#ifdef UseWiFi
+  Get_WIFI_Commands();                                             // TX and RX data from NodeMCU
+#endif
+  lawn_delay(1000);
+  Mower_Running = 0;
+  Tracking_Wire = 0;
+#ifdef UseWiFi
+  Get_WIFI_Commands();                                             // TX and RX data from NodeMCU
+#endif
+  lawn_delay(1000);
+
   lcd.clear();
   lcd.print(F("Wire Lost."));
   lcd.setCursor(0, 1);
@@ -481,6 +544,13 @@ void Tracking_Restart_Blocked_Path()
     Tracking_Turn_Left  = 0;                                       // Resets the tracking error counters
     Tracking_Turn_Right = 0;                                       // Resets the tracking error counters
     lawn_delay(500);
+
+    Mower_Running = 0;
+    Tracking_Wire = 0;
+#ifdef UseWiFi
+    Get_WIFI_Commands();                                             // TX and RX data from NodeMCU
+#endif
+
 #ifdef UseCompassQMC5883
     if (Compass_Activate == 1) Compass_Turn_Mower_To_Home_Direction();
 #endif

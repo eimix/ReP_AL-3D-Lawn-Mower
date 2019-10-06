@@ -19,6 +19,9 @@
 //   {Command: 'Go forward', Condition: 'Bumper', Paramter1: 3},  // 1 left bumper hit, 2 right bumper hit, 3 any bumper hit
 // }
 // 4. Beeper for user notifications: need recharge, error, warning etc.
+// 5. PID controll, now it is only P control (no ID) (good description of full version https://forum.arduino.cc/index.php?topic=8871.30)
+// 6. EEPROM struct save/load
+// 7. Merge with 6.5 version ???
 
 //DONE
 // 1. Variable P is too short to be global, rename it - changed to P -> PID_P; D -> PID_D; I -> Perimeter_I (PID_I)
@@ -35,6 +38,7 @@
 //11. Custom delay function with sensor reading and motor stop
 //12. Very many dalay(>1000) calls, and no safty checks could be done during delays - delays remained, changed delay it self
 //13. Joystick type control using WiFi - more responsive driving
+//14. Merge with 6.4 version https://github.com/REPALphilread/ReP_AL-3D-Lawn-Mower/tree/master/Mower%20Arduino%20Code/Mower_V6.4
 
 //Libraries for Perimeter Wire Receiver
 #include <Arduino.h>
@@ -62,7 +66,7 @@ int WireCrossCounter = 0;               // ??? Probably not used
 boolean inside = true;
 int Wire_Detected;
 
-byte Loop_Cycle_Mowing    = 0;
+int Loop_Cycle_Mowing    = 0;
 byte Turn_Around_Counter  = 0;          // No worry about max 255, it is used for turn around: once left, once right
 
 //Sonar Variables
@@ -127,14 +131,18 @@ byte  Outside_Wire_Count = 0;
 int   Tracking_Wire = 0;
 bool  Wire_ON_Printed;
 int   Wire_Off;
-
+int Wire_Refind_Tries = 0;
+  
 int  Tracking_Turn_Left;
 int  Tracking_Turn_Right;
 bool Mower_Track_To_Charge;
 bool Mower_Track_To_Exit;
 
 bool Abort_Wire_Find;
-bool No_Wire_Found;
+//bool No_Wire_Found;
+bool No_Wire_Found_Fwd;
+bool No_Wire_Found_Bck;
+int  Wire_Find_Attempt = 0; 
 
 int  PWM_Right;
 int  PWM_Left;

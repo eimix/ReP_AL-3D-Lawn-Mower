@@ -24,6 +24,7 @@ void Check_Wire_In_Out()
     {
       Outside_Wire       = 0;                                         // Mower is inside the perimeter wire
       Outside_Wire_Count = 0;                                         // The number of outside wire counts is reset to 0
+      Wire_Refind_Tries  = 0;
     }
   }
 
@@ -41,8 +42,10 @@ void Check_Wire_In_Out()
       lcd.print(F("Special Function"));
       lawn_delay(2000);
       Outside_Wire_Count = 0;
+
       Specials_Find_Wire_Track();
-      SetPins_ToGoBackwards();                                                              // Set the mower to back up
+      
+      SetPins_ToGoBackwards();                                          // Set the mower to back up
       Motor_Action_Go_Full_Speed();
       lawn_delay(1000);
       Motor_Action_Stop_Motors();
@@ -53,6 +56,26 @@ void Check_Wire_In_Out()
       UpdateWireSensor();                                               // Read the wire sensor and see of the mower is now  or outside the wire
       ADCMan.run();
       PrintBoundaryWireStatus();
+
+      Wire_Refind_Tries++;
+#if (DEBUG_LEVEL >= 3)
+      Serial.println("");
+      Serial.print("|Wire Refind Atempts:");
+      Serial.print(Wire_Refind_Tries);
+      Serial.print("|");
+      Serial.println("");
+#endif
+      if (Wire_Refind_Tries > 4) 
+      {
+        Motor_Action_Stop_Motors(); 
+        lcd.clear();
+        Mower_Error = 1;
+#if (DEBUG_LEVEL >= 2)
+        Serial.println("");
+        Serial.println("Max refind tries exceeded - Parking the Mower");
+#endif
+        lawn_delay(2000);
+      }      
     }
   }
 }

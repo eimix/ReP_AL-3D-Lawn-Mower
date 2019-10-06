@@ -85,8 +85,12 @@ const char SettingsMenuItems[NUMBER_OF_ELEMENTS][MAX_SIZE] PROGMEM = {
  {"Wheel Speed RH"}, 
  {"Blade Speed"}, 
  {"Compass ON/OFF"}, 
+// {"Compass Home"}, 
+// {"Set Clock"},
+// {"Pattern Mow"}, 
+// {"Battery Min"}, 
  {"Tracking PID"}, 
- {"Set Clock"},
+ {"Set Clock"}, 
  {"-----"}, 
  {"CLEAR EEPROM"}, 
 };

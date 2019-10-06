@@ -96,7 +96,7 @@ void Run_Menu_Order_Timing()
 #if (DEBUG_LEVEL >= 3)
   Serial.print(F("Menu View : "));
   Serial.print(Menu_View);
-  Serial.print(F("| Menu Selection"));
+  Serial.print(F("| Menu Selection :"));
   Serial.println(Menu_Mode_Selection);
 #endif
 }

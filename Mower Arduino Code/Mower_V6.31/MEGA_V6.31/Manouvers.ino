@@ -106,9 +106,13 @@ void Manouver_Find_Wire_Track()
   lcd.print(F("Finding Wire...  "));
   Motor_Action_Stop_Spin_Blades();
   delay(5);
-  Abort_Wire_Find = 0;
-  No_Wire_Found   = 0;
+  Abort_Wire_Find   = 0;
+  No_Wire_Found_Fwd = 0;
+  No_Wire_Found_Bck = 0;
+  Mower_Running     = 0;
   TestforBoundaryWire();                                                                    // Check to see that the wire is on.
+  Loop_Cycle_Mowing = 0;
+  int cycle = 0;
 
   for (int i = 0; i <= 1; i++)
   {
@@ -148,10 +152,15 @@ void Manouver_Find_Wire_Track()
         lcd.setCursor(0, 1);
         lcd.print(F("Finding Wire  "));
         lawn_delay(100);
-        while (inside != true && Abort_Wire_Find == 0)                                        // While the mower is still outside the fence run this code
+        cycle = 0;
+
+        // Run the mower backwards until the wire is detetced and the mower is inside the wire
+        while (inside != true && Abort_Wire_Find == 0 && No_Wire_Found_Bck == 0)             // While the mower is still outside the fence run this code
         {
-          Motor_Action_Go_Full_Speed();                                                       // Go full speed (in this case backwards)
-          UpdateWireSensor();                                                                 // Read the wire sensor and see of the mower is now  or outside the wire
+          Loop_Cycle_Mowing = 222;                                                                  // Display this number "222" in the APP under loop cycles.
+          cycle = cycle + 1;                                                                        // adds one to the cycle count
+          Motor_Action_Go_Full_Speed();                                                             // Go full speed (in this case backwards)
+          UpdateWireSensor();
           ADCMan.run();
           PrintBoundaryWireStatus();                                                          // Prints of the status of the wire sensor readings.
 #if (DEBUG_LEVEL >= 3)
@@ -160,12 +169,19 @@ void Manouver_Find_Wire_Track()
 #ifdef UseWiFi
           if (Manual_Mode == 0) Get_WIFI_Commands();
 #endif
-          if (Mower_Parked == 1) 
+          if (Mower_Parked == 1)
           {
 #if (DEBUG_LEVEL >= 2)
             Serial.println(F("Abort Wire Find"));
 #endif
             Abort_Wire_Find = 1;
+          }
+          if (cycle > Max_Cycle_Wire_Find_Back)                                                   // Track forwards for Max_Cycle_Wire_Find_Back cycles
+          {
+            No_Wire_Found_Bck = 1;                                                                // if mower is still tracking after Max_Cycle_Wire_Find_Back cycles then cancel the find.
+#if (DEBUG_LEVEL >= 2)
+            Serial.println(F("Max Backward Cycles reached"));
+#endif
           }
         }
 
@@ -174,7 +190,7 @@ void Manouver_Find_Wire_Track()
       }
 
       // Code to go forwards until the mower is outside/ON the wire
-      if ((inside == true) && (Abort_Wire_Find == 0) && (No_Wire_Found == 0))              // If the Mower is situated  the wire then run the following code.
+      if ((inside == true) && (Abort_Wire_Find == 0) && (No_Wire_Found_Fwd == 0))              // If the Mower is situated  the wire then run the following code.
       {
         ADCMan.run();
         UpdateWireSensor();
@@ -191,9 +207,12 @@ void Manouver_Find_Wire_Track()
         lcd.setCursor(0, 1);
         lcd.print(F("Finding Wire  "));
         lawn_delay(100);
-        int cycle = 0;                                                                      // resets the cycles
-        while ((inside != false) && (No_Wire_Found == 0) && (Mower_Parked == 0))                               // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
+        cycle = 0;                                                                              // resets the cycles
+
+        // Move the mower forwards until the wire is detected and the mower is then outside the wire
+        while (inside != false && No_Wire_Found_Fwd == 0 && Mower_Parked == 0)           // Move the mower forward until mower is outisde/ON the wire fence or 500 cycles have passed
         {
+          Loop_Cycle_Mowing = 111;
           cycle = cycle + 1;
           lcd.setCursor(0, 1);
           lcd.print(F("Track -> Charge"));
@@ -208,16 +227,16 @@ void Manouver_Find_Wire_Track()
           if (Manual_Mode == 0)
             Get_WIFI_Commands();
 #endif
-          if (Mower_Parked == 1) 
+          if (Mower_Parked == 1)
           {
 #if (DEBUG_LEVEL >= 2)
             Serial.println(F("Abort Wire Find"));
 #endif
             Abort_Wire_Find = 1;
           }
-          if (cycle > Max_Cycle_Wire_Find)                                                                 // Track forwards for 500 cycles
+          if (cycle > Max_Cycle_Wire_Find_Fwd)                                              // Track forwards for Max_Cycle_Wire_Find_Fwd cycles
           {
-            No_Wire_Found = 1;                                                              // if mower is still tracking after 500 cycles then cancel the find.
+            No_Wire_Found_Fwd = 1;                                                          // if mower is still tracking after Max_Cycle_Wire_Find_Fwd cycles then cancel the find.
 #if (DEBUG_LEVEL >= 2)
             Serial.println(F("Max Forward Cycles reached"));
 #endif
@@ -232,7 +251,7 @@ void Manouver_Find_Wire_Track()
   }
 
   // Position the mower further over the wire so it has space to turn 90° onto the wire.
-  if ((Abort_Wire_Find == 0) && (No_Wire_Found == 0) && (Mower_Parked == 0)) 
+  if (Abort_Wire_Find == 0 && No_Wire_Found_Fwd == 0 && Mower_Parked == 0)
   {
     SetPins_ToGoForwards();
     lawn_delay(100);
@@ -241,7 +260,7 @@ void Manouver_Find_Wire_Track()
     Motor_Action_Stop_Motors();
   }
 
-  // Sets the firection of spin depending on if the mower is eciting or tracking home
+  // Sets the firection of spin depensing on if the mower is eciting or tracking home
 
   // Set pins to track home to charge.
   if (Mower_Track_To_Charge == 1 && Mower_Parked == 0)
@@ -249,7 +268,7 @@ void Manouver_Find_Wire_Track()
     lcd.setCursor(0, 1);
     lcd.print(F("Track -> Charge"));
     lawn_delay(1000);
-    if (CW_Tracking_To_Charge == 1) 
+    if (CW_Tracking_To_Charge == 1)
     {
       SetPins_ToTurnRight();                                                                // Track perimeter wire in a Clockwise Direction to the charging station
 #if (DEBUG_LEVEL >= 3)
@@ -271,14 +290,14 @@ void Manouver_Find_Wire_Track()
     lcd.setCursor(0, 1);
     lcd.print(F("Track -> Exit"));
     lawn_delay(1000);
-    if (CW_Tracking_To_Start == 1) 
+    if (CW_Tracking_To_Start == 1)
     {
       SetPins_ToTurnRight();                                                                // Track perimeter wire in a Clockwise Direction to the charging station
 #if (DEBUG_LEVEL >= 3)
       Serial.println(F("CW Tracking to Exit"));
 #endif
     }
-    if (CCW_Tracking_To_Start == 1) 
+    if (CCW_Tracking_To_Start == 1)
     {
       SetPins_ToTurnLeft();
 #if (DEBUG_LEVEL >= 3)
@@ -297,21 +316,43 @@ void Manouver_Find_Wire_Track()
   PrintBoundaryWireStatus();                                                                // Prints of the status of the wire sensor readings
   delay(20);
 
+  int Max_Spin_Attempts = 150;
+  int Spin_Attempts = 0;
+  int WIFI_Check_Up;
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Spin To Wire");
+
   // Spins the mower over the wire in the direction of tracking
-  while (inside == false && Abort_Wire_Find == 0 && No_Wire_Found == 0 && Mower_Parked == 0) 
+  while (inside == false  && Abort_Wire_Find == 0 && No_Wire_Found_Fwd == 0 && Mower_Parked == 0 && Spin_Attempts < Max_Spin_Attempts)
   {
-    while (inside != true)                                                                  // Do this loop until mower is back  the wire fence
+    while (inside != true && Spin_Attempts < Max_Spin_Attempts)                                                              // Do this loop until mower is back  the wire fence
     {
+      Serial.print("Spin Attempts");
+      Serial.print(Spin_Attempts);
+      lcd.setCursor(0, 1);
+      lcd.print(Spin_Attempts);
+
       Motor_Action_Go_Full_Speed();                                                         // Go full speed (in the case turning as set by the previous logic)
       UpdateWireSensor();                                                                   // Read the wire sensor and see of the mower is now  or outside the wire
       ADCMan.run();
       PrintBoundaryWireStatus();                                                            // Prints of the status of the wire sensor readings.
+      Spin_Attempts++;                                                                      // checks that the mower is not blocked trying to spin on the wire and gets stuck in this loop
+#ifdef UseWiFi
+      WIFI_Check_Up++;
+      if (WIFI_Check_Up = 20) 
+      {
+        if (Manual_Mode == 0) 
+          Get_WIFI_Commands();
+        WIFI_Check_Up = 0;
+      }
+#endif
     }
     Motor_Action_Stop_Motors();                                                             // Stop the mower on the wire facing the correct direction.
   }
 
   Motor_Action_Stop_Motors();
-  if (Abort_Wire_Find == 0) 
+  if (Abort_Wire_Find == 0 && Spin_Attempts < Max_Spin_Attempts)
   {
 #if (DEBUG_LEVEL >= 2)
     Serial.println(F("Track Wire Function Complete - ON WIRE??"));
@@ -321,19 +362,28 @@ void Manouver_Find_Wire_Track()
     lawn_delay(2000);                                                                                // 2 second pause to check result
     SetPins_ToGoForwards();
     lawn_delay(100);
+
+    lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print("Track -> Charge");     
   }
 
-  if (Abort_Wire_Find == 1) 
+  // if an abort has been received or the mower is not spinning to the right direction on the the wire then park it.
+  if (Abort_Wire_Find == 1 || Spin_Attempts >= Max_Spin_Attempts)
   {
 #if (DEBUG_LEVEL >= 2)
     Serial.println(F("Wire Find Aborted"));
 #endif
+    lcd.clear();
+    lcd.print("Wire Find ABORT!!");
+    lawn_delay(2000);       
+
     Abort_Wire_Find = 0;
     SetPins_ToGoForwards();
     Manouver_Park_The_Mower();
   }
 
-  if (No_Wire_Found == 1) 
+  if (No_Wire_Found_Fwd == 1)
   {
 #if (DEBUG_LEVEL >= 2)
     Serial.println(F("Re-starting wire find"));
@@ -354,20 +404,22 @@ void Manouver_Turn_Around()
     lawn_delay(Mower_Reverse_Delay);
     Motor_Action_Stop_Motors();
 
-/*
-    if (Turn_Around_Counter % 2 == 0)
-      SetPins_ToTurnRight();
-    else
-      SetPins_ToTurnLeft();
-*/
-    SetPins_ToTurn((Turn_Around_Counter % 2 == 0)?DirectionRight:DirectionLeft);
-     
+    /*
+        if (Turn_Around_Counter % 2 == 0)
+          SetPins_ToTurnRight();
+        else
+          SetPins_ToTurnLeft();
+    */
+    SetPins_ToTurn((Turn_Around_Counter % 2 == 0) ? DirectionRight : DirectionLeft);
+
     Motor_Action_Turn_Speed();
     lawn_delay(random(Mower_Turn_Delay_Min, Mower_Turn_Delay_Max));
   }
 
 #ifdef UseCompassQMC5883
   if (Pattern_Mow == 1 && Compass_Activate == 1)
+    Run_Pattern_Mow_Code();
+/*
   {
     Motor_Action_Stop_Motors();
     Motor_Action_Stop_Spin_Blades();
@@ -378,15 +430,15 @@ void Manouver_Turn_Around()
     Motor_Action_Stop_Motors();
     lawn_delay(500);
 
-    SetPins_ToTurn((Compass_Cycle == 0)?DirectionRight:DirectionLeft); 
+    SetPins_ToTurn((Compass_Cycle == 0) ? DirectionRight : DirectionLeft);
     Motor_Action_Go_Full_Speed();
     Get_Compass_Reading_Multiple(3, 200);
-/*
-    lawn_delay(200);
-    Get_Compass_Reading();
-    lawn_delay(200);
-    Get_Compass_Reading();
-*/    
+    
+    //    lawn_delay(200);
+    //    Get_Compass_Reading();
+    //    lawn_delay(200);
+    //    Get_Compass_Reading();
+    
     // Turn the Mower 90° to the corner
     Compass_Target = Compass_Mow_Direction + 90; //TODO CHECK TEST Does this need changint -90 +90 each cycle?
     Compass_Target = (Compass_Target + 360) % 360;
@@ -409,13 +461,13 @@ void Manouver_Turn_Around()
     SetPins_ToTurnLeft;
     Motor_Action_Go_Full_Speed();
     Get_Compass_Reading_Multiple(3, 200);
-/*
-    lawn_delay(200);
-    Get_Compass_Reading();
-    lawn_delay(200);
-    Get_Compass_Reading();
-*/
     
+    //    lawn_delay(200);
+    //    Get_Compass_Reading();
+    //    lawn_delay(200);
+    //    Get_Compass_Reading();
+    
+
     // Turn 180° to the initial mowing direction.
     Compass_Target = Compass_Mow_Direction + 180 * Compass_Cycle;
     Compass_Target = (Compass_Target + 360) % 360;
@@ -428,98 +480,97 @@ void Manouver_Turn_Around()
 #endif
     Turn_To_Compass_Heading();
 
-//    if (Compass_Cycle == 0)
-//    {
-/*
-      SetPins_ToTurnRight();
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(200);
-      Get_Compass_Reading();
-      lawn_delay(200);
-      Get_Compass_Reading();
-*/
-/*
-      // Turn the Mower 90° to the corner
-      Compass_Target = Compass_Mow_Direction + 90;
-      Compass_Target = (Compass_Target + 360) % 360;
-#if (DEBUG_LEVEL >= 3)
-      Serial.println("");
-      Serial.print(F("Compass_Cycle = 0|"));
-      Serial.print(F("Turning 90°"));
-      Serial.print(F("|Target Degree Heading = "));
-      Serial.print(Compass_Target);
-      Serial.print("|");
-#endif
-      Turn_To_Compass_Heading();
-*/
-/*
-      // Move Forwards at 90° and stop
-      SetPins_ToGoForwards();
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(1500);
-      Motor_Action_Stop_Motors();
-      SetPins_ToTurnRight();
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(200);
-      Get_Compass_Reading();
-      lawn_delay(200);
-      Get_Compass_Reading();
-*/
-/*
-      // Turn 180° to the initial mowing direction.
-      Compass_Target = Compass_Mow_Direction;
-      Compass_Target = (Compass_Target + 360) % 360;
-*/
-//    }
+    //    if (Compass_Cycle == 0)
+    //    {
+    
+    //      SetPins_ToTurnRight();
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    
+    
+    //      // Turn the Mower 90° to the corner
+    //      Compass_Target = Compass_Mow_Direction + 90;
+    //      Compass_Target = (Compass_Target + 360) % 360;
+    //  #if (DEBUG_LEVEL >= 3)
+    //      Serial.println("");
+    //      Serial.print(F("Compass_Cycle = 0|"));
+    //      Serial.print(F("Turning 90°"));
+    //      Serial.print(F("|Target Degree Heading = "));
+    //      Serial.print(Compass_Target);
+    //      Serial.print("|");
+    //  #endif
+    //      Turn_To_Compass_Heading();
+    
+    
+    //      // Move Forwards at 90° and stop
+    //      SetPins_ToGoForwards();
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(1500);
+    //      Motor_Action_Stop_Motors();
+    //      SetPins_ToTurnRight();
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    
+    //      // Turn 180° to the initial mowing direction.
+    //      Compass_Target = Compass_Mow_Direction;
+    //      Compass_Target = (Compass_Target + 360) % 360;
+    
+    //    }
 
-//    if (Compass_Cycle == 1)
-//    {
-/*
-      SetPins_ToTurnLeft();
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(200);
-      Get_Compass_Reading();
-      lawn_delay(200);
-      Get_Compass_Reading();
-*/
-/*
-      // Turn the Mower 90° to the corner
-      Compass_Target = Compass_Mow_Direction + 90;
-      Compass_Target = (Compass_Target + 360) % 360;
-        
-#if (DEBUG_LEVEL >= 3)
-      Serial.println("");
-      Serial.print(F("Compass_Cycle = 1|"));
-      Serial.print(F("Turning 90°"));
-      Serial.print(F("|Target Degree Heading = "));
-      Serial.print(Compass_Target);
-      Serial.print("|");
-#endif
-      Turn_To_Compass_Heading();
-*/
-/*
-      // Move Forwards at 90° and stop
-      SetPins_ToGoForwards();
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(1500);
-      Motor_Action_Stop_Motors();
-      SetPins_ToTurnLeft;
-      Motor_Action_Go_Full_Speed();
-      lawn_delay(200);
-      Get_Compass_Reading();
-      lawn_delay(200);
-      Get_Compass_Reading();
-*/
-/*
-      // Turn 180° to the initial mowing direction.
-      Compass_Target = Compass_Mow_Direction + 180;
-      Compass_Target = (Compass_Target + 360) % 360;
-*/      
-//    }
-        
+    //    if (Compass_Cycle == 1)
+    //    {
+    
+    //      SetPins_ToTurnLeft();
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    
+    
+    //      // Turn the Mower 90° to the corner
+    //      Compass_Target = Compass_Mow_Direction + 90;
+    //      Compass_Target = (Compass_Target + 360) % 360;
+
+    //  #if (DEBUG_LEVEL >= 3)
+    //      Serial.println("");
+    //      Serial.print(F("Compass_Cycle = 1|"));
+    //      Serial.print(F("Turning 90°"));
+    //      Serial.print(F("|Target Degree Heading = "));
+    //      Serial.print(Compass_Target);
+    //      Serial.print("|");
+    //  #endif
+    //      Turn_To_Compass_Heading();
+    
+    //      // Move Forwards at 90° and stop
+    //      SetPins_ToGoForwards();
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(1500);
+    //      Motor_Action_Stop_Motors();
+    //      SetPins_ToTurnLeft;
+    //      Motor_Action_Go_Full_Speed();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    //      lawn_delay(200);
+    //      Get_Compass_Reading();
+    
+    
+    //      // Turn 180° to the initial mowing direction.
+    //      Compass_Target = Compass_Mow_Direction + 180;
+    //      Compass_Target = (Compass_Target + 360) % 360;
+    
+    //    }
+
     //Set the compass leg to the next stage.
     Compass_Cycle = 1 - Compass_Cycle;
   }
+*/  
 #endif
 
   Motor_Action_Stop_Motors();
@@ -599,6 +650,7 @@ void Manouver_Start_Mower()
   Mower_SaftyWarning    = 0;
   Loop_Cycle_Mowing     = 0;
   Manual_Mode           = 0;
+  Wire_Refind_Tries     = 0;
   Turn_On_Relay();
 }
 //---------------------------------------------------------------------------------------
@@ -720,7 +772,8 @@ void Manouver_Go_To_Charging_Station()
   Mower_SaftyWarning    = 0;
   Loop_Cycle_Mowing     = 0;
   Manual_Mode           = 0;
-  No_Wire_Found         = 0;
+  No_Wire_Found_Fwd     = 0;
+  No_Wire_Found_Bck     = 0;
   Manage_Alarms();                                              // Switches on or off the Alarms depending on the setup
 #ifdef UseWiFi
   Get_WIFI_Commands();
@@ -744,11 +797,11 @@ void Manouver_Go_To_Charging_Station()
 #ifdef UseWiFi
   Get_WIFI_Commands();
 #endif
-  if ((Mower_Parked == 0) && (No_Wire_Found == 0))      Track_Perimeter_Wire_To_Dock();
+  if ((Mower_Parked == 0) && (No_Wire_Found_Fwd == 0))      Track_Perimeter_Wire_To_Dock();
 #ifdef UseWiFi
   Get_WIFI_Commands();
 #endif
-  if (No_Wire_Found == 1)                               Manouver_Go_To_Charging_Station();
+  if (No_Wire_Found_Fwd == 1)                               Manouver_Go_To_Charging_Station();
 
 #ifdef UseWiFi
   Get_WIFI_Commands();
@@ -764,7 +817,7 @@ void Manouver_Exit_To_Zone_X()
   lawn_delay(1000);
   Manouver_Mower_Exit_Dock();
   Special_Exit_From_Docking_Station();                         // Move the Mower into position backing out of the docking station
-  if (Perimeter_Wire_Enabled == 1) 
+  if (Perimeter_Wire_Enabled == 1)
   {
     Mower_Track_To_Exit = 1;
     TestforBoundaryWire();
@@ -805,7 +858,7 @@ void Manouver_Exit_To_Zone_X()
       }
     }
   }
-  
+
   if (Perimeter_Wire_Enabled == 0)
   {
 #if (DEBUG_LEVEL >= 3)

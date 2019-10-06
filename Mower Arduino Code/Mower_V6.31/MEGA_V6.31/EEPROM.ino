@@ -1,12 +1,13 @@
 // Loads the saved values from EEPROM
 // to the settings menu.
 
-#define EEPROMStructureVersion 2
+#define EEPROMStructureVersion 3
 
 //TODO:
+// 1. Min Voltage, Compass Home int values (>255 byte)
 
 //DONE
-//1. Write structure version to EEPROM and ignore all config if older version is found
+// 1. Write structure version to EEPROM and ignore all config if older version is found 
 //---------------------------------------------------------------------------------------
 
 void Save_EEPROM_Data()
@@ -39,16 +40,27 @@ void Save_EEPROM_Data()
   EEPROM.write(19, PWM_Blade_Speed);
 #endif
 
-  EEPROM.write(20, 1);
-  EEPROM.write(21, Compass_Activate);
+  EEPROM.write(20 , 1);
+  EEPROM.write(21 , Compass_Activate);
 
-  EEPROM.write(23, 1);
-  EEPROM.write(24, (PID_P * 100));
+  EEPROM.write(22, 1);
+  EEPROM.write(23, (PID_P * 100));
+
+  EEPROM.write(24, 1);
+  EEPROM.write(25, Pattern_Mow);
+  
+  EEPROM.write(26, 1);
+  EEPROM.write(27, (Battery_Min * 10));
+
+  EEPROM.write(28, 1);
+  EEPROM.write(29, Home_Wire_Compass_Heading);
 }
 //---------------------------------------------------------------------------------------
 
 void Load_EEPROM_Saved_Data()
 {
+  Serial.println("*** EEPROM Settings ***");
+
   int Version = EEPROM.read(1);
   if (Version != EEPROMStructureVersion)
     return;
@@ -64,7 +76,9 @@ void Load_EEPROM_Saved_Data()
     Serial.print(Alarm_1_Hour);
     Serial.print(":");
     if (Alarm_1_Minute < 10) Serial.print("0");
-    Serial.println(Alarm_1_Minute);
+    Serial.print(Alarm_1_Minute);
+    if (Alarm_1_ON == 0) Serial.println(" | Alarm 1 OFF");
+    if (Alarm_1_ON == 1) Serial.println(" | Alarm 1 Active");
 #endif
   }
 
@@ -79,7 +93,9 @@ void Load_EEPROM_Saved_Data()
     Serial.print(Alarm_2_Hour);
     Serial.print(":");
     if (Alarm_2_Minute < 10) Serial.print("0");
-    Serial.println(Alarm_2_Minute);
+    Serial.print(Alarm_2_Minute);
+    if (Alarm_2_ON == 0) Serial.println(" | Alarm 2 OFF");
+    if (Alarm_2_ON == 1) Serial.println(" | Alarm 2 Active");
 #endif
   }
 
@@ -94,7 +110,9 @@ void Load_EEPROM_Saved_Data()
     Serial.print(Alarm_3_Hour);
     Serial.print(":");
     if (Alarm_3_Minute < 10) Serial.print("0");
-    Serial.println(Alarm_3_Minute);
+    Serial.print(Alarm_3_Minute);
+    if (Alarm_3_ON == 0) Serial.println(" | Alarm 3 OFF");
+    if (Alarm_3_ON == 1) Serial.println(" | Alarm 3 Active");
 #endif
   }
 
@@ -136,8 +154,6 @@ void Load_EEPROM_Saved_Data()
     Compass_Activate = EEPROM.read(21);
 #if (DEBUG_LEVEL >= 3)
     Serial.print(F("Compass Settings from EEPROM : "));
-#endif
-#if (DEBUG_LEVEL >= 3)
     if (Compass_Activate == 0) Serial.println("OFF");
     if (Compass_Activate == 1) Serial.println("ON");
 #endif
@@ -154,7 +170,44 @@ void Load_EEPROM_Saved_Data()
     Serial.println(PID_P);
 #endif
   }
-//  lawn_delay(500); //WHY???
+
+  byte Pattern_Mow_EEPROM = EEPROM.read(24);
+  if (Pattern_Mow_EEPROM == 1) 
+  {
+    Pattern_Mow = EEPROM.read(25);
+#if (DEBUG_LEVEL >= 3)
+    Serial.print(F("Pattern Mow settings from EEPROM : "));
+    if (Pattern_Mow == 0) Serial.println("OFF");
+    if (Pattern_Mow == 1) Serial.println("ON");
+#endif
+  }
+
+  // Not safe > 25.5V (255 max byte value)
+  byte Minimum_Volt_EEPROM = EEPROM.read(26);
+  if (Minimum_Volt_EEPROM == 1) 
+  {
+    Battery_Min = EEPROM.read(27);
+    Battery_Min = Battery_Min / 10;
+#if (DEBUG_LEVEL >= 3)
+    Serial.print(F("Minimum Battery Voltage set from EEPROM : "));
+    Serial.println(Battery_Min);
+#endif
+  }
+
+  // Not safe > 255° (255 max byte value)
+  byte Compass_Home_EEPROM = EEPROM.read(28);
+  if (Compass_Home_EEPROM == 1) 
+  {
+    Home_Wire_Compass_Heading = EEPROM.read(29);
+#if (DEBUG_LEVEL >= 3)
+    Serial.print(F("Compass Home Degrees : "));
+    Serial.println(Home_Wire_Compass_Heading);
+#endif
+  }
+
+  Serial.println("*************************");
+
+  //  lawn_delay(500); //WHY???
 }
 //---------------------------------------------------------------------------------------
 
@@ -169,9 +222,12 @@ void Clear_EERPOM()
   EEPROM.write(18, 0);    // Clear PWM Blade
   EEPROM.write(20, 0);    // Clear Compass
   EEPROM.write(22, 0);    // Clear PID
+  EEPROM.write(24, 0);    // Clear Pattern Mow
+  EEPROM.write(26, 0);    // Clear Minimum Battery Voltage
+  EEPROM.write(28, 0);    // Clear Compass Home Degrees
 #if (DEBUG_LEVEL >= 3)
   Serial.println(F("All EEPROM Settings Cleared"));
 #endif
-//  lawn_delay(1000); //WHY?
+  //  lawn_delay(1000); //WHY?
 }
 //---------------------------------------------------------------------------------------

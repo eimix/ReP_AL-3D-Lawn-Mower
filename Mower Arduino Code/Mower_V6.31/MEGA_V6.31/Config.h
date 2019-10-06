@@ -29,7 +29,7 @@
 // MAIN config
 //-----------------------------------------------------------------------------------------------------------------------------------
 
-char Version[8] = "V6.31";
+char Version[8] = "V6.4";
 
 #define Cutting_Blades_Activate 1                          // Activates the cutting blades and disc in the code
 #define Perimeter_Wire_Enabled  1                          // Activates use of the perimeter boundary wire
@@ -154,7 +154,7 @@ byte PWM_Blade_Speed            = 250;      //EEPROM          // PWM signal sent
 
 //Battery Settings
 #define Battery_Max        29.4                       // Max battery volts in Volts. 7S 4.2V/cell
-#define Battery_Min        23.1                       // Lower Limit of battery charge before re-charge required. 3.3V/cell
+float Battery_Min       =  23.1;    //EEPROM          // Lower Limit of battery charge before re-charge required. 3.3V/cell
 #define MaxLowBatteryCount   14                       // Instances of low battery detected before a re-charge is called..
 
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -209,12 +209,13 @@ byte PWM_Blade_Speed            = 250;      //EEPROM          // PWM signal sent
 #define CCW_Tracking_To_Start     1                           // Counter-Clock-Wise tracking around the boundary wire to the charging station
 //#define Docked_Filter_Hits        1;                          // Number of charge signals to be detected before mower powers off
 
-#define Track_Wire_Zone_1_Cycles  600                         // Zone 1 - Number of Itterations the PID function does before the mower exits the wire track
-#define Track_Wire_Zone_2_Cycles 1000                         // Zone 2 - Therefore how long the mower is tracking the wire can be set = distance tracked.
+#define Track_Wire_Zone_1_Cycles 1300                         // Zone 1 - Number of Itterations the PID function does before the mower exits the wire track
+#define Track_Wire_Zone_2_Cycles 2200                         // Zone 2 - Therefore how long the mower is tracking the wire can be set = distance tracked.
 
 #define Max_Tracking_Turn_Right   270                         // The maximum number of turn right commands during wire tracking before a renewed wire find function is called
 #define Max_Tracking_Turn_Left    270                         // This helps to re-find the wire should the mower loose the wire for any reason.
-#define Max_Cycle_Wire_Find       320                         // Maximum number of forward tracking cycles in finding wire before the mower restarts a compass turn and wire find.
+#define Max_Cycle_Wire_Find_Fwd   320                         // Maximum number of Forward tracking cycles in finding wire before the mower restarts a compass turn and wire find.
+#define Max_Cycle_Wire_Find_Back  50                          // Maximum number of Backward tracking cycles in finding wire before the mower restarts a compass turn and wire find.  
 
 //-----------------------------------------------------------------------------------------------------------------------------------
 // Perimeter
@@ -271,11 +272,11 @@ float Declination_Angle = (7.0 + (23.0 / 60.0)) / (180 / PI);   // Bad Krozingen
 DFRobot_QMC5883 compass;
 
 //Compass Settings 
-bool Compass_Activate                 = 1;                       // Turns on the Compass (needs to be 1 to activate further compass features)
+bool Compass_Activate               =   1;                       // Turns on the Compass (needs to be 1 to activate further compass features)
 #define Compass_Heading_Hold_Enabled    1                        // Activates the compass heading hold function to keep the mower straight
-#define Home_Wire_Compass_Heading     110                        // Heading the Mower will search for the wire once the mowing is completed.
+int Home_Wire_Compass_Heading       = 110;                       // Heading the Mower will search for the wire once the mowing is completed.
 #define CompassCorectionPower           2                        // Magnification of heading to PWM - How strong the mower corrects itself in Compass Mowing
-#define Pattern_Mow                     0 //*** Not Working yet  // Activate pattern mowing instead of random mowing direction
+byte Pattern_Mow                    =   0;                       // Activate pattern mowing instead of random mowing direction
 #define Compass_Mow_Direction         110                        // Mow Direction of line when pattern mow is activated
 
 #endif
